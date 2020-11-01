@@ -7,6 +7,17 @@
     <class>entity.ItineraryItem</class>
     <class>entity.Partner</class>
     <class>entity.Transaction</class>
+    <class>entity.AircraftConfiguration</class>
+    <class>entity.AircraftType</class>
+    <class>entity.Airport</class>
+    <class>entity.CabinClassConfiguration</class>
+    <class>entity.Fare</class>
+    <class>entity.Flight</class>
+    <class>entity.FlightRoute</class>
+    <class>entity.FlightSchedule</class>
+    <class>entity.FlightSchedulePlan</class>
+    <class>entity.Seat</class>
+    <class>entity.SeatInventory</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
