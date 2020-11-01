@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,8 +21,14 @@ public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long employeeId;
+    @Column(length = 32, nullable = false)
+    private String name;
+    @Column(length = 32, nullable = false)
+    private String userName;
+    @Column(length = 32, nullable = false)
+    private String password;
 
     public Long getEmployeeId() {
         return employeeId;
