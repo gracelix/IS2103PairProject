@@ -6,6 +6,8 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,8 +36,8 @@ public class Transaction implements Serializable {
     private String passengerLastName;
     @Column(length = 32, nullable = false)
     private Long passportNumber;
-    @Column(length = 32, nullable = false)
-    private Long totalPrice;
+    @Column(nullable = false, precision = 18, scale = 4)
+    private BigDecimal totalPrice;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -48,9 +50,12 @@ public class Transaction implements Serializable {
     private List<ItineraryItem> itineraryItems;
 
     public Transaction() {
+        itineraryItems = new ArrayList<>();
     }
 
-    public Transaction(String passengerFirstName, String passengerLastName, Long passportNumber, Long totalPrice, Partner partner) {
+    public Transaction(String passengerFirstName, String passengerLastName, Long passportNumber, BigDecimal totalPrice, Partner partner) {
+        this();
+        
         this.passengerFirstName = passengerFirstName;
         this.passengerLastName = passengerLastName;
         this.passportNumber = passportNumber;
@@ -59,7 +64,9 @@ public class Transaction implements Serializable {
         this.customer = null;
     }
 
-    public Transaction(String passengerFirstName, String passengerLastName, Long passportNumber, Long totalPrice, Customer customer) {
+    public Transaction(String passengerFirstName, String passengerLastName, Long passportNumber, BigDecimal totalPrice, Customer customer) {
+        this();
+        
         this.passengerFirstName = passengerFirstName;
         this.passengerLastName = passengerLastName;
         this.passportNumber = passportNumber;
@@ -68,11 +75,15 @@ public class Transaction implements Serializable {
         this.partner = null;
     }    
 
-    public Transaction(String passengerFirstName, String passengerLastName, Long passportNumber, Long totalPrice) {
+    public Transaction(String passengerFirstName, String passengerLastName, Long passportNumber, BigDecimal totalPrice) {
+        this();
+        
         this.passengerFirstName = passengerFirstName;
         this.passengerLastName = passengerLastName;
         this.passportNumber = passportNumber;
         this.totalPrice = totalPrice;
+        this.partner = null;
+        this.customer = null;
     }
     
 
@@ -133,11 +144,11 @@ public class Transaction implements Serializable {
         this.passportNumber = passportNumber;
     }
 
-    public Long getTotalPrice() {
+    public BigDecimal getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(Long totalPrice) {
+    public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
     }
 

@@ -6,7 +6,6 @@
     <class>entity.AircraftType</class>
     <class>entity.Airport</class>
     <class>entity.CabinClassConfiguration</class>
-    <class>entity.Employee</class>
     <class>entity.Fare</class>
     <class>entity.Flight</class>
     <class>entity.FlightRoute</class>
