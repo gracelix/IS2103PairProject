@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -28,17 +27,10 @@ public class AircraftConfiguration implements Serializable {
     private Long aircraftConfigurationId;
     private Integer numberOfCabinClasses;
     private Integer totalMaximumSeatCapacity;
-    
     @OneToMany(mappedBy = "aircraftConfiguration")
     private List<Flight> flights;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne
     private AircraftType aircraftType;
-    
-    @OneToMany(mappedBy = "aircraftConfiguration")
-    @JoinColumn(nullable = false)
-    private List<CabinClassConfiguration> cabinClassConfigurations;
 
     public AircraftConfiguration() {
     }
@@ -108,14 +100,6 @@ public class AircraftConfiguration implements Serializable {
 
     public void setAircraftType(AircraftType aircraftType) {
         this.aircraftType = aircraftType;
-    }
-
-    public List<CabinClassConfiguration> getCabinClassConfigurations() {
-        return cabinClassConfigurations;
-    }
-
-    public void setCabinClassConfigurations(List<CabinClassConfiguration> cabinClassConfigurations) {
-        this.cabinClassConfigurations = cabinClassConfigurations;
     }
     
 }

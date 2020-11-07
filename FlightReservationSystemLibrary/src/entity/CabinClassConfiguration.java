@@ -11,8 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import util.enumeration.CabinClassType;
 
@@ -33,14 +31,8 @@ public class CabinClassConfiguration implements Serializable {
     private Integer numberOfSeatsAbreast;
     private String seatingConfiguration;
     private Integer cabinMaximumSeatCapacity;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
-    private AircraftConfiguration aircraftConfiguration;
-    
     @OneToMany(mappedBy = "cabinClassConfiguration")
     private List<Fare> fares;
-    
     @OneToMany(mappedBy = "cabinClass")
     private List<SeatInventory> seatInventories;
 
@@ -144,14 +136,6 @@ public class CabinClassConfiguration implements Serializable {
 
     public void setSeatInventories(List<SeatInventory> seatInventories) {
         this.seatInventories = seatInventories;
-    }
-
-    public AircraftConfiguration getAircraftConfiguration() {
-        return aircraftConfiguration;
-    }
-
-    public void setAircraftConfiguration(AircraftConfiguration aircraftConfiguration) {
-        this.aircraftConfiguration = aircraftConfiguration;
     }
     
 }

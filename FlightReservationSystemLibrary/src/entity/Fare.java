@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 /**
@@ -27,9 +26,7 @@ public class Fare implements Serializable {
     private Long fareId;
     private String fareBasisCode;
     private BigDecimal fareAmount;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne
     private CabinClassConfiguration cabinClassConfiguration;
 
     public Fare() {

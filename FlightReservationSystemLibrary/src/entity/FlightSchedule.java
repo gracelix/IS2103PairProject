@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -35,11 +34,8 @@ public class FlightSchedule implements Serializable {
     private Date estimatedFlightDuration;
     @Temporal(TemporalType.DATE)
     private Date arrivalDateTime;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne
     private FlightSchedulePlan flightSchedulePlan;
-    
     @OneToMany
     private List<SeatInventory> seatInventories;
 

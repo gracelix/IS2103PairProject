@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -28,15 +27,15 @@ public class Flight implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightId;
     private String flightNumber;
-    private Boolean enableFlight;
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne
     private FlightRoute flightRoute;
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne
     private AircraftConfiguration aircraftConfiguration;
+    private Boolean enableFlight;
     @OneToOne(mappedBy = "complementaryReturnFlight")
     private Flight complementaryReturnFlight;
+    @OneToMany(mappedBy = "flight")
+    private List<FlightRoute> flightRoutes;
     @OneToMany(mappedBy = "flight")
     private List<FlightSchedulePlan> flightSchedulePlans;
 
@@ -115,6 +114,14 @@ public class Flight implements Serializable {
 
     public void setComplementaryReturnFlight(Flight complementaryReturnFlight) {
         this.complementaryReturnFlight = complementaryReturnFlight;
+    }
+
+    public List<FlightRoute> getFlightRoutes() {
+        return flightRoutes;
+    }
+
+    public void setFlightRoutes(List<FlightRoute> flightRoutes) {
+        this.flightRoutes = flightRoutes;
     }
 
     public List<FlightSchedulePlan> getFlightSchedulePlans() {

@@ -6,13 +6,11 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -29,25 +27,19 @@ public class FlightRoute implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightRouteId;
     private Boolean enabledFlightRoute;
-    
     @OneToOne(mappedBy = "complementaryFlightRoute")
     private FlightRoute complementaryFlightRoute;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne
     private Airport originAirport;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne
     private Airport destinationAirport;
-    
     @OneToMany(mappedBy = "flightRoute")
     private List<Flight> flights;
-    
+    @ManyToOne
+    private Flight flight;
 
     
     public FlightRoute() {
-        this.flights = new ArrayList<>();
     }
     
     
@@ -123,6 +115,14 @@ public class FlightRoute implements Serializable {
 
     public void setFlights(List<Flight> flights) {
         this.flights = flights;
+    }
+
+    public Flight getFlight() {
+        return flight;
+    }
+
+    public void setFlight(Flight flight) {
+        this.flight = flight;
     }
 
     
