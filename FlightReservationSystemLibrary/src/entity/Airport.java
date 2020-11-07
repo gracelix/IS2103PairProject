@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,6 +37,8 @@ public class Airport implements Serializable {
 
     
     public Airport() {
+        this.originFlightRoutes = new ArrayList<>();
+        this.destinationFlightRoutes = new ArrayList<>();
     }
 
     public Airport(String iataCode, String city, String countryState, String country) {
