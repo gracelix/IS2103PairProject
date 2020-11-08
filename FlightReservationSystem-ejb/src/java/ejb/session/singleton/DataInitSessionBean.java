@@ -5,9 +5,11 @@
  */
 package ejb.session.singleton;
 
+import ejb.session.stateless.AircraftTypeSessionBeanLocal;
 import ejb.session.stateless.AirportSessionBeanLocal;
 import ejb.session.stateless.EmployeeSessionBeanLocal;
 import ejb.session.stateless.PartnerSessionBeanLocal;
+import entity.AircraftType;
 import entity.Airport;
 import entity.Employee;
 import entity.Partner;
@@ -18,6 +20,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import util.enumeration.EmployeeAccessRights;
 import util.enumeration.PartnerAccessRights;
+import util.exception.AircraftTypeNotFoundException;
 import util.exception.AirportNotFoundException;
 import util.exception.EmployeeNotFoundException;
 import util.exception.PartnerNotFoundException;
@@ -32,6 +35,9 @@ import util.exception.PartnerNotFoundException;
 public class DataInitSessionBean {
 
     @EJB
+    private AircraftTypeSessionBeanLocal aircraftTypeSessionBean;
+
+    @EJB
     private PartnerSessionBeanLocal partnerSessionBean;
 
     @EJB
@@ -39,7 +45,7 @@ public class DataInitSessionBean {
 
     @EJB
     private EmployeeSessionBeanLocal employeeSessionBean;
-
+    
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
@@ -61,6 +67,12 @@ public class DataInitSessionBean {
             airportSessionBean.retrieveAirportById(1l);
         } catch (AirportNotFoundException ex) {
             loadAirportData();
+        }
+        
+        try {
+            aircraftTypeSessionBean.retrieveAircraftTypeById(1l);
+        } catch (AircraftTypeNotFoundException ex) {
+            loadAircraftType();
         }
     }
     
@@ -130,5 +142,15 @@ public class DataInitSessionBean {
         Airport canberraAirport = new Airport("Canberra Airport", "CBR", "Canberra", "Canberra", "Australia");
         airportSessionBean.createNewAirport(canberraAirport);
 
+    }
+    
+    public void loadAircraftType() {
+        AircraftType boeing737 = new AircraftType("Boeing 737-800", 174);
+        aircraftTypeSessionBean.createNewAircraftType(boeing737);
+        // seat map for reference: https://www.qantas.com/content/dam/qantas/pdfs/qantas-experience/onboard/seatmaps/B737-800.pdf
+        
+        AircraftType boeing747 = new AircraftType("Boeing 747-8", 364);
+        aircraftTypeSessionBean.createNewAircraftType(boeing747);
+        // seat map for reference: https://www.seatguru.com/airlines/Lufthansa/Lufthansa_Boeing_747_8_V3.php
     }
 }
