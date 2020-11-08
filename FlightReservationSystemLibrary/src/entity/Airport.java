@@ -25,6 +25,7 @@ public class Airport implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long airportId;
+    private String airportName;
     private String iataCode;
     private String city;
     private String countryState;
@@ -41,7 +42,8 @@ public class Airport implements Serializable {
         this.destinationFlightRoutes = new ArrayList<>();
     }
 
-    public Airport(String iataCode, String city, String countryState, String country) {
+    public Airport(String airportName, String iataCode, String city, String countryState, String country) {
+        this.airportName = airportName;
         this.iataCode = iataCode;
         this.city = city;
         this.countryState = countryState;
