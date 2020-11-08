@@ -7,10 +7,12 @@ package ejb.session.stateless;
 
 import entity.AircraftConfiguration;
 import entity.AircraftType;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.AircraftTypeNotFoundException;
 
@@ -40,6 +42,7 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
         return newAircraftConfiguration.getAircraftConfigurationId();
     }
     
+    @Override
     public AircraftConfiguration retrieveAircraftConfigurationById(Long aircraftConfigurationId) throws AircraftConfigurationNotFoundException {
         AircraftConfiguration aircraftConfiguration = em.find(AircraftConfiguration.class, aircraftConfigurationId);
         if (aircraftConfiguration == null) {
@@ -47,5 +50,16 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
         }
         
         return aircraftConfiguration;
+    }
+    
+    public List<AircraftConfiguration> retrieveAllAircraftConfigurations() {
+        Query query = em.createQuery("SELECT ac FROM AircraftConfiguration ac ORDER BY ac.aircraftType, ac.aircraftConfigurationName ASC");
+        List<AircraftConfiguration> aircraftConfigurations = query.getResultList();
+        
+        for (AircraftConfiguration aircraftConfiguration : aircraftConfigurations) {
+            aircraftConfiguration.getFlights().size();
+            aircraftConfiguration.getCabinClassConfigurations().size();
+        }
+        return aircraftConfigurations;
     }
 }

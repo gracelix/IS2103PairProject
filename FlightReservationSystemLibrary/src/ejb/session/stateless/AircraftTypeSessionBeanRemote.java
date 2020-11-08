@@ -5,7 +5,6 @@
  */
 package ejb.session.stateless;
 
-import entity.AircraftConfiguration;
 import entity.AircraftType;
 import javax.ejb.Remote;
 import util.exception.AircraftTypeNotFoundException;

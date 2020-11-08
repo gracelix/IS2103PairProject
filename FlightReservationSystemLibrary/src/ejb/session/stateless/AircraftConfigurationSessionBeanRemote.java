@@ -22,4 +22,7 @@ public interface AircraftConfigurationSessionBeanRemote {
     public Long createNewAircraftConfiguration(AircraftConfiguration newAircraftConfiguration, Long aircraftTypeId) throws AircraftTypeNotFoundException;
     
     public AircraftConfiguration retrieveAircraftConfigurationById(Long aircraftConfigurationId) throws AircraftConfigurationNotFoundException;
+    
+    public List<AircraftConfiguration> retrieveAllAircraftConfigurations();
+    
 }
