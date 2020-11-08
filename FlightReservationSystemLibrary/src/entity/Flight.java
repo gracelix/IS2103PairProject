@@ -35,7 +35,7 @@ public class Flight implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private AircraftConfiguration aircraftConfiguration;
-    @OneToOne(mappedBy = "complementaryReturnFlight")
+    @OneToOne
     private Flight complementaryReturnFlight;
     @OneToMany(mappedBy = "flight")
     private List<FlightSchedulePlan> flightSchedulePlans;

@@ -30,7 +30,7 @@ public class FlightRoute implements Serializable {
     private Long flightRouteId;
     private Boolean enabledFlightRoute;
     
-    @OneToOne(mappedBy = "complementaryFlightRoute")
+    @OneToOne
     private FlightRoute complementaryFlightRoute;
     
     @ManyToOne(optional = false)
