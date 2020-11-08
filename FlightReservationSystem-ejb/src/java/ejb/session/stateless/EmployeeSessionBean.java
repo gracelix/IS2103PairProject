@@ -8,8 +8,11 @@ package ejb.session.stateless;
 import entity.Employee;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import util.exception.EmployeeNotFoundException;
+import util.exception.InvalidLoginCredentialException;
 
 /**
  *
@@ -40,5 +43,22 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
         
         return employee;
         
+    }
+    
+    @Override
+    public Employee login(String username, String password) throws InvalidLoginCredentialException {
+        try {
+            Query query = em.createQuery("SELECT e FROM Employee e WHERE e.userName = :inUserName");
+            query.setParameter("inUserName", username);
+            Employee employee = (Employee)query.getSingleResult();
+
+            if (employee.getPassword().equals(password)) {
+                return employee;
+            } else {
+                throw new InvalidLoginCredentialException("Entered password is incorrect.");
+            }
+        } catch (NoResultException ex) {
+            throw new InvalidLoginCredentialException("One or more entered credentials are incorrect.");
+        }
     }
 }
