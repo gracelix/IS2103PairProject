@@ -5,7 +5,9 @@
  */
 package flightreservationsystemclient;
 
+import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
 import ejb.session.stateless.AircraftTypeSessionBeanRemote;
+import ejb.session.stateless.CabinClassConfigurationSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import javax.ejb.EJB;
 
@@ -19,6 +21,12 @@ public class Main {
     private static AircraftTypeSessionBeanRemote aircraftTypeSessionBean;
 
     @EJB
+    private static CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBean;
+
+    @EJB
+    private static AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBean;
+
+    @EJB
     private static EmployeeSessionBeanRemote employeeSessionBean;
 
     /**
@@ -26,7 +34,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        MainApp mainApp = new MainApp(aircraftTypeSessionBean, employeeSessionBean);
+        MainApp mainApp = new MainApp(employeeSessionBean, aircraftConfigurationSessionBean, cabinClassConfigurationSessionBean, aircraftTypeSessionBean);
         mainApp.runApp();
     }
     

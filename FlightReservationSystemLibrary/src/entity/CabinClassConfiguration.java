@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -45,6 +46,18 @@ public class CabinClassConfiguration implements Serializable {
     private List<SeatInventory> seatInventories;
 
     public CabinClassConfiguration() {
+        this.fares = new ArrayList<>();
+        this.seatInventories = new ArrayList<>();
+    }
+
+    public CabinClassConfiguration(CabinClassType cabinClassType, Integer numberOfAisles, Integer numberOfRows, Integer numberOfSeatsAbreast, String seatingConfiguration, Integer cabinMaximumSeatCapacity) {
+        this();
+        this.cabinClassType = cabinClassType;
+        this.numberOfAisles = numberOfAisles;
+        this.numberOfRows = numberOfRows;
+        this.numberOfSeatsAbreast = numberOfSeatsAbreast;
+        this.seatingConfiguration = seatingConfiguration;
+        this.cabinMaximumSeatCapacity = cabinMaximumSeatCapacity;
     }
     
     

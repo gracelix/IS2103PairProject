@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,6 +38,12 @@ public class SeatInventory implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private CabinClassConfiguration cabinClass;
+
+    public SeatInventory() {
+        this.seats = new ArrayList<>();
+    }
+    
+    
 
     public Long getSeatInventoryId() {
         return seatInventoryId;

@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class AircraftConfiguration implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long aircraftConfigurationId;
+    private String aircraftConfigurationName;
     private Integer numberOfCabinClasses;
     private Integer totalMaximumSeatCapacity;
     
@@ -41,9 +43,15 @@ public class AircraftConfiguration implements Serializable {
     private List<CabinClassConfiguration> cabinClassConfigurations;
 
     public AircraftConfiguration() {
+        this.flights = new ArrayList<>();
+        this.cabinClassConfigurations = new ArrayList<>();
     }
-    
-    
+
+    public AircraftConfiguration(String aircraftConfigurationName, Integer numberOfCabinClasses) {
+        this();
+        this.aircraftConfigurationName = aircraftConfigurationName;
+        this.numberOfCabinClasses = numberOfCabinClasses;
+    }
 
     public Long getAircraftConfigurationId() {
         return aircraftConfigurationId;
@@ -116,6 +124,14 @@ public class AircraftConfiguration implements Serializable {
 
     public void setCabinClassConfigurations(List<CabinClassConfiguration> cabinClassConfigurations) {
         this.cabinClassConfigurations = cabinClassConfigurations;
+    }
+
+    public String getAircraftConfigurationName() {
+        return aircraftConfigurationName;
+    }
+
+    public void setAircraftConfigurationName(String aircraftConfigurationName) {
+        this.aircraftConfigurationName = aircraftConfigurationName;
     }
     
 }

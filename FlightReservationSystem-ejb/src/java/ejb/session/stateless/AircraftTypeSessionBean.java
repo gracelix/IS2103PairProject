@@ -39,6 +39,5 @@ public class AircraftTypeSessionBean implements AircraftTypeSessionBeanRemote, A
         }
         
         return aircraftType;
-        
     }
 }

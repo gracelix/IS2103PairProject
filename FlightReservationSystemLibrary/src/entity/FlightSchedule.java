@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
@@ -44,6 +45,7 @@ public class FlightSchedule implements Serializable {
     private List<SeatInventory> seatInventories;
 
     public FlightSchedule() {
+        this.seatInventories = new ArrayList<>();
     }
     
     
