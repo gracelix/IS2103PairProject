@@ -62,7 +62,11 @@ public class RoutePlannerModule {
                         System.out.println(ex.getMessage() + "\n");
                     }
                 } else if (response == 3) {
-                    
+                    try {
+                        doDeleteFlightRoute();
+                    } catch (FlightRouteNotFoundException ex) {
+                        System.out.println(ex.getMessage() + "\n");
+                    }
                 } else if (response == 4) {
                     break;
                 }
@@ -116,5 +120,14 @@ public class RoutePlannerModule {
         sc.nextLine();
     }
     
-    
+    public void doDeleteFlightRoute() throws FlightRouteNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Flight Reservation System Management :: Delete Flight Route ***\n");
+        
+        System.out.print("Enter flight route ID> ");
+        Long flightRouteId = sc.nextLong();
+        
+        flightRouteSessionBeanRemote.disableFlightRoute(flightRouteId);
+        System.out.println("Flight Route " + flightRouteId + " successfully deleted.\n");
+    }
 }

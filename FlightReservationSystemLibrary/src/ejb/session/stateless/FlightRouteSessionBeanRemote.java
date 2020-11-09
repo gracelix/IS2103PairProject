@@ -26,4 +26,5 @@ public interface FlightRouteSessionBeanRemote {
     
     public List<FlightRoute> retrieveAllFlightRoutes();
     
+    public void disableFlightRoute(Long flightRouteId) throws FlightRouteNotFoundException;
 }

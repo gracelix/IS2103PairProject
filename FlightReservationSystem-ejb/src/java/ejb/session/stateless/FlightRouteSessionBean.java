@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Airport;
+import entity.Flight;
 import entity.FlightRoute;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,5 +111,17 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
             }
         }
         return finalFlightRouteList;
+    }
+    
+    @Override
+    public void disableFlightRoute(Long flightRouteId) throws FlightRouteNotFoundException {
+        FlightRoute flightRoute = retrieveFlightRouteById(flightRouteId);
+        List<Flight> flights = flightRoute.getFlights();
+        
+        if (flights.isEmpty()) {
+            em.remove(flightRoute);
+        } else {
+            flightRoute.setEnabledFlightRoute(Boolean.FALSE);
+        }
     }
 }
