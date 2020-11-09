@@ -38,7 +38,7 @@ public class FleetManagerModule {
         this.currentEmployee = currentEmployee;
     }
     
-    public void doFleetManagerMenu() {
+    public void doFleetManagerMenu() throws AircraftConfigurationNotFoundException {
         Scanner sc = new Scanner(System.in);
         Integer response = 0;
         
@@ -64,7 +64,11 @@ public class FleetManagerModule {
                 } else if (response == 2) {
                     doViewAllAircraftConfigurations();
                 } else if (response == 3) {
-                    System.out.println("viewing aircraft config details");
+                    try {
+                    doViewAircraftConfigurationDetails();
+                    } catch (AircraftConfigurationNotFoundException ex) {
+                        System.out.println(ex.getMessage() + "\n");
+                    }
                 } else if (response == 4) {
                     break;
                 }
@@ -180,6 +184,19 @@ public class FleetManagerModule {
         
         System.out.print("Press any key to continue...> ");
         sc.nextLine();
+    }
+    
+    public void doViewAircraftConfigurationDetails() throws AircraftConfigurationNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Flight Reservation System Management :: View Aircraft Configuration Details ***\n");
+        
+        System.out.print("Enter Aircraft Configuration ID> ");
+        Long aircraftConfigurationId = sc.nextLong();
+        
+        AircraftConfiguration aircraftConfiguration = aircraftConfigurationSessionBeanRemote.retrieveAircraftConfigurationById(aircraftConfigurationId);
+        
+        System.out.printf("%10s%20s%20s%20s\n", "Aircraft Type", "Name", "No. of Cabin Class", "Max Capacity");
+        System.out.printf("%10s%20s%20s%20s\n", aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getNumberOfCabinClasses(), aircraftConfiguration.getTotalMaximumSeatCapacity());
     }
     
 }
