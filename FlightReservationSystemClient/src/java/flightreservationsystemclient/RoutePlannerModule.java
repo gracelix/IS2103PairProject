@@ -9,6 +9,7 @@ import ejb.session.stateless.AirportSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
 import entity.Employee;
 import entity.FlightRoute;
+import java.util.List;
 import java.util.Scanner;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.InvalidIataCodeException;
@@ -55,7 +56,11 @@ public class RoutePlannerModule {
                         System.out.println(ex.getMessage() + "\n");
                     }
                 } else if (response == 2) {
-                    
+                    try {
+                        doViewAllFlightRoutes();
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage() + "\n");
+                    }
                 } else if (response == 3) {
                     
                 } else if (response == 4) {
@@ -96,5 +101,20 @@ public class RoutePlannerModule {
             }
         }
     }
+    
+    public void doViewAllFlightRoutes() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Flight Reservation System Management :: View All Flight Routes ***\n");
+        
+        List<FlightRoute> flightRoutes = flightRouteSessionBeanRemote.retrieveAllFlightRoutes();
+        
+        System.out.printf("%20s%20s%20s\n", "Flight Route ID", "Origin Airport", "Destination Airport");
+        for (FlightRoute flightRoute : flightRoutes) {
+            System.out.printf("%20s%20s%20s\n", flightRoute.getFlightRouteId(), flightRoute.getOriginAirport().getIataCode(), flightRoute.getDestinationAirport().getIataCode());
+        }
+        System.out.print("Press any key to continue...> ");
+        sc.nextLine();
+    }
+    
     
 }

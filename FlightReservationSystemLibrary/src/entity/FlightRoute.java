@@ -30,7 +30,10 @@ public class FlightRoute implements Serializable {
     private Long flightRouteId;
     private Boolean enabledFlightRoute;
     
+    
     @OneToOne
+    private FlightRoute originalFlightRoute;
+    @OneToOne(mappedBy = "originalFlightRoute")
     private FlightRoute complementaryFlightRoute;
     
     @ManyToOne(optional = false)
@@ -124,6 +127,14 @@ public class FlightRoute implements Serializable {
 
     public void setFlights(List<Flight> flights) {
         this.flights = flights;
+    }
+
+    public FlightRoute getOriginalFlightRoute() {
+        return originalFlightRoute;
+    }
+
+    public void setOriginalFlightRoute(FlightRoute originalFlightRoute) {
+        this.originalFlightRoute = originalFlightRoute;
     }
 
     

@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.FlightRoute;
+import java.util.List;
 import javax.ejb.Local;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.InvalidIataCodeException;
@@ -22,5 +23,7 @@ public interface FlightRouteSessionBeanLocal {
     public FlightRoute retrieveFlightRouteById(Long flightRouteId) throws FlightRouteNotFoundException;
 
     public Long createNewComplementaryFlightRoute(FlightRoute complementaryFlightRoute, Long originalFlightRouteId, String originAirportIata, String destinationAirportIata) throws InvalidIataCodeException, FlightRouteNotFoundException;
+
+    public List<FlightRoute> retrieveAllFlightRoutes();
     
 }

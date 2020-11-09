@@ -7,10 +7,13 @@ package ejb.session.stateless;
 
 import entity.Airport;
 import entity.FlightRoute;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.InvalidIataCodeException;
 
@@ -71,11 +74,41 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
         originAirport.getOriginFlightRoutes().add(complementaryFlightRoute);
         destinationAirport.getDestinationFlightRoutes().add(complementaryFlightRoute);
         
-        complementaryFlightRoute.setComplementaryFlightRoute(originalFlightRoute);
         originalFlightRoute.setComplementaryFlightRoute(complementaryFlightRoute);
+        complementaryFlightRoute.setOriginalFlightRoute(originalFlightRoute);
         
         em.persist(complementaryFlightRoute);
         em.flush();
         return complementaryFlightRoute.getFlightRouteId();
+    }
+    
+    public List<FlightRoute> retrieveAllFlightRoutes() {
+        Query query = em.createQuery("SELECT fr FROM FlightRoute fr WHERE fr.originalFlightRoute IS NULL ORDER BY fr.originAirport ASC");
+        List<FlightRoute> flightRoutes = query.getResultList();
+        FlightRoute complementaryFlightRoute = null;
+        List<FlightRoute> finalFlightRouteList = new ArrayList<>();
+        
+        for (FlightRoute flightRoute : flightRoutes) {
+            flightRoute.getFlights().size();
+        }
+        
+        for (FlightRoute flightRoute : flightRoutes) {
+            if (flightRoute.getComplementaryFlightRoute() != null) {
+                
+                Long complementaryFlightId = flightRoute.getComplementaryFlightRoute().getFlightRouteId();
+                
+                try {
+                    complementaryFlightRoute = retrieveFlightRouteById(complementaryFlightId);
+                } catch (FlightRouteNotFoundException ex) {
+                    
+                }
+                finalFlightRouteList.add(flightRoute);
+                finalFlightRouteList.add(complementaryFlightRoute);
+                
+            } else {
+                finalFlightRouteList.add(flightRoute);
+            }
+        }
+        return finalFlightRouteList;
     }
 }
