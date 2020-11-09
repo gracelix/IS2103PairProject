@@ -132,5 +132,13 @@ public class Airport implements Serializable {
     public void setDestinationFlightRoutes(List<FlightRoute> destinationFlightRoutes) {
         this.destinationFlightRoutes = destinationFlightRoutes;
     }
+
+    public String getAirportName() {
+        return airportName;
+    }
+
+    public void setAirportName(String airportName) {
+        this.airportName = airportName;
+    }
     
 }

@@ -38,7 +38,7 @@ public class FleetManagerModule {
         this.currentEmployee = currentEmployee;
     }
     
-    public void doFleetManagerMenu() throws AircraftConfigurationNotFoundException {
+    public void doFleetManagerMenu() {
         Scanner sc = new Scanner(System.in);
         Integer response = 0;
         

@@ -44,14 +44,15 @@ public class FlightRoute implements Serializable {
     @OneToMany(mappedBy = "flightRoute")
     private List<Flight> flights;
     
-
-    
     public FlightRoute() {
         this.flights = new ArrayList<>();
     }
-    
-    
 
+    public FlightRoute(Airport originAirport, Airport destinationAirport) {
+        this.originAirport = originAirport;
+        this.destinationAirport = destinationAirport;
+    }
+    
     public Long getFlightRouteId() {
         return flightRouteId;
     }

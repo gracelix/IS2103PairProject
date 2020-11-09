@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Airport;
 import javax.ejb.Local;
 import util.exception.AirportNotFoundException;
+import util.exception.InvalidIataCodeException;
 
 /**
  *
@@ -19,5 +20,7 @@ public interface AirportSessionBeanLocal {
     public Long createNewAirport(Airport newAirport);
 
     public Airport retrieveAirportById(Long airportId) throws AirportNotFoundException;
+
+    public Airport retrieveAirportByIataCode(String iataCode) throws InvalidIataCodeException;
     
 }
