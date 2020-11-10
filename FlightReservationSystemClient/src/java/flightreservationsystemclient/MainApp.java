@@ -59,6 +59,7 @@ public class MainApp {
 
         while (true) {
             System.out.println("*** Welcome to Flight Reservation System :: Management ***\n");
+            response = 0;
 
             if(currentEmployee != null) {
                 System.out.println("You are login as " + currentEmployee.getName() + ".\n");
@@ -87,18 +88,23 @@ public class MainApp {
                 }
             }
 
-            if (currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.FLEET_MANAGER)) {
+            if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.FLEET_MANAGER)) {
                 fleetManagerModule = new FleetManagerModule(aircraftTypeSessionBeanRemote, aircraftConfigurationSessionBeanRemote, cabinClassConfigurationSessionBeanRemote, currentEmployee);
                 fleetManagerModule.doFleetManagerMenu();
+                currentEmployee = null;
                 
-            } else if (currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.ROUTE_PLANNER)) {
+            } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.ROUTE_PLANNER)) {
                 routePlannerModule = new RoutePlannerModule(flightRouteSessionBeanRemote, airportSessionBeanRemote, currentEmployee);
                 routePlannerModule.doRoutePlannerMenu();
                 
-            } else if (currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SCHEDULE_MANAGER)) {
+            } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SCHEDULE_MANAGER)) {
                 
-            } else if (currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SALES_MANAGER)) {
+            } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SALES_MANAGER)) {
                 
+            }
+            
+            if (response == 2) {
+                break;
             }
         }
     }
