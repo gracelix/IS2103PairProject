@@ -6,11 +6,13 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -25,17 +27,30 @@ public class AircraftConfiguration implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long aircraftConfigurationId;
+    private String aircraftConfigurationName;
     private Integer numberOfCabinClasses;
     private Integer totalMaximumSeatCapacity;
     @OneToMany(mappedBy = "aircraftConfiguration")
     private List<Flight> flights;
-    @ManyToOne
+    
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private AircraftType aircraftType;
+    
+    @OneToMany(mappedBy = "aircraftConfiguration")
+    @JoinColumn(nullable = false)
+    private List<CabinClassConfiguration> cabinClassConfigurations;
 
     public AircraftConfiguration() {
+        this.flights = new ArrayList<>();
+        this.cabinClassConfigurations = new ArrayList<>();
     }
-    
-    
+
+    public AircraftConfiguration(String aircraftConfigurationName, Integer numberOfCabinClasses) {
+        this();
+        this.aircraftConfigurationName = aircraftConfigurationName;
+        this.numberOfCabinClasses = numberOfCabinClasses;
+    }
 
     public Long getAircraftConfigurationId() {
         return aircraftConfigurationId;
@@ -100,6 +115,22 @@ public class AircraftConfiguration implements Serializable {
 
     public void setAircraftType(AircraftType aircraftType) {
         this.aircraftType = aircraftType;
+    }
+
+    public List<CabinClassConfiguration> getCabinClassConfigurations() {
+        return cabinClassConfigurations;
+    }
+
+    public void setCabinClassConfigurations(List<CabinClassConfiguration> cabinClassConfigurations) {
+        this.cabinClassConfigurations = cabinClassConfigurations;
+    }
+
+    public String getAircraftConfigurationName() {
+        return aircraftConfigurationName;
+    }
+
+    public void setAircraftConfigurationName(String aircraftConfigurationName) {
+        this.aircraftConfigurationName = aircraftConfigurationName;
     }
     
 }

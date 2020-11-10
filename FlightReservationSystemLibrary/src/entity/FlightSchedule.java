@@ -6,12 +6,14 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -34,12 +36,16 @@ public class FlightSchedule implements Serializable {
     private Date estimatedFlightDuration;
     @Temporal(TemporalType.DATE)
     private Date arrivalDateTime;
-    @ManyToOne
+    
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private FlightSchedulePlan flightSchedulePlan;
+    
     @OneToMany
     private List<SeatInventory> seatInventories;
 
     public FlightSchedule() {
+        this.seatInventories = new ArrayList<>();
     }
     
     

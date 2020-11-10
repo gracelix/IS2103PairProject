@@ -6,12 +6,14 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -32,14 +34,21 @@ public class FlightSchedulePlan implements Serializable {
     private FlightSchedulePlanType flightSchedulePlanType;
     @Temporal(TemporalType.DATE)
     private Date endDate;
-    @ManyToOne
+    
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Flight flight;
+    
     @OneToMany(mappedBy = "flightSchedulePlan")
+    @JoinColumn(nullable = false)
     private List<FlightSchedule> flightSchedules;
+    
     @OneToMany
     private List<Fare> fares;
 
     public FlightSchedulePlan() {
+        this.fares = new ArrayList<>();
+        this.flightSchedules = new ArrayList<>();
     }
     
     
