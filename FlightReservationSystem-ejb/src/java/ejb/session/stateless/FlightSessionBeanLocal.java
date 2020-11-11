@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Flight;
+import java.util.List;
 import javax.ejb.Local;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.FlightNotFoundException;
@@ -23,5 +24,7 @@ public interface FlightSessionBeanLocal {
     public Flight retrieveFlightById(Long flightId) throws FlightNotFoundException;
 
     public Long createNewComplementaryReturnFlight(Flight newFlight, Long originalFlightId, Long flightRouteId, Long aircraftConfigurationId) throws FlightRouteNotFoundException, AircraftConfigurationNotFoundException, FlightNotFoundException;
+
+    public List<Flight> retrieveAllFlights();
     
 }

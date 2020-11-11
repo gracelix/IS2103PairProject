@@ -8,10 +8,13 @@ package ejb.session.stateless;
 import entity.AircraftConfiguration;
 import entity.Flight;
 import entity.FlightRoute;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
@@ -86,5 +89,56 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
         
         return newFlight.getFlightId();
     
+    }
+    
+//    @Override
+//    public List<Flight> retrieveAllFlights() {
+//        Query query = em.createQuery("SELECT f FROM Flight f WHERE f.originalFlight IS NULL ORDER BY f.flightNumber ASC");
+//        List<Flight> flights = query.getResultList();
+//        
+//        for (Flight flight : flights) {
+//            flight.getFlightSchedulePlans().size();
+//            flight.getAircraftConfiguration();
+//            flight.getFlightRoute();
+//            flight.getComplementaryReturnFlight();
+//            flight.getOriginalFlight();
+//        }
+//        
+//        return flights;
+//    }
+    
+    @Override
+    public List<Flight> retrieveAllFlights() {
+        Query query = em.createQuery("SELECT f FROM Flight f WHERE f.originalFlight IS NULL ORDER BY f.flightNumber ASC");
+        List<Flight> flights = query.getResultList();
+        Flight complementaryFlight = null;
+        List<Flight> finalFlightList = new ArrayList<>();
+        
+        for (Flight flight : flights) {
+            flight.getAircraftConfiguration();
+            flight.getFlightRoute();
+            flight.getComplementaryReturnFlight();
+            flight.getOriginalFlight();
+            flight.getFlightSchedulePlans().size();
+        }
+        
+        for (Flight flight : flights) {
+            if (flight.getComplementaryReturnFlight() != null) {
+                
+                Long complementaryFlightId = flight.getComplementaryReturnFlight().getFlightId();
+                
+                try {
+                    complementaryFlight = retrieveFlightById(complementaryFlightId);
+                } catch (FlightNotFoundException ex) {
+                    
+                }
+                finalFlightList.add(flight);
+                finalFlightList.add(complementaryFlight);
+                
+            } else {
+                finalFlightList.add(flight);
+            }
+        }
+        return finalFlightList;
     }
 }

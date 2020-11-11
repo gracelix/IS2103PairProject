@@ -5,11 +5,13 @@
  */
 package flightreservationsystemclient;
 
+import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
 import entity.Employee;
 import entity.Flight;
 import entity.FlightRoute;
+import java.util.List;
 import java.util.Scanner;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.FlightNotFoundException;
@@ -22,6 +24,7 @@ import util.exception.FlightRouteNotFoundException;
 public class ScheduleManagerModule {
     private FlightSessionBeanRemote flightSessionBeanRemote;
     private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
+    private AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote;
     private Employee employee;
 
     public ScheduleManagerModule() {
@@ -32,6 +35,15 @@ public class ScheduleManagerModule {
         this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
         this.employee = employee;
     }
+
+    public ScheduleManagerModule(FlightSessionBeanRemote flightSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, Employee employee) {
+        this.flightSessionBeanRemote = flightSessionBeanRemote;
+        this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
+        this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
+        this.employee = employee;
+    }
+    
+    
     
     public void doScheduleManagerMenu() {
         Scanner sc = new Scanner(System.in);
@@ -116,9 +128,40 @@ public class ScheduleManagerModule {
         }
     }
     
+//    public void doViewAllFlights() {
+//        Scanner sc = new Scanner(System.in);
+//        System.out.println("*** Flight Reservation System Management :: View All Flight ***\n");
+//        
+//        List<Flight> flights = flightSessionBeanRemote.retrieveAllFlights();
+//        
+//        Flight complementaryFlight = null;
+//        
+//        System.out.printf("%20s%20s%20s%20s\n", "Flight ID", "Flight Number", "Flight Route ID", "Aircraft Configuration ID");
+//        for (Flight flight : flights) {
+//            System.out.printf("%20s%20s%20s%20\n", flight.getFlightId(), flight.getFlightNumber(), flight.getFlightRoute().getFlightRouteId(), flight.getAircraftConfiguration().getAircraftConfigurationId());
+//            if (flight.getComplementaryReturnFlight() != null) {
+//                complementaryFlight = flight.getComplementaryReturnFlight();
+//                System.out.printf("%20s%20s%20s%20\n", complementaryFlight.getFlightId(), complementaryFlight.getFlightNumber(), complementaryFlight.getFlightRoute().getFlightRouteId(), complementaryFlight.getAircraftConfiguration().getAircraftConfigurationId());
+//            }
+//        }
+//        System.out.print("Press any key to continue...> ");
+//        sc.nextLine();
+//    }
+    
     public void doViewAllFlights() {
-        System.out.println("hehe");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Flight Reservation System Management :: View All Flight ***\n");
+        
+        List<Flight> flights = flightSessionBeanRemote.retrieveAllFlights();
+        
+        System.out.printf("%20s%20s%20s%28s\n", "Flight Number", "Flight ID", "Flight Route ID", "Aircraft Configuration ID");
+        for (Flight flight : flights) {
+            System.out.printf("%20s%20s%20s%28s\n", flight.getFlightNumber(), flight.getFlightId(), flight.getFlightRoute().getFlightRouteId(), flight.getAircraftConfiguration().getAircraftConfigurationId());
+        }
+        System.out.print("Press any key to continue...> ");
+        sc.nextLine();
     }
+    
     public void doViewFlightDetails() {
         System.out.println("hehe");
     }
