@@ -11,6 +11,7 @@ import ejb.session.stateless.AirportSessionBeanRemote;
 import ejb.session.stateless.CabinClassConfigurationSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
+import ejb.session.stateless.FlightSchedulePlanSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
@@ -29,6 +30,7 @@ public class MainApp {
     private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
     private FlightSessionBeanRemote flightSessionBeanRemote;
     private AirportSessionBeanRemote airportSessionBeanRemote;
+    private FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote;
     private Employee currentEmployee;
     private Integer response;
     
@@ -46,7 +48,8 @@ public class MainApp {
             AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote, 
             FlightRouteSessionBeanRemote flightRouteSessionBeanRemote,
             AirportSessionBeanRemote airportSessionBeanRemote,
-            FlightSessionBeanRemote flightSessionBeanRemote) {
+            FlightSessionBeanRemote flightSessionBeanRemote,
+            FlightSchedulePlanSessionBeanRemote flightSchedulePlanBeanRemote) {
         
         this.currentEmployee = null;
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
@@ -56,6 +59,7 @@ public class MainApp {
         this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
         this.airportSessionBeanRemote = airportSessionBeanRemote;
         this.flightSessionBeanRemote = flightSessionBeanRemote;
+        this.flightSchedulePlanSessionBeanRemote = flightSchedulePlanBeanRemote;
     }
     
     public void runApp() {

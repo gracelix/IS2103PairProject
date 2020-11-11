@@ -8,6 +8,7 @@ package flightreservationsystemclient;
 import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
 import ejb.session.stateless.CabinClassConfigurationSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
+import ejb.session.stateless.FlightSchedulePlanSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
 import entity.CabinClassConfiguration;
 import entity.Employee;
@@ -15,10 +16,9 @@ import entity.Flight;
 import entity.FlightRoute;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.enumeration.CabinClassType;
 import util.exception.AircraftConfigurationNotFoundException;
+import util.exception.DeleteFlightException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.UpdateFlightException;
@@ -32,6 +32,7 @@ public class ScheduleManagerModule {
     private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
     private AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote;
     private CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote;
+    private FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote;
     private Employee employee;
 
     public ScheduleManagerModule() {
@@ -57,6 +58,17 @@ public class ScheduleManagerModule {
         this.cabinClassConfigurationSessionBeanRemote = cabinClassConfigurationSessionBeanRemote;
         this.employee = employee;
     }
+
+    public ScheduleManagerModule(FlightSessionBeanRemote flightSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote, FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote, Employee employee) {
+        this.flightSessionBeanRemote = flightSessionBeanRemote;
+        this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
+        this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
+        this.cabinClassConfigurationSessionBeanRemote = cabinClassConfigurationSessionBeanRemote;
+        this.flightSchedulePlanSessionBeanRemote = flightSchedulePlanSessionBeanRemote;
+        this.employee = employee;
+    }
+    
+    
     
     
     
@@ -262,7 +274,29 @@ public class ScheduleManagerModule {
         }
     }
     public void doDeleteFlight(Flight flight) {
-        System.out.println("hehe");
+        Scanner sc = new Scanner(System.in);
+        //sc.nextLine();
+        String input;
+        System.out.println("*** Flight Reservation System Management :: View Flight Details :: Delete Flight ***\n");
+        System.out.printf("Confirm Delete Flight %s (Flight ID: %d) (Enter 'Y' to Delete)> ", flight.getFlightNumber(), flight.getFlightId());
+        input = sc.nextLine().trim();
+        
+        if(input.equals("Y"))
+        {
+            try
+            {
+                flightSessionBeanRemote.deleteFlight(flight.getFlightId());
+                System.out.println("Flight deleted successfully!\n");
+            }
+            catch (FlightNotFoundException | DeleteFlightException ex) 
+            {
+                System.out.println("An error has occurred while deleting the staff: " + ex.getMessage() + "\n");
+            }
+        }
+        else
+        {
+            System.out.println("Flight NOT deleted!\n");
+        }
     }
     public void doCreateFlightSchedulePlan() {
         System.out.println("hehe");

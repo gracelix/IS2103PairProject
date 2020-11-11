@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.AircraftConfiguration;
 import entity.Flight;
 import entity.FlightRoute;
+import entity.FlightSchedulePlan;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -16,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AircraftConfigurationNotFoundException;
+import util.exception.DeleteFlightException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.UpdateFlightException;
@@ -26,6 +28,9 @@ import util.exception.UpdateFlightException;
  */
 @Stateless
 public class FlightSessionBean implements FlightSessionBeanRemote, FlightSessionBeanLocal {
+
+    @EJB
+    private FlightSchedulePlanSessionBeanLocal flightSchedulePlanSessionBeanLocal;
 
     @EJB
     private FlightRouteSessionBeanLocal flightRouteSessionBeanLocal;
@@ -158,6 +163,29 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
         
         } else {
             throw new FlightNotFoundException("Flight ID not provided or not found.");
+        }
+    }
+    
+    @Override
+    public void deleteFlight(Long flightId) throws FlightNotFoundException, DeleteFlightException {
+        Flight flightToRemove = retrieveFlightById(flightId);
+        
+        List<FlightSchedulePlan> flightSchedulePlans = flightSchedulePlanSessionBeanLocal.retrieveFlightSchedulePlansByFlightId(flightId);
+        if (false && flightSchedulePlans.isEmpty()) {
+            flightToRemove.getFlightRoute().getFlights().remove(flightToRemove);
+            flightToRemove.getAircraftConfiguration().getFlights().remove(flightToRemove);
+            if (flightToRemove.getComplementaryReturnFlight() != null) {
+                flightToRemove.getComplementaryReturnFlight().setOriginalFlight(null);
+            }
+            
+            if (flightToRemove.getOriginalFlight() != null) {
+                flightToRemove.getOriginalFlight().setComplementaryReturnFlight(null);
+            }
+            
+            em.remove(flightToRemove);
+        } else {
+            flightToRemove.setEnableFlight(Boolean.FALSE);
+            throw new DeleteFlightException("Flight ID " + flightId + " is associated with a schedule and would be disabled instead.");
         }
     }
 }

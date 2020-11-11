@@ -9,6 +9,7 @@ import entity.Flight;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.AircraftConfigurationNotFoundException;
+import util.exception.DeleteFlightException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.UpdateFlightException;
@@ -28,5 +29,7 @@ public interface FlightSessionBeanRemote {
     public List<Flight> retrieveAllFlights();
     
     public void updateFlight(Flight updatedFlight) throws FlightNotFoundException, UpdateFlightException;
+    
+    public void deleteFlight(Long flightId) throws FlightNotFoundException, DeleteFlightException;
    
 }
