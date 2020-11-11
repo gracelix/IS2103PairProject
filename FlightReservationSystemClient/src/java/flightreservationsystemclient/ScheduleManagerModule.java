@@ -6,13 +6,16 @@
 package flightreservationsystemclient;
 
 import ejb.session.stateless.AircraftConfigurationSessionBeanRemote;
+import ejb.session.stateless.CabinClassConfigurationSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
+import entity.CabinClassConfiguration;
 import entity.Employee;
 import entity.Flight;
 import entity.FlightRoute;
 import java.util.List;
 import java.util.Scanner;
+import util.enumeration.CabinClassType;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
@@ -25,6 +28,7 @@ public class ScheduleManagerModule {
     private FlightSessionBeanRemote flightSessionBeanRemote;
     private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
     private AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote;
+    private CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote;
     private Employee employee;
 
     public ScheduleManagerModule() {
@@ -40,6 +44,14 @@ public class ScheduleManagerModule {
         this.flightSessionBeanRemote = flightSessionBeanRemote;
         this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
         this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
+        this.employee = employee;
+    }
+
+    public ScheduleManagerModule(FlightSessionBeanRemote flightSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote, Employee employee) {
+        this.flightSessionBeanRemote = flightSessionBeanRemote;
+        this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
+        this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
+        this.cabinClassConfigurationSessionBeanRemote = cabinClassConfigurationSessionBeanRemote;
         this.employee = employee;
     }
     
@@ -74,7 +86,11 @@ public class ScheduleManagerModule {
                 } else if (response == 2) {
                     doViewAllFlights();
                 } else if (response == 3) {
-                    doViewFlightDetails();
+                    try {
+                        doViewFlightDetails();
+                    } catch (FlightNotFoundException ex) {
+                        System.out.println(ex.getMessage() + "\n");
+                    }
                 } else if (response == 4) {
                     doCreateFlightSchedulePlan();                
                 } else if (response == 5) {
@@ -162,8 +178,32 @@ public class ScheduleManagerModule {
         sc.nextLine();
     }
     
-    public void doViewFlightDetails() {
-        System.out.println("hehe");
+    public void doViewFlightDetails() throws FlightNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Flight Reservation System Management :: View Flight Details ***\n");
+        
+        System.out.print("Enter Flight ID> ");
+        Long flightId = sc.nextLong();
+        
+        Flight flight = flightSessionBeanRemote.retrieveFlightById(flightId);
+        
+        System.out.printf("%15s%18s%25s%15s%15s\n", "Flight Number", "Flight Route ID", "Origin-Destination", "Cabin Classes", "Total Seats");
+        String odPair = flight.getFlightRoute().getOriginAirport().getIataCode() + "-" + flight.getFlightRoute().getDestinationAirport().getIataCode();
+        //List<CabinClassConfiguration> cabinClassConfigurations = flight.getAircraftConfiguration().getCabinClassConfigurations();
+        List<CabinClassConfiguration> cabinClassConfigurations = cabinClassConfigurationSessionBeanRemote.retrieveCabinClassConfigurationsByAircraftConfigurationId(flight.getAircraftConfiguration().getAircraftConfigurationId());
+        String cabinClasses = "";
+        for (CabinClassConfiguration cabinClassConfiguration : cabinClassConfigurations) {
+            if (cabinClassConfiguration.getCabinClassType() == CabinClassType.FIRST_CLASS) {
+                cabinClasses += "F";
+            } else if (cabinClassConfiguration.getCabinClassType() == CabinClassType.BUSINESS_CLASS) {
+                cabinClasses += "J";
+            } else if (cabinClassConfiguration.getCabinClassType() == CabinClassType.PREMIUM_ECONOMY) {
+                cabinClasses += "W";
+            } else if (cabinClassConfiguration.getCabinClassType() == CabinClassType.ECONOMY) {
+                cabinClasses += "Y";
+            }
+        }
+        System.out.printf("%15s%18s%25s%15s%15s\n", flight.getFlightNumber(), flight.getFlightRoute().getFlightRouteId(), odPair, cabinClasses, flight.getAircraftConfiguration().getTotalMaximumSeatCapacity());
     }
     public void doCreateFlightSchedulePlan() {
         System.out.println("hehe");

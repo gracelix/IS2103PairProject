@@ -104,7 +104,7 @@ public class MainApp {
                 currentEmployee = null;
                 
             } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SCHEDULE_MANAGER)) {
-                scheduleManagerModule = new ScheduleManagerModule(flightSessionBeanRemote, flightRouteSessionBeanRemote, aircraftConfigurationSessionBeanRemote, currentEmployee);
+                scheduleManagerModule = new ScheduleManagerModule(flightSessionBeanRemote, flightRouteSessionBeanRemote, aircraftConfigurationSessionBeanRemote, cabinClassConfigurationSessionBeanRemote, currentEmployee);
                 scheduleManagerModule.doScheduleManagerMenu();
                 currentEmployee = null;
                 

@@ -176,10 +176,10 @@ public class FleetManagerModule {
         
         List<AircraftConfiguration> aircraftConfigurations = aircraftConfigurationSessionBeanRemote.retrieveAllAircraftConfigurations();
         
-        System.out.printf("%10s%20s%20s\n", "Aircraft Type", "Name", "Max Capacity");
+        System.out.printf("%20s%20s%20s\n", "Aircraft Type", "Name", "Max Capacity");
         
         for (AircraftConfiguration aircraftConfiguration : aircraftConfigurations) {
-            System.out.printf("%10s%20s%20s\n", aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getTotalMaximumSeatCapacity());
+            System.out.printf("%20s%20s%20s\n", aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getTotalMaximumSeatCapacity());
         }
         
         System.out.print("Press any key to continue...> ");

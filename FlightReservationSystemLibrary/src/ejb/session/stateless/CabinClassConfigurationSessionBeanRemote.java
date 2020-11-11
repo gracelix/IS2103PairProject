@@ -6,8 +6,10 @@
 package ejb.session.stateless;
 
 import entity.CabinClassConfiguration;
+import java.util.List;
 import javax.ejb.Remote;
 import util.exception.AircraftConfigurationNotFoundException;
+import util.exception.CabinClassConfigurationNotFoundException;
 
 /**
  *
@@ -18,4 +20,7 @@ public interface CabinClassConfigurationSessionBeanRemote {
     
     public Long createNewCabinClassConfiguration(CabinClassConfiguration cabinClassConfiguration, Long aircraftConfigurationId) throws AircraftConfigurationNotFoundException;
     
+    public CabinClassConfiguration retrieveCabinClassConfigurationById(Long cabinClassConfigurationId) throws CabinClassConfigurationNotFoundException;
+
+    public List<CabinClassConfiguration> retrieveCabinClassConfigurationsByAircraftConfigurationId(Long aircraftConfigurationId);
 }

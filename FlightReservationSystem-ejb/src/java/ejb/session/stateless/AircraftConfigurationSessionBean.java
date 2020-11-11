@@ -59,6 +59,7 @@ public class AircraftConfigurationSessionBean implements AircraftConfigurationSe
         for (AircraftConfiguration aircraftConfiguration : aircraftConfigurations) {
             aircraftConfiguration.getFlights().size();
             aircraftConfiguration.getCabinClassConfigurations().size();
+            aircraftConfiguration.getAircraftType();
         }
         return aircraftConfigurations;
     }
