@@ -11,6 +11,7 @@ import javax.ejb.Local;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
+import util.exception.UpdateFlightException;
 
 /**
  *
@@ -26,5 +27,7 @@ public interface FlightSessionBeanLocal {
     public Long createNewComplementaryReturnFlight(Flight newFlight, Long originalFlightId, Long flightRouteId, Long aircraftConfigurationId) throws FlightRouteNotFoundException, AircraftConfigurationNotFoundException, FlightNotFoundException;
 
     public List<Flight> retrieveAllFlights();
+
+    public void updateFlight(Flight updatedFlight) throws FlightNotFoundException, UpdateFlightException;
     
 }

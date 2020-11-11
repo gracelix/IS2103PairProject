@@ -18,6 +18,7 @@ import javax.persistence.Query;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
+import util.exception.UpdateFlightException;
 
 /**
  *
@@ -140,5 +141,23 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
             }
         }
         return finalFlightList;
+    }
+    
+    @Override
+    public void updateFlight(Flight updatedFlight) throws FlightNotFoundException, UpdateFlightException {
+        if (updatedFlight != null && updatedFlight.getFlightId() != null) {
+        
+            Flight flightToUpdate = retrieveFlightById(updatedFlight.getFlightId());
+            if (flightToUpdate.getFlightId().equals(updatedFlight.getFlightId())) {
+                flightToUpdate.setFlightNumber(updatedFlight.getFlightNumber());
+                flightToUpdate.setFlightRoute(updatedFlight.getFlightRoute());
+                flightToUpdate.setAircraftConfiguration(updatedFlight.getAircraftConfiguration());
+            } else {
+                throw new UpdateFlightException("Flight ID of flight to be updated does not match existing record ID.");
+            }
+        
+        } else {
+            throw new FlightNotFoundException("Flight ID not provided or not found.");
+        }
     }
 }

@@ -15,10 +15,13 @@ import entity.Flight;
 import entity.FlightRoute;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.enumeration.CabinClassType;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
+import util.exception.UpdateFlightException;
 
 /**
  *
@@ -86,11 +89,7 @@ public class ScheduleManagerModule {
                 } else if (response == 2) {
                     doViewAllFlights();
                 } else if (response == 3) {
-                    try {
-                        doViewFlightDetails();
-                    } catch (FlightNotFoundException ex) {
-                        System.out.println(ex.getMessage() + "\n");
-                    }
+                    doViewFlightDetails();
                 } else if (response == 4) {
                     doCreateFlightSchedulePlan();                
                 } else if (response == 5) {
@@ -178,32 +177,92 @@ public class ScheduleManagerModule {
         sc.nextLine();
     }
     
-    public void doViewFlightDetails() throws FlightNotFoundException {
+    public void doViewFlightDetails() {
         Scanner sc = new Scanner(System.in);
+        Integer response = 0;
         System.out.println("*** Flight Reservation System Management :: View Flight Details ***\n");
         
         System.out.print("Enter Flight ID> ");
         Long flightId = sc.nextLong();
         
-        Flight flight = flightSessionBeanRemote.retrieveFlightById(flightId);
+        try {
+            Flight flight = flightSessionBeanRemote.retrieveFlightById(flightId);
+            
+            System.out.printf("%15s%18s%25s%15s%15s\n", "Flight Number", "Flight Route ID", "Origin-Destination", "Cabin Classes", "Total Seats");
+            String odPair = flight.getFlightRoute().getOriginAirport().getIataCode() + "-" + flight.getFlightRoute().getDestinationAirport().getIataCode();
+            //List<CabinClassConfiguration> cabinClassConfigurations = flight.getAircraftConfiguration().getCabinClassConfigurations();
+            List<CabinClassConfiguration> cabinClassConfigurations = cabinClassConfigurationSessionBeanRemote.retrieveCabinClassConfigurationsByAircraftConfigurationId(flight.getAircraftConfiguration().getAircraftConfigurationId());
+            String cabinClasses = "";
+            for (CabinClassConfiguration cabinClassConfiguration : cabinClassConfigurations) {
+                if (cabinClassConfiguration.getCabinClassType() == CabinClassType.FIRST_CLASS) {
+                    cabinClasses += "F";
+                } else if (cabinClassConfiguration.getCabinClassType() == CabinClassType.BUSINESS_CLASS) {
+                    cabinClasses += "J";
+                } else if (cabinClassConfiguration.getCabinClassType() == CabinClassType.PREMIUM_ECONOMY) {
+                    cabinClasses += "W";
+                } else if (cabinClassConfiguration.getCabinClassType() == CabinClassType.ECONOMY) {
+                    cabinClasses += "Y";
+                }
+            }
+            System.out.printf("%15s%18s%25s%15s%15s\n", flight.getFlightNumber(), flight.getFlightRoute().getFlightRouteId(), odPair, cabinClasses, flight.getAircraftConfiguration().getTotalMaximumSeatCapacity());
         
-        System.out.printf("%15s%18s%25s%15s%15s\n", "Flight Number", "Flight Route ID", "Origin-Destination", "Cabin Classes", "Total Seats");
-        String odPair = flight.getFlightRoute().getOriginAirport().getIataCode() + "-" + flight.getFlightRoute().getDestinationAirport().getIataCode();
-        //List<CabinClassConfiguration> cabinClassConfigurations = flight.getAircraftConfiguration().getCabinClassConfigurations();
-        List<CabinClassConfiguration> cabinClassConfigurations = cabinClassConfigurationSessionBeanRemote.retrieveCabinClassConfigurationsByAircraftConfigurationId(flight.getAircraftConfiguration().getAircraftConfigurationId());
-        String cabinClasses = "";
-        for (CabinClassConfiguration cabinClassConfiguration : cabinClassConfigurations) {
-            if (cabinClassConfiguration.getCabinClassType() == CabinClassType.FIRST_CLASS) {
-                cabinClasses += "F";
-            } else if (cabinClassConfiguration.getCabinClassType() == CabinClassType.BUSINESS_CLASS) {
-                cabinClasses += "J";
-            } else if (cabinClassConfiguration.getCabinClassType() == CabinClassType.PREMIUM_ECONOMY) {
-                cabinClasses += "W";
-            } else if (cabinClassConfiguration.getCabinClassType() == CabinClassType.ECONOMY) {
-                cabinClasses += "Y";
+            System.out.println("------------------------");
+            System.out.println("1: Update Flight");
+            System.out.println("2: Delete Flight");
+            System.out.println("3: Back\n");
+            System.out.print("> ");
+            response = sc.nextInt();
+
+            if(response == 1)
+            {
+                doUpdateFlight(flight);
+            }
+            else if(response == 2)
+            {
+                doDeleteFlight(flight);
+            }
+        } catch (FlightNotFoundException ex) {
+            System.out.println("Flight " + flightId + " not found!" + "\n");
+        }
+    }
+    public void doUpdateFlight(Flight flight) {
+        Scanner sc = new Scanner(System.in);
+        Integer integerInput;
+        Long longInput;
+        System.out.println("*** Flight Reservation System Management :: View Flight Details :: Update Flight ***\n");
+        
+        System.out.print("Enter flight number (negative number if no change)> ");
+        integerInput = sc.nextInt();
+        if(integerInput >= 0) {
+            flight.setFlightNumber("ML" + integerInput);
+        }
+        System.out.print("Enter flight route ID (negative number if no change)> ");
+        longInput = sc.nextLong();
+        if (longInput >= 0) {
+            try {
+                flight.setFlightRoute(flightRouteSessionBeanRemote.retrieveFlightRouteById(longInput));
+            } catch (FlightRouteNotFoundException ex) {
+                System.out.println("Flight route " + longInput + " does not exist!");
             }
         }
-        System.out.printf("%15s%18s%25s%15s%15s\n", flight.getFlightNumber(), flight.getFlightRoute().getFlightRouteId(), odPair, cabinClasses, flight.getAircraftConfiguration().getTotalMaximumSeatCapacity());
+        System.out.print("Enter aircraft configuration ID (negative number if no change)> ");
+        longInput = sc.nextLong();
+        if (longInput >= 0) {
+            try {
+                flight.setAircraftConfiguration(aircraftConfigurationSessionBeanRemote.retrieveAircraftConfigurationById(longInput));
+            } catch (AircraftConfigurationNotFoundException ex) {
+                System.out.println("Aircraft configuration " + longInput + " does not exist!");
+            }
+        }
+        
+        try {
+            flightSessionBeanRemote.updateFlight(flight);
+        } catch (FlightNotFoundException | UpdateFlightException ex) {
+            System.out.println("An error has occured: " + ex.getMessage() + "\n");
+        }
+    }
+    public void doDeleteFlight(Flight flight) {
+        System.out.println("hehe");
     }
     public void doCreateFlightSchedulePlan() {
         System.out.println("hehe");
