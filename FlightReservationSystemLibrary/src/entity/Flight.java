@@ -36,7 +36,11 @@ public class Flight implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private AircraftConfiguration aircraftConfiguration;
+    
     @OneToOne
+    private Flight originalFlight;
+    
+    @OneToOne(mappedBy = "originalFlight")
     private Flight complementaryReturnFlight;
     @OneToMany(mappedBy = "flight")
     private List<FlightSchedulePlan> flightSchedulePlans;
@@ -44,6 +48,11 @@ public class Flight implements Serializable {
     public Flight() {
         this.flightSchedulePlans = new ArrayList<>();
     }
+
+    public Flight(String flightNumber) {
+        this();
+        this.flightNumber = flightNumber;
+    }   
     
 
     public Long getFlightId() {
@@ -125,6 +134,14 @@ public class Flight implements Serializable {
 
     public void setFlightSchedulePlans(List<FlightSchedulePlan> flightSchedulePlans) {
         this.flightSchedulePlans = flightSchedulePlans;
+    }
+
+    public Flight getOriginalFlight() {
+        return originalFlight;
+    }
+
+    public void setOriginalFlight(Flight originalFlight) {
+        this.originalFlight = originalFlight;
     }
     
 }

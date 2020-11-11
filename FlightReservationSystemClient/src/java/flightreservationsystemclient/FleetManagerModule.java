@@ -105,7 +105,7 @@ public class FleetManagerModule {
             aircraftTypeId = 1l;
         } else if (aircraftTypeInt == 2) {
             aircraftTypeId = 2l;
-        }
+        }//this is temporrary right
         aircraftConfigurationName = aircraftTypeSessionBeanRemote.retrieveAircraftTypeById(aircraftTypeId).getAircraftTypeName();
         
         System.out.print("Enter number of cabin classes> ");

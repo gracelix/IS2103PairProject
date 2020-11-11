@@ -11,6 +11,7 @@ import ejb.session.stateless.AirportSessionBeanRemote;
 import ejb.session.stateless.CabinClassConfigurationSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
+import ejb.session.stateless.FlightSessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
 import util.enumeration.EmployeeAccessRights;
@@ -26,12 +27,14 @@ public class MainApp {
     private CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote;
     private AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote;
     private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
+    private FlightSessionBeanRemote flightSessionBeanRemote;
     private AirportSessionBeanRemote airportSessionBeanRemote;
     private Employee currentEmployee;
     private Integer response;
     
     private FleetManagerModule fleetManagerModule;
     private RoutePlannerModule routePlannerModule;
+    private ScheduleManagerModule scheduleManagerModule;
     
     public MainApp() {
         
@@ -42,7 +45,8 @@ public class MainApp {
             CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote, 
             AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote, 
             FlightRouteSessionBeanRemote flightRouteSessionBeanRemote,
-            AirportSessionBeanRemote airportSessionBeanRemote) {
+            AirportSessionBeanRemote airportSessionBeanRemote,
+            FlightSessionBeanRemote flightSessionBeanRemote) {
         
         this.currentEmployee = null;
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
@@ -51,6 +55,7 @@ public class MainApp {
         this.aircraftTypeSessionBeanRemote = aircraftTypeSessionBeanRemote;
         this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
         this.airportSessionBeanRemote = airportSessionBeanRemote;
+        this.flightSessionBeanRemote = flightSessionBeanRemote;
     }
     
     public void runApp() {
@@ -96,8 +101,12 @@ public class MainApp {
             } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.ROUTE_PLANNER)) {
                 routePlannerModule = new RoutePlannerModule(flightRouteSessionBeanRemote, airportSessionBeanRemote, currentEmployee);
                 routePlannerModule.doRoutePlannerMenu();
+                currentEmployee = null;
                 
             } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SCHEDULE_MANAGER)) {
+                scheduleManagerModule = new ScheduleManagerModule(flightSessionBeanRemote, flightRouteSessionBeanRemote, currentEmployee);
+                scheduleManagerModule.doScheduleManagerMenu();
+                currentEmployee = null;
                 
             } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SALES_MANAGER)) {
                 
