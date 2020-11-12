@@ -192,7 +192,7 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
         Flight flightToRemove = retrieveFlightById(flightId);
         
         List<FlightSchedulePlan> flightSchedulePlans = flightSchedulePlanSessionBeanLocal.retrieveFlightSchedulePlansByFlightId(flightId);
-        if (false && flightSchedulePlans.isEmpty()) {
+        if (flightSchedulePlans.isEmpty()) {
             flightToRemove.getFlightRoute().getFlights().remove(flightToRemove);
             flightToRemove.getAircraftConfiguration().getFlights().remove(flightToRemove);
             if (flightToRemove.getComplementaryReturnFlight() != null) {

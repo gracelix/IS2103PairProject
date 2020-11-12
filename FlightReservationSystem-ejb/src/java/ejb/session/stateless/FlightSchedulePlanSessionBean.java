@@ -15,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightSchedulePlanNotFoundException;
+import util.exception.UpdateFlightSchedulePlanException;
 
 /**
  *
@@ -106,5 +107,21 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         
         return flightSchedulePlans;
     
+    }
+    
+    @Override
+    public void updateFlightSchedulePlan(FlightSchedulePlan updatedFlightSchedulePlan) throws FlightSchedulePlanNotFoundException, UpdateFlightSchedulePlanException {
+        if (updatedFlightSchedulePlan != null && updatedFlightSchedulePlan.getFlightSchedulePlanId() != null) {
+            FlightSchedulePlan flightSchedulePlanToUpdate = retrieveFlightSchedulePlanById(updatedFlightSchedulePlan.getFlightSchedulePlanId());
+            if (flightSchedulePlanToUpdate.getFlightSchedulePlanId().equals(updatedFlightSchedulePlan.getFlightSchedulePlanId())) {
+                flightSchedulePlanToUpdate.setEndDate(updatedFlightSchedulePlan.getEndDate());
+                flightSchedulePlanToUpdate.setnDays(updatedFlightSchedulePlan.getnDays());
+                flightSchedulePlanToUpdate.setFares(updatedFlightSchedulePlan.getFares());
+            } else {
+                throw new UpdateFlightSchedulePlanException("Flight schedule plan of ID " + updatedFlightSchedulePlan.getFlightSchedulePlanId() + " does not match with existing record.");
+            }
+        } else {
+            throw new FlightSchedulePlanNotFoundException("Flight Schedule Plan ID not provided or not found.");
+        }
     }
 }
