@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import util.enumeration.FlightSchedulePlanType;
@@ -37,6 +38,14 @@ public class FlightSchedulePlan implements Serializable {
     private FlightSchedulePlanType flightSchedulePlanType;
     @Temporal(TemporalType.DATE)
     private Date endDate;
+    private Integer nDays;
+    private Boolean enableFlight;
+    
+    @OneToOne
+    private FlightSchedulePlan orginalFlightSchedulePlan;
+    
+    @OneToOne(mappedBy = "orginalFlightSchedulePlan")
+    private FlightSchedulePlan complementaryReturnFlightSchedulePlan;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -139,6 +148,38 @@ public class FlightSchedulePlan implements Serializable {
 
     public void setFares(List<Fare> fares) {
         this.fares = fares;
+    }
+
+    public Integer getnDays() {
+        return nDays;
+    }
+
+    public void setnDays(Integer nDays) {
+        this.nDays = nDays;
+    }
+
+    public Boolean getEnableFlight() {
+        return enableFlight;
+    }
+
+    public void setEnableFlight(Boolean enableFlight) {
+        this.enableFlight = enableFlight;
+    }
+
+    public FlightSchedulePlan getOrginalFlightSchedulePlan() {
+        return orginalFlightSchedulePlan;
+    }
+
+    public void setOrginalFlightSchedulePlan(FlightSchedulePlan orginalFlightSchedulePlan) {
+        this.orginalFlightSchedulePlan = orginalFlightSchedulePlan;
+    }
+
+    public FlightSchedulePlan getComplementaryReturnFlightSchedulePlan() {
+        return complementaryReturnFlightSchedulePlan;
+    }
+
+    public void setComplementaryReturnFlightSchedulePlan(FlightSchedulePlan complementaryReturnFlightSchedulePlan) {
+        this.complementaryReturnFlightSchedulePlan = complementaryReturnFlightSchedulePlan;
     }
     
 }

@@ -351,6 +351,12 @@ public class ScheduleManagerModule {
             System.out.println("Flight " + flightNumber + ", encountered " + ex.getMessage() + "\n");
             return;
         }
+        
+        if (flight.getEnableFlight() == Boolean.FALSE)  {
+            System.out.println("Flight is disabled and no more flights can be added.");
+            return;
+        }
+        
         System.out.println("1: Create plan with a single schedule");
         System.out.println("2: Create plan with multiple schedules");
         System.out.println("3: Create plan with recurrent schedules");
@@ -589,6 +595,12 @@ public class ScheduleManagerModule {
                 } catch (FlightNotFoundException ex) {
                     System.out.println("Flight " + returnFlightNumber + ", encountered " + ex.getMessage() + "\n");
                 } 
+                
+                if (returnFlight.getEnableFlight() == Boolean.FALSE)  {
+                    System.out.println("Flight is disabled and no more flights can be added.");
+                    return;
+                }
+                
                 System.out.print("Enter layover duration in HH MM (eg. 02 00)> ");
                 Integer layoverHours = sc.nextInt();
                 Integer layoverMinutes = sc.nextInt();
@@ -610,7 +622,7 @@ public class ScheduleManagerModule {
 
                 //sessionbean to create RETURN schedule. pass in flight, the 3 dates, rmb check overlap
 
-                Long returnFlightSchedulePlanId = flightSchedulePlanSessionBeanRemote.createNewFlightSchedulePlan(returnFlightSchedulePlan, returnFlight.getFlightId());
+                Long returnFlightSchedulePlanId = flightSchedulePlanSessionBeanRemote.createNewComplementaryReturnFlightSchedulePlan(returnFlightSchedulePlan, flightSchedulePlanId, returnFlight.getFlightId());
                 //System.out.println("FlightSchedulePlan " + flightSchedulePlanId + "created successfully!");
                 for (FlightSchedule returnFlightSchedule : returnFlightSchedules) {
 
@@ -875,6 +887,12 @@ public class ScheduleManagerModule {
                 } catch (FlightNotFoundException ex) {
                     System.out.println("Flight " + returnFlightNumber + ", encountered " + ex.getMessage() + "\n");
                 } 
+                
+                if (returnFlight.getEnableFlight() == Boolean.FALSE)  {
+                    System.out.println("Flight is disabled and no more flights can be added.");
+                    return;
+                }
+                
                 System.out.print("Enter layover duration in HH MM (eg. 02 00)> ");
                 Integer layoverHours = sc.nextInt();
                 Integer layoverMinutes = sc.nextInt();
@@ -906,7 +924,7 @@ public class ScheduleManagerModule {
 
                     //sessionbean to create RETURN schedule. pass in flight, the 3 dates, rmb check overlap
 
-                Long returnFlightSchedulePlanId = flightSchedulePlanSessionBeanRemote.createNewFlightSchedulePlan(returnFlightSchedulePlan, returnFlight.getFlightId());
+                Long returnFlightSchedulePlanId = flightSchedulePlanSessionBeanRemote.createNewComplementaryReturnFlightSchedulePlan(returnFlightSchedulePlan, flightSchedulePlanId, returnFlight.getFlightId());
                 //System.out.println("FlightSchedulePlan " + flightSchedulePlanId + "created successfully!");
                 for (FlightSchedule returnFlightSchedule : returnFlightSchedules) {
 
@@ -960,8 +978,38 @@ public class ScheduleManagerModule {
     
     
     public void doViewAllFlightSchedulePlans() {
-        System.out.println("hehe");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Flight Reservation System Management :: View All Flight Schedule Plans ***\n");
+        
+        List<FlightSchedulePlan> flightSchedulePlans =  flightSchedulePlanSessionBeanRemote.retrieveAllFlightSchedulePlans();
+        System.out.printf("%20s%25s%28s%28s%20s\n", "Flight Number", "Flight Schedule Plan ID", "Flight Schedule Plan Type", "End Date(Recurrent)", "n Days(Recurrent)");
+
+//        System.out.printf("%20s%20s%20s%28s\n", "Flight Number", "Flight ID", "Flight Route ID", "Aircraft Configuration ID");
+        for (FlightSchedulePlan flightSchedulePlan : flightSchedulePlans) {
+            
+            if (flightSchedulePlan.getFlightSchedulePlanType().equals(FlightSchedulePlanType.RECURRENT_WEEK)) {
+                System.out.printf("%20s%25s%28s%28s%20s\n", flightSchedulePlan.getFlight().getFlightNumber(), flightSchedulePlan.getFlightSchedulePlanId(), flightSchedulePlan.getFlightSchedulePlanType(), flightSchedulePlan.getEndDate(), 7);
+            } else if (flightSchedulePlan.getFlightSchedulePlanType().equals(FlightSchedulePlanType.RECURRENT_DAY)) {
+                System.out.printf("%20s%25s%28s%28s%20s\n", flightSchedulePlan.getFlight().getFlightNumber(), flightSchedulePlan.getFlightSchedulePlanId(), flightSchedulePlan.getFlightSchedulePlanType(), flightSchedulePlan.getEndDate(), flightSchedulePlan.getnDays());
+            } else {
+                System.out.printf("%20s%25s%28s%28s%20s\n", flightSchedulePlan.getFlight().getFlightNumber(), flightSchedulePlan.getFlightSchedulePlanId(), flightSchedulePlan.getFlightSchedulePlanType(), "N/A", "N/A");       
+            }
+            
+            if (flightSchedulePlan.getComplementaryReturnFlightSchedulePlan() != null) {
+                FlightSchedulePlan returnFlightSchedulePlan = flightSchedulePlan.getComplementaryReturnFlightSchedulePlan();
+                if (returnFlightSchedulePlan.getFlightSchedulePlanType().equals(FlightSchedulePlanType.RECURRENT_WEEK)) {
+                    System.out.printf("%20s%25s%28s%28s%20s\n", returnFlightSchedulePlan.getFlight().getFlightNumber(), returnFlightSchedulePlan.getFlightSchedulePlanId(), returnFlightSchedulePlan.getFlightSchedulePlanType(), returnFlightSchedulePlan.getEndDate(), 7);
+                } else if (returnFlightSchedulePlan.getFlightSchedulePlanType().equals(FlightSchedulePlanType.RECURRENT_DAY)) {
+                    System.out.printf("%20s%25s%28s%28s%20s\n", returnFlightSchedulePlan.getFlight().getFlightNumber(), returnFlightSchedulePlan.getFlightSchedulePlanId(), returnFlightSchedulePlan.getFlightSchedulePlanType(), returnFlightSchedulePlan.getEndDate(), returnFlightSchedulePlan.getnDays());
+                } else {
+                    System.out.printf("%20s%25s%28s%28s%20s\n", returnFlightSchedulePlan.getFlight().getFlightNumber(), returnFlightSchedulePlan.getFlightSchedulePlanId(), returnFlightSchedulePlan.getFlightSchedulePlanType(), "N/A", "N/A");       
+                }
+            }
+        }
+        System.out.print("Press any key to continue...> ");
+        sc.nextLine();
     }
+    
     public void doViewFlightSchedulePlanDetails() {
         System.out.println("hehe");
     }
