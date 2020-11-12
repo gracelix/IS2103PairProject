@@ -10,7 +10,10 @@ import ejb.session.stateless.AircraftTypeSessionBeanLocal;
 import ejb.session.stateless.AirportSessionBeanLocal;
 import ejb.session.stateless.CabinClassConfigurationSessionBeanLocal;
 import ejb.session.stateless.EmployeeSessionBeanLocal;
+import ejb.session.stateless.FareSessionBeanLocal;
 import ejb.session.stateless.FlightRouteSessionBeanLocal;
+import ejb.session.stateless.FlightSchedulePlanSessionBeanLocal;
+import ejb.session.stateless.FlightScheduleSessionBeanLocal;
 import ejb.session.stateless.FlightSessionBeanLocal;
 import ejb.session.stateless.PartnerSessionBeanLocal;
 import entity.AircraftConfiguration;
@@ -18,9 +21,16 @@ import entity.AircraftType;
 import entity.Airport;
 import entity.CabinClassConfiguration;
 import entity.Employee;
+import entity.Fare;
 import entity.Flight;
 import entity.FlightRoute;
+import entity.FlightSchedule;
+import entity.FlightSchedulePlan;
 import entity.Partner;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -28,13 +38,16 @@ import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import util.enumeration.CabinClassType;
 import util.enumeration.EmployeeAccessRights;
+import util.enumeration.FlightSchedulePlanType;
 import util.enumeration.PartnerAccessRights;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.AircraftTypeNotFoundException;
 import util.exception.AirportNotFoundException;
+import util.exception.CabinClassConfigurationNotFoundException;
 import util.exception.EmployeeNotFoundException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
+import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.InvalidIataCodeException;
 import util.exception.PartnerNotFoundException;
 
@@ -46,6 +59,15 @@ import util.exception.PartnerNotFoundException;
 @LocalBean
 @Startup
 public class TestDataInitSessionBean {
+
+    @EJB
+    private FareSessionBeanLocal fareSessionBean;
+
+    @EJB
+    private FlightScheduleSessionBeanLocal flightScheduleSessionBean;
+
+    @EJB
+    private FlightSchedulePlanSessionBeanLocal flightSchedulePlanSessionBean;
 
     @EJB
     private FlightSessionBeanLocal flightSessionBean;
@@ -116,6 +138,12 @@ public class TestDataInitSessionBean {
             flightSessionBean.retrieveFlightById(1l);
         } catch (FlightNotFoundException ex) {
             loadFlightData();
+        }
+        
+        try {
+            flightSchedulePlanSessionBean.retrieveFlightSchedulePlanById(1l);
+        } catch (FlightSchedulePlanNotFoundException ex) {
+            loadFlightSchedulePlan();
         }
         
     }
@@ -231,6 +259,47 @@ public class TestDataInitSessionBean {
             flightSessionBean.createNewComplementaryReturnFlight(new Flight("ML712"), flightId, 14l, 4l);
                     
         } catch (AircraftConfigurationNotFoundException | FlightNotFoundException | FlightRouteNotFoundException ex) {
+            System.out.println(ex.getMessage() + "\n");
+        }
+    }
+    
+    public void loadFlightSchedulePlan() {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            
+            Long flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.MULTIPLE), 9l);
+            
+            fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(3100), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(2850), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J001", BigDecimal.valueOf(1600), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J002", BigDecimal.valueOf(1350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(600), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), flightSchedulePlanId);
+            
+            Long complementaryFlightSchedulePlanId = flightSchedulePlanSessionBean.createNewComplementaryReturnFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.MULTIPLE), flightSchedulePlanId, 10l);
+            
+            fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(3100), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(2850), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J001", BigDecimal.valueOf(1600), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J002", BigDecimal.valueOf(1350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(600), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), complementaryFlightSchedulePlanId);
+            
+            
+            // ML511, 7 Dec 20, 5:00 PM, 3 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 17:00"), timeFormat.parse("03:00"), dateFormat.parse("07-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 23:00"), timeFormat.parse("03:00"), dateFormat.parse("08-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML511, 8 Dec 20, 5:00 PM, 3 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 17:00"), timeFormat.parse("03:00"), dateFormat.parse("08-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 23:00"), timeFormat.parse("03:00"), dateFormat.parse("09-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML511, 9 Dec 20, 5:00 PM, 3 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("09-12-2020 17:00"), timeFormat.parse("03:00"), dateFormat.parse("09-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("09-12-2020 23:00"), timeFormat.parse("03:00"), dateFormat.parse("10-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+        } catch (FlightNotFoundException | ParseException | FlightSchedulePlanNotFoundException | CabinClassConfigurationNotFoundException ex) {
             System.out.println(ex.getMessage() + "\n");
         }
     }
