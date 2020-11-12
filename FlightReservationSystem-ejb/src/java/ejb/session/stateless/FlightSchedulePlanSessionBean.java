@@ -6,13 +6,16 @@
 package ejb.session.stateless;
 
 import entity.Flight;
+import entity.FlightSchedule;
 import entity.FlightSchedulePlan;
+import entity.SeatInventory;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.DeleteFlightSchedulePlanException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.UpdateFlightSchedulePlanException;
@@ -23,6 +26,9 @@ import util.exception.UpdateFlightSchedulePlanException;
  */
 @Stateless
 public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionBeanRemote, FlightSchedulePlanSessionBeanLocal {
+
+    @EJB
+    private FlightScheduleSessionBeanLocal flightScheduleSessionBeanLocal;
 
     @EJB
     private FlightSessionBeanLocal flightSessionBeanLocal;
@@ -82,7 +88,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         flight.getFlightSchedulePlans().add(newFlightSchedulePlan);
         
         originalFlightSchedulePlan.setComplementaryReturnFlightSchedulePlan(newFlightSchedulePlan);
-        newFlightSchedulePlan.setOrginalFlightSchedulePlan(originalFlightSchedulePlan);
+        newFlightSchedulePlan.setOriginalFlightSchedulePlan(originalFlightSchedulePlan);
                 
         em.persist(newFlightSchedulePlan);
         em.flush();
@@ -95,8 +101,8 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         //Query query = em.createQuery("SELECT DISTINCT fs.flightSchedulePlan FROM FlightSchedule fs LEFT JOIN FlightSchedulePlan fsp ON fs.flightSchedulePlan.flightSchedulePlanId = fsp.flightSchedulePlanId WHERE fsp.originalFlightSchedulePlan IS NULL ORDER BY fsp.flight.flightNumber ASC, fs.departureDateTime DESC");
     
         
-        //Query query2 = em.createQuery("SELECT DISTINCT fsp FROM FlightSchedulePlan fsp WHERE fsp.orginalFlightSchedulePlan IS NULL ORDER BY fsp.flight.flightNumber ASC");
-        Query query = em.createQuery("SELECT DISTINCT fs.flightSchedulePlan FROM FlightSchedule fs WHERE fs.flightSchedulePlan.orginalFlightSchedulePlan IS NULL ORDER BY fs.flightSchedulePlan.flight.flightNumber ASC, fs.departureDateTime DESC");
+        //Query query2 = em.createQuery("SELECT DISTINCT fsp FROM FlightSchedulePlan fsp WHERE fsp.originalFlightSchedulePlan IS NULL ORDER BY fsp.flight.flightNumber ASC");
+        Query query = em.createQuery("SELECT DISTINCT fs.flightSchedulePlan FROM FlightSchedule fs WHERE fs.flightSchedulePlan.originalFlightSchedulePlan IS NULL ORDER BY fs.flightSchedulePlan.flight.flightNumber ASC, fs.departureDateTime DESC");
         List<FlightSchedulePlan> flightSchedulePlans = query.getResultList();
         
         for (FlightSchedulePlan flightSchedulePlan : flightSchedulePlans) {
@@ -122,6 +128,49 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
             }
         } else {
             throw new FlightSchedulePlanNotFoundException("Flight Schedule Plan ID not provided or not found.");
+        }
+    }
+    
+    @Override
+    public void deleteFlightSchedulePlan(Long flightSchedulePlanId) throws FlightSchedulePlanNotFoundException, DeleteFlightSchedulePlanException {
+        FlightSchedulePlan flightSchedulePlanToDelete = retrieveFlightSchedulePlanById(flightSchedulePlanId);
+        List<FlightSchedule> flightSchedules = flightSchedulePlanToDelete.getFlightSchedules();
+                
+        for (FlightSchedule flightSchedule : flightSchedules) {
+            for (SeatInventory seatInventory : flightSchedule.getSeatInventories()) {
+                if (seatInventory.getReservedSeats() > 0) {
+                    flightSchedulePlanToDelete.setEnableFlight(Boolean.FALSE);
+                    throw new DeleteFlightSchedulePlanException("Flight Schedule plan " + flightSchedulePlanId + " is in use and would be disabled instead.");
+                }
+            }
+        }
+        
+        flightSchedulePlanToDelete.getFlight().getFlightSchedulePlans().remove(flightSchedulePlanToDelete);
+        
+//        for (FlightSchedule flightSchedule : flightSchedules) {
+//            flightScheduleSessionBeanLocal.deleteFlightSchedule(flightSchedule.getFlightScheduleId());
+//        }
+//        
+        
+//        for (FlightSchedule flightSchedule : flightSchedules) {
+//            flightSchedule.setFlightSchedulePlan(null);
+//            flightSchedulePlanToDelete.getFlightSchedules().remove(flightSchedule);
+//            
+//        }
+
+          
+        
+        if (flightSchedulePlanToDelete.getComplementaryReturnFlightSchedulePlan() != null) {
+            flightSchedulePlanToDelete.getComplementaryReturnFlightSchedulePlan().setOriginalFlightSchedulePlan(null);
+        }
+
+        if (flightSchedulePlanToDelete.getOriginalFlightSchedulePlan() != null) {
+            flightSchedulePlanToDelete.getOriginalFlightSchedulePlan().setComplementaryReturnFlightSchedulePlan(null);
+        }
+        
+        em.remove(flightSchedulePlanToDelete);
+        for (FlightSchedule flightSchedule : flightSchedules) {
+            em.remove(flightSchedule);
         }
     }
 }

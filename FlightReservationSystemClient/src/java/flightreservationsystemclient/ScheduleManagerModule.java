@@ -36,6 +36,7 @@ import util.enumeration.FlightSchedulePlanType;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.CabinClassConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
+import util.exception.DeleteFlightSchedulePlanException;
 import util.exception.FareNotFoundException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
@@ -332,7 +333,7 @@ public class ScheduleManagerModule {
             }
             catch (FlightNotFoundException | DeleteFlightException ex) 
             {
-                System.out.println("An error has occurred while deleting the staff: " + ex.getMessage() + "\n");
+                System.out.println("An error has occurred while deleting the flight: " + ex.getMessage() + "\n");
             }
         }
         else
@@ -1152,6 +1153,21 @@ public class ScheduleManagerModule {
     }
     
     public void doDeleteFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) {
-        System.out.println("hehe");
+        Scanner sc = new Scanner(System.in);
+        String input;
+        System.out.println("*** Flight Reservation System Management :: View Flight Details :: Delete Flight Schedule Plan ***\n");
+        System.out.printf("Confirm Delete Flight Schedule Plan (Flight Schedule Plan ID: %d) (Enter 'Y' to Delete)> ", flightSchedulePlan.getFlightSchedulePlanId());
+        input = sc.nextLine().trim();
+//        
+        if(input.equals("Y")) { 
+            try {
+                flightSchedulePlanSessionBeanRemote.deleteFlightSchedulePlan(flightSchedulePlan.getFlightSchedulePlanId());
+                System.out.println("Flight Schedule Plan deleted successfully!");
+            } catch (FlightSchedulePlanNotFoundException | DeleteFlightSchedulePlanException ex) {
+                System.out.println("Flight Not Deleted, " + ex.getMessage() + "\n");
+            }
+        } else {
+            System.out.println("Flight schedule plan NOT deleted!\n");
+        }
     }
 }
