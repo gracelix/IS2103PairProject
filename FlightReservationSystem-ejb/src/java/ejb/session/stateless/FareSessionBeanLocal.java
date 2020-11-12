@@ -20,7 +20,7 @@ public interface FareSessionBeanLocal {
 
     public Long createNewFare(Fare newFare, Long flightSchedulePlanId) throws FlightSchedulePlanNotFoundException, CabinClassConfigurationNotFoundException;
 
-    public Fare retrieveFareId(Long fareId) throws FareNotFoundException;
+    public Fare retrieveFareByFareId(Long fareId) throws FareNotFoundException;
 
     public void associateFareWithReturnFlightSchedulePlan(Long fareId, Long flightSchedulePlanId) throws FareNotFoundException, FlightSchedulePlanNotFoundException;
     

@@ -49,6 +49,9 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
             throw new FlightSchedulePlanNotFoundException("Flight schedule plan " + flightSchedulePlanId + " does not exist!");
         }
         
+        flightSchedulePlan.getFares().size();
+        flightSchedulePlan.getFlightSchedules().size();
+        
         return flightSchedulePlan;
     }
     

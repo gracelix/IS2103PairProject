@@ -144,7 +144,11 @@ public class ScheduleManagerModule {
                 } else if (response == 5) {
                     doViewAllFlightSchedulePlans();
                 } else if (response == 6) {
+                    try {
                     doViewFlightSchedulePlanDetails();
+                    } catch (FareNotFoundException ex) {
+                        System.out.println(ex.getMessage() + "\n");
+                    }
                 } else if (response == 7) {
                     break;
                 }
@@ -659,7 +663,7 @@ public class ScheduleManagerModule {
                     System.out.println("Fare " + returnFareId + " created under return Flight Schedule Plan " + returnFlightSchedulePlanId);
                 }
 
-                System.out.println("Return Flight Schedule Plan " + flightSchedulePlanId + " created successfully!" + "\n");
+                System.out.println("Return Flight Schedule Plan " + returnFlightSchedulePlanId + " created successfully!" + "\n");
 
             }
         }        
@@ -962,7 +966,7 @@ public class ScheduleManagerModule {
                     System.out.println("Fare " + returnFareId + " created under return Flight Schedule Plan " + returnFlightSchedulePlanId);
                 }
 
-                System.out.println("Return Flight Schedule Plan " + flightSchedulePlanId + " created successfully!" + "\n");
+                System.out.println("Return Flight Schedule Plan " + returnFlightSchedulePlanId + " created successfully!" + "\n");
 
             }
         }        
@@ -1010,7 +1014,80 @@ public class ScheduleManagerModule {
         sc.nextLine();
     }
     
-    public void doViewFlightSchedulePlanDetails() {
+    public void doViewFlightSchedulePlanDetails() throws FareNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        Integer response = 0;
+        System.out.println("*** Flight Reservation System Management :: View Flight Schedule Plan Details ***\n");
+        
+        System.out.print("Enter Flight Schedule Plan ID> ");
+        Long flightSchedulePlanId = sc.nextLong();
+        
+        try {
+            FlightSchedulePlan flightSchedulePlan = flightSchedulePlanSessionBeanRemote.retrieveFlightSchedulePlanById(flightSchedulePlanId);
+            
+            System.out.println("Flight Number: " + flightSchedulePlan.getFlight().getFlightNumber());
+            System.out.println("Flight Schedule Plan Type :" + flightSchedulePlan.getFlightSchedulePlanType());
+            if (flightSchedulePlan.getEndDate() != null) {
+                System.out.println("End Date: " + flightSchedulePlan.getEndDate());
+            } else {
+                System.out.println("End date : N/A" );
+            }
+            
+            if (flightSchedulePlan.getnDays() != null) {
+                System.out.println("Recurs every n days: " + flightSchedulePlan.getnDays());
+            } else {
+                System.out.println("Recurs every n days : N/A" );
+            }
+            
+            String origin = flightSchedulePlan.getFlight().getFlightRoute().getOriginAirport().getIataCode();
+            String destination = flightSchedulePlan.getFlight().getFlightRoute().getDestinationAirport().getIataCode();
+            
+            System.out.println("Origin-Destination: " + origin + "-" + destination);
+            System.out.println("");
+            System.out.printf("%15s%20s%15s\n", "Fare Id", "Fare Basis Code", "Fare Amount");
+            
+            for (Fare fare : flightSchedulePlan.getFares()) {
+                Long fareId = fare.getFareId();
+                Fare fareToPrint = fareSessionBeanRemote.retrieveFareByFareId(fareId);
+                System.out.printf("%15s%20s%15s\n", fareId, fareToPrint.getFareBasisCode(), "$" + fareToPrint.getFareAmount());
+            }
+            System.out.println("");
+            System.out.printf("%20s%32s%32s%20s\n", "Flight Schedule Id", "Departure Date", "Arrival Date", "Flight Duration");
+            
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+            //System.out.println(sdf.format(date));  
+            
+            for (FlightSchedule flightSchedule : flightSchedulePlan.getFlightSchedules()) {
+                Long flightScheduleId = flightSchedule.getFlightScheduleId();
+                FlightSchedule flightScheduleToPrint = flightScheduleSessionBeanRemote.retrieveFlightScheduleById(flightScheduleId);
+                System.out.printf("%20s%32s%32s%20s\n", flightScheduleId, flightScheduleToPrint.getDepartureDateTime(), flightScheduleToPrint.getArrivalDateTime(), format.format(flightScheduleToPrint.getEstimatedFlightDuration()));
+            }
+                        
+            System.out.println("------------------------");
+            System.out.println("1: Update Flight Schedule Plan");
+            System.out.println("2: Delete Flight Schedule Plan");
+            System.out.println("3: Back\n");
+            System.out.print("> ");
+            response = sc.nextInt();
+
+            if(response == 1)
+            {
+                doUpdateFlightSchedulePlan(flightSchedulePlan);
+            }
+            else if(response == 2)
+            {
+                doDeleteFlightSchedulePlan(flightSchedulePlan);
+            }
+        } catch (FlightSchedulePlanNotFoundException ex) {
+            System.out.println("Flight Schedule Plan " + flightSchedulePlanId + " not found!" + "\n");
+        }
+    }
+    
+    public void doUpdateFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) {
+        System.out.println("hehe");
+    }
+    
+    public void doDeleteFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) {
         System.out.println("hehe");
     }
 }

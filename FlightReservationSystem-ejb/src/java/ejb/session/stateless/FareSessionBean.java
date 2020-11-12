@@ -55,7 +55,7 @@ public class FareSessionBean implements FareSessionBeanRemote, FareSessionBeanLo
     }
     
     @Override
-    public Fare retrieveFareId(Long fareId) throws FareNotFoundException {
+    public Fare retrieveFareByFareId(Long fareId) throws FareNotFoundException {
         Fare fare = em.find(Fare.class, fareId);
         if (fare == null) {
             throw new FareNotFoundException("Flight " + fareId + " does not exist!");
@@ -66,8 +66,12 @@ public class FareSessionBean implements FareSessionBeanRemote, FareSessionBeanLo
     
     @Override
     public void associateFareWithReturnFlightSchedulePlan(Long fareId, Long flightSchedulePlanId) throws FareNotFoundException, FlightSchedulePlanNotFoundException {
-        Fare fare = retrieveFareId(fareId);
+        Fare fare = retrieveFareByFareId(fareId);
         FlightSchedulePlan flightSchedulePlan = flightSchedulePlanSessionBeanLocal.retrieveFlightSchedulePlanById(flightSchedulePlanId);
         flightSchedulePlan.getFares().add(fare);
     }
+    
+//    public List<Fare> retrieveFareByFlightSchedulePlanId(Long flightSchedulePlanId) {
+//        Query query = em.createQuery("SELECT f FROM Fare f WHERE F");
+//    }
 }
