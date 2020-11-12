@@ -34,6 +34,12 @@ public class Fare implements Serializable {
 
     public Fare() {
     }
+
+    public Fare(String fareBasisCode, BigDecimal fareAmount, CabinClassConfiguration cabinClassConfiguration) {
+        this.fareBasisCode = fareBasisCode;
+        this.fareAmount = fareAmount;
+        this.cabinClassConfiguration = cabinClassConfiguration;
+    }
     
     
 

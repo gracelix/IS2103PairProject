@@ -14,6 +14,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AircraftConfigurationNotFoundException;
@@ -68,6 +70,25 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
         Flight flight = em.find(Flight.class, flightId);
         if (flight == null) {
             throw new FlightNotFoundException("Flight " + flightId + " does not exist!");
+        }
+        
+        return flight;
+    }
+    
+    @Override
+    public Flight retrieveFlightByFlightNumber(String flightNumber) throws FlightNotFoundException {
+        Query query = em.createQuery("SELECT f FROM Flight f WHERE f.flightNumber LIKE :inFlightNumber");
+        query.setParameter("inFlightNumber", flightNumber);
+        
+        Flight flight = null;
+        
+        try {
+            flight = (Flight) query.getSingleResult();
+        } catch (NoResultException | NonUniqueResultException ex) {
+            throw new FlightNotFoundException("Flight " + flightNumber + " does not exist!");
+        }
+        if (flight == null) {
+            throw new FlightNotFoundException("Flight " + flightNumber + " does not exist(null)!");
         }
         
         return flight;

@@ -30,6 +30,7 @@ public interface FlightSessionBeanRemote {
     
     public void updateFlight(Flight updatedFlight) throws FlightNotFoundException, UpdateFlightException;
     
-    public void deleteFlight(Long flightId) throws FlightNotFoundException, DeleteFlightException;
-   
+    public void deleteFlight(Long flightId) throws FlightNotFoundException, DeleteFlightException;   
+    
+    public Flight retrieveFlightByFlightNumber(String flightNumber) throws FlightNotFoundException;
 }

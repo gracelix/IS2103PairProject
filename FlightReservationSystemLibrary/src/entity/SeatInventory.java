@@ -42,6 +42,13 @@ public class SeatInventory implements Serializable {
     public SeatInventory() {
         this.seats = new ArrayList<>();
     }
+
+    public SeatInventory(Integer availableSeats) {
+        this();
+        this.availableSeats = availableSeats;
+        this.reservedSeats = 0;
+        this.balanceSeats = availableSeats;
+    }
     
     
 
