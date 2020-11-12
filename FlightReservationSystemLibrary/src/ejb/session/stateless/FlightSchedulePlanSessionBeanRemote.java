@@ -25,4 +25,5 @@ public interface FlightSchedulePlanSessionBeanRemote {
     
     public Long createNewComplementaryReturnFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Long originalFlightSchedulePlanId, Long flightId) throws FlightNotFoundException, FlightSchedulePlanNotFoundException;
 
+    public List<FlightSchedulePlan> retrieveAllFlightSchedulePlans();
 }

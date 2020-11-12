@@ -86,7 +86,22 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         return newFlightSchedulePlan.getFlightSchedulePlanId();
     }
     
-//    public List<FlightSchedulePlan> retrieveAllFlightSchedulePlans() {
-//        
-//    }
+    @Override
+    public List<FlightSchedulePlan> retrieveAllFlightSchedulePlans() {
+        //Query query = em.createQuery("SELECT DISTINCT fs.flightSchedulePlan FROM FlightSchedule fs LEFT JOIN FlightSchedulePlan fsp ON fs.flightSchedulePlan.flightSchedulePlanId = fsp.flightSchedulePlanId WHERE fsp.originalFlightSchedulePlan IS NULL ORDER BY fsp.flight.flightNumber ASC, fs.departureDateTime DESC");
+    
+        
+        //Query query2 = em.createQuery("SELECT DISTINCT fsp FROM FlightSchedulePlan fsp WHERE fsp.orginalFlightSchedulePlan IS NULL ORDER BY fsp.flight.flightNumber ASC");
+        Query query = em.createQuery("SELECT DISTINCT fs.flightSchedulePlan FROM FlightSchedule fs WHERE fs.flightSchedulePlan.orginalFlightSchedulePlan IS NULL ORDER BY fs.flightSchedulePlan.flight.flightNumber ASC, fs.departureDateTime DESC");
+        List<FlightSchedulePlan> flightSchedulePlans = query.getResultList();
+        
+        for (FlightSchedulePlan flightSchedulePlan : flightSchedulePlans) {
+            flightSchedulePlan.getFlight().getFlightNumber();
+            flightSchedulePlan.getComplementaryReturnFlightSchedulePlan();
+            flightSchedulePlan.getFlightSchedules().size();
+        }
+        
+        return flightSchedulePlans;
+    
+    }
 }

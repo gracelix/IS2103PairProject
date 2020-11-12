@@ -981,15 +981,35 @@ public class ScheduleManagerModule {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System Management :: View All Flight Schedule Plans ***\n");
         
-        //List<Flight> flights = flightSessionBeanRemote.retrieveAllFlights();
-        
+        List<FlightSchedulePlan> flightSchedulePlans =  flightSchedulePlanSessionBeanRemote.retrieveAllFlightSchedulePlans();
+        System.out.printf("%20s%25s%28s%28s%20s\n", "Flight Number", "Flight Schedule Plan ID", "Flight Schedule Plan Type", "End Date(Recurrent)", "n Days(Recurrent)");
+
 //        System.out.printf("%20s%20s%20s%28s\n", "Flight Number", "Flight ID", "Flight Route ID", "Aircraft Configuration ID");
-//        for (Flight flight : flights) {
-//            System.out.printf("%20s%20s%20s%28s\n", flight.getFlightNumber(), flight.getFlightId(), flight.getFlightRoute().getFlightRouteId(), flight.getAircraftConfiguration().getAircraftConfigurationId());
-//        }
-//        System.out.print("Press any key to continue...> ");
-//        sc.nextLine();
+        for (FlightSchedulePlan flightSchedulePlan : flightSchedulePlans) {
+            
+            if (flightSchedulePlan.getFlightSchedulePlanType().equals(FlightSchedulePlanType.RECURRENT_WEEK)) {
+                System.out.printf("%20s%25s%28s%28s%20s\n", flightSchedulePlan.getFlight().getFlightNumber(), flightSchedulePlan.getFlightSchedulePlanId(), flightSchedulePlan.getFlightSchedulePlanType(), flightSchedulePlan.getEndDate(), 7);
+            } else if (flightSchedulePlan.getFlightSchedulePlanType().equals(FlightSchedulePlanType.RECURRENT_DAY)) {
+                System.out.printf("%20s%25s%28s%28s%20s\n", flightSchedulePlan.getFlight().getFlightNumber(), flightSchedulePlan.getFlightSchedulePlanId(), flightSchedulePlan.getFlightSchedulePlanType(), flightSchedulePlan.getEndDate(), flightSchedulePlan.getnDays());
+            } else {
+                System.out.printf("%20s%25s%28s%28s%20s\n", flightSchedulePlan.getFlight().getFlightNumber(), flightSchedulePlan.getFlightSchedulePlanId(), flightSchedulePlan.getFlightSchedulePlanType(), "N/A", "N/A");       
+            }
+            
+            if (flightSchedulePlan.getComplementaryReturnFlightSchedulePlan() != null) {
+                FlightSchedulePlan returnFlightSchedulePlan = flightSchedulePlan.getComplementaryReturnFlightSchedulePlan();
+                if (returnFlightSchedulePlan.getFlightSchedulePlanType().equals(FlightSchedulePlanType.RECURRENT_WEEK)) {
+                    System.out.printf("%20s%25s%28s%28s%20s\n", returnFlightSchedulePlan.getFlight().getFlightNumber(), returnFlightSchedulePlan.getFlightSchedulePlanId(), returnFlightSchedulePlan.getFlightSchedulePlanType(), returnFlightSchedulePlan.getEndDate(), 7);
+                } else if (returnFlightSchedulePlan.getFlightSchedulePlanType().equals(FlightSchedulePlanType.RECURRENT_DAY)) {
+                    System.out.printf("%20s%25s%28s%28s%20s\n", returnFlightSchedulePlan.getFlight().getFlightNumber(), returnFlightSchedulePlan.getFlightSchedulePlanId(), returnFlightSchedulePlan.getFlightSchedulePlanType(), returnFlightSchedulePlan.getEndDate(), returnFlightSchedulePlan.getnDays());
+                } else {
+                    System.out.printf("%20s%25s%28s%28s%20s\n", returnFlightSchedulePlan.getFlight().getFlightNumber(), returnFlightSchedulePlan.getFlightSchedulePlanId(), returnFlightSchedulePlan.getFlightSchedulePlanType(), "N/A", "N/A");       
+                }
+            }
+        }
+        System.out.print("Press any key to continue...> ");
+        sc.nextLine();
     }
+    
     public void doViewFlightSchedulePlanDetails() {
         System.out.println("hehe");
     }

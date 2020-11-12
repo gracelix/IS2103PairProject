@@ -25,5 +25,7 @@ public interface FlightSchedulePlanSessionBeanLocal {
     public FlightSchedulePlan retrieveFlightSchedulePlanById(Long flightSchedulePlanId) throws FlightSchedulePlanNotFoundException;
 
     public Long createNewComplementaryReturnFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Long originalFlightSchedulePlanId, Long flightId) throws FlightNotFoundException, FlightSchedulePlanNotFoundException;
+
+    public List<FlightSchedulePlan> retrieveAllFlightSchedulePlans();
     
 }
