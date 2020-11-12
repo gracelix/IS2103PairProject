@@ -31,7 +31,7 @@ import util.exception.PartnerNotFoundException;
  */
 @Singleton
 @LocalBean
-@Startup
+//@Startup
 public class DataInitSessionBean {
 
     @EJB
