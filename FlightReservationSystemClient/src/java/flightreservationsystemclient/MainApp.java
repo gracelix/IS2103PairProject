@@ -11,6 +11,8 @@ import ejb.session.stateless.AirportSessionBeanRemote;
 import ejb.session.stateless.CabinClassConfigurationSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
+import ejb.session.stateless.FlightSchedulePlanSessionBeanRemote;
+import ejb.session.stateless.FlightSessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
 import util.enumeration.EmployeeAccessRights;
@@ -26,12 +28,15 @@ public class MainApp {
     private CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote;
     private AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote;
     private FlightRouteSessionBeanRemote flightRouteSessionBeanRemote;
+    private FlightSessionBeanRemote flightSessionBeanRemote;
     private AirportSessionBeanRemote airportSessionBeanRemote;
+    private FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote;
     private Employee currentEmployee;
     private Integer response;
     
     private FleetManagerModule fleetManagerModule;
     private RoutePlannerModule routePlannerModule;
+    private ScheduleManagerModule scheduleManagerModule;
     
     public MainApp() {
         
@@ -42,7 +47,9 @@ public class MainApp {
             CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote, 
             AircraftTypeSessionBeanRemote aircraftTypeSessionBeanRemote, 
             FlightRouteSessionBeanRemote flightRouteSessionBeanRemote,
-            AirportSessionBeanRemote airportSessionBeanRemote) {
+            AirportSessionBeanRemote airportSessionBeanRemote,
+            FlightSessionBeanRemote flightSessionBeanRemote,
+            FlightSchedulePlanSessionBeanRemote flightSchedulePlanBeanRemote) {
         
         this.currentEmployee = null;
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
@@ -51,6 +58,8 @@ public class MainApp {
         this.aircraftTypeSessionBeanRemote = aircraftTypeSessionBeanRemote;
         this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
         this.airportSessionBeanRemote = airportSessionBeanRemote;
+        this.flightSessionBeanRemote = flightSessionBeanRemote;
+        this.flightSchedulePlanSessionBeanRemote = flightSchedulePlanBeanRemote;
     }
     
     public void runApp() {
@@ -59,6 +68,7 @@ public class MainApp {
 
         while (true) {
             System.out.println("*** Welcome to Flight Reservation System :: Management ***\n");
+            response = 0;
 
             if(currentEmployee != null) {
                 System.out.println("You are login as " + currentEmployee.getName() + ".\n");
@@ -87,18 +97,27 @@ public class MainApp {
                 }
             }
 
-            if (currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.FLEET_MANAGER)) {
+            if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.FLEET_MANAGER)) {
                 fleetManagerModule = new FleetManagerModule(aircraftTypeSessionBeanRemote, aircraftConfigurationSessionBeanRemote, cabinClassConfigurationSessionBeanRemote, currentEmployee);
                 fleetManagerModule.doFleetManagerMenu();
+                currentEmployee = null;
                 
-            } else if (currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.ROUTE_PLANNER)) {
+            } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.ROUTE_PLANNER)) {
                 routePlannerModule = new RoutePlannerModule(flightRouteSessionBeanRemote, airportSessionBeanRemote, currentEmployee);
                 routePlannerModule.doRoutePlannerMenu();
+                currentEmployee = null;
                 
-            } else if (currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SCHEDULE_MANAGER)) {
+            } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SCHEDULE_MANAGER)) {
+                scheduleManagerModule = new ScheduleManagerModule(flightSessionBeanRemote, flightRouteSessionBeanRemote, aircraftConfigurationSessionBeanRemote, cabinClassConfigurationSessionBeanRemote, currentEmployee);
+                scheduleManagerModule.doScheduleManagerMenu();
+                currentEmployee = null;
                 
-            } else if (currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SALES_MANAGER)) {
+            } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SALES_MANAGER)) {
                 
+            }
+            
+            if (response == 2) {
+                break;
             }
         }
     }

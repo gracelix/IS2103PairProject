@@ -11,6 +11,9 @@ import entity.Employee;
 import entity.FlightRoute;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.exception.DeleteFlightRouteException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.InvalidIataCodeException;
 
@@ -63,7 +66,11 @@ public class RoutePlannerModule {
                     }
                 } else if (response == 3) {
                     try {
-                        doDeleteFlightRoute();
+                        try {
+                            doDeleteFlightRoute();
+                        } catch (DeleteFlightRouteException ex) {
+                            System.out.println(ex.getMessage() + "\n");
+                        }
                     } catch (FlightRouteNotFoundException ex) {
                         System.out.println(ex.getMessage() + "\n");
                     }
@@ -92,7 +99,7 @@ public class RoutePlannerModule {
         
         System.out.println("Flight route " + flightRouteId + " from " + originAirportIata + " to " + destinationAirportIata + " created successfully!\n");
         
-        System.out.print("Create complementary flight? (Press Y to create, N otherwise)> ");
+        System.out.print("Create complementary flight route? (Press Y to create, N otherwise)> ");
         String responseString = sc.nextLine().trim();
         if (responseString.equals("Y")) {
             FlightRoute complementaryFlightRoute = new FlightRoute();
@@ -101,7 +108,7 @@ public class RoutePlannerModule {
                 Long complementaryFlightRouteId = flightRouteSessionBeanRemote.createNewComplementaryFlightRoute(complementaryFlightRoute, flightRouteId, destinationAirportIata, originAirportIata);
                 System.out.println("Flight route " + complementaryFlightRouteId + " from " + destinationAirportIata + " to " + originAirportIata + " created successfully!\n");
             } catch (FlightRouteNotFoundException | InvalidIataCodeException ex) {
-                System.out.println("Complementary flight cannot be created: " + ex.getMessage() + "\n");
+                System.out.println("Complementary flight route cannot be created: " + ex.getMessage() + "\n");
             }
         }
     }
@@ -120,14 +127,20 @@ public class RoutePlannerModule {
         sc.nextLine();
     }
     
-    public void doDeleteFlightRoute() throws FlightRouteNotFoundException {
+    public void doDeleteFlightRoute() throws FlightRouteNotFoundException, DeleteFlightRouteException {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System Management :: Delete Flight Route ***\n");
         
         System.out.print("Enter flight route ID> ");
         Long flightRouteId = sc.nextLong();
         
-        flightRouteSessionBeanRemote.disableFlightRoute(flightRouteId);
-        System.out.println("Flight Route " + flightRouteId + " successfully deleted.\n");
+        try {
+            flightRouteSessionBeanRemote.disableFlightRoute(flightRouteId);
+            System.out.println("Flight Route " + flightRouteId + " successfully deleted.\n");
+    
+        } catch (FlightRouteNotFoundException | DeleteFlightRouteException ex) {
+            flightRouteSessionBeanRemote.disableFlightRoute(flightRouteId);
+            System.out.println("Error encountered: " + ex.getMessage() + "\n");
+        }
     }
 }

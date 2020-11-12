@@ -11,6 +11,8 @@ import ejb.session.stateless.AirportSessionBeanRemote;
 import ejb.session.stateless.CabinClassConfigurationSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
+import ejb.session.stateless.FlightSchedulePlanSessionBeanRemote;
+import ejb.session.stateless.FlightSessionBeanRemote;
 import javax.ejb.EJB;
 
 /**
@@ -18,6 +20,12 @@ import javax.ejb.EJB;
  * @author GraceLi
  */
 public class Main {
+
+    @EJB
+    private static FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote;
+
+    @EJB
+    private static FlightSessionBeanRemote flightSessionBean;
 
     @EJB
     private static AirportSessionBeanRemote airportSessionBean;
@@ -36,6 +44,8 @@ public class Main {
 
     @EJB
     private static EmployeeSessionBeanRemote employeeSessionBean;
+    
+    
 
     /**
      * @param args the command line arguments
@@ -44,7 +54,7 @@ public class Main {
         // TODO code application logic here
         MainApp mainApp = new MainApp(employeeSessionBean, aircraftConfigurationSessionBean, 
                 cabinClassConfigurationSessionBean, aircraftTypeSessionBean, flightRouteSessionBean, 
-                airportSessionBean);
+                airportSessionBean, flightSessionBean, flightSchedulePlanSessionBeanRemote);
         mainApp.runApp();
     }
     

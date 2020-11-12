@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.FlightRoute;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.DeleteFlightRouteException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.InvalidIataCodeException;
 
@@ -26,5 +27,5 @@ public interface FlightRouteSessionBeanRemote {
     
     public List<FlightRoute> retrieveAllFlightRoutes();
     
-    public void disableFlightRoute(Long flightRouteId) throws FlightRouteNotFoundException;
+    public void disableFlightRoute(Long flightRouteId) throws FlightRouteNotFoundException, DeleteFlightRouteException;
 }
