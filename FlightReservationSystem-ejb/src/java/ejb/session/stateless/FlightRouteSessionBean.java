@@ -84,8 +84,9 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
         return complementaryFlightRoute.getFlightRouteId();
     }
     
+    @Override
     public List<FlightRoute> retrieveAllFlightRoutes() {
-        Query query = em.createQuery("SELECT fr FROM FlightRoute fr WHERE fr.originalFlightRoute IS NULL ORDER BY fr.originAirport ASC");
+        Query query = em.createQuery("SELECT fr FROM FlightRoute fr WHERE fr.originalFlightRoute IS NULL ORDER BY fr.originAirport.iataCode ASC");
         List<FlightRoute> flightRoutes = query.getResultList();
         FlightRoute complementaryFlightRoute = null;
         List<FlightRoute> finalFlightRouteList = new ArrayList<>();

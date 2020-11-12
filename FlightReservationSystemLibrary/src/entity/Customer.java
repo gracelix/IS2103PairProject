@@ -34,7 +34,7 @@ public class Customer implements Serializable {
     @Column(length = 32, nullable = false, unique = true)
     private String email;
     @Column(length = 32, nullable = false)
-    private Long mobilePhoneNumber;
+    private String mobilePhoneNumber;
     @Column(length = 64, nullable = false)
     private String address;
     @Column(length = 32, nullable = false, unique = true)
@@ -50,7 +50,7 @@ public class Customer implements Serializable {
         transactions = new ArrayList<>();
     }
 
-    public Customer(String firstName, String lastName, String email, Long mobilePhoneNumber, String address, String userName, String password) {
+    public Customer(String firstName, String lastName, String email, String mobilePhoneNumber, String address, String userName, String password) {
         this();
         
         this.firstName = firstName;
@@ -121,11 +121,11 @@ public class Customer implements Serializable {
         this.email = email;
     }
 
-    public Long getMobilePhoneNumber() {
+    public String getMobilePhoneNumber() {
         return mobilePhoneNumber;
     }
 
-    public void setMobilePhoneNumber(Long mobilePhoneNumber) {
+    public void setMobilePhoneNumber(String mobilePhoneNumber) {
         this.mobilePhoneNumber = mobilePhoneNumber;
     }
 
