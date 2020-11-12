@@ -82,7 +82,7 @@ public class FleetManagerModule {
     public void doCreateAircraftConfiguration() throws AircraftConfigurationNotFoundException, AircraftTypeNotFoundException {
         Scanner sc = new Scanner(System.in);
         Integer classTypeInt;
-        CabinClassType cabinClassType;
+        CabinClassType cabinClassType = null;
         Integer numberOfAisles;
         Integer numberOfRows;
         Integer numberOfSeatsAbreast;
@@ -92,20 +92,11 @@ public class FleetManagerModule {
         
         System.out.println("*** Flight Reservation System Management :: Create Aircraft Configuration ***\n");
         
-        System.out.println("Choose aircraft type");
-        System.out.println("1: Boeing 737-800");
-        System.out.println("2: Boeing 747-8\n");
-        
-        System.out.print("> ");
-        Integer aircraftTypeInt = sc.nextInt();
+        System.out.print("Enter aircraft type ID> ");
+        Long aircraftTypeId = sc.nextLong();
         
         String aircraftConfigurationName = "";
-        Long aircraftTypeId = 0l;
-        if (aircraftTypeInt == 1) {
-            aircraftTypeId = 1l;
-        } else if (aircraftTypeInt == 2) {
-            aircraftTypeId = 2l;
-        }//this is temporrary right
+        
         aircraftConfigurationName = aircraftTypeSessionBeanRemote.retrieveAircraftTypeById(aircraftTypeId).getAircraftTypeName();
         
         System.out.print("Enter number of cabin classes> ");
@@ -114,7 +105,6 @@ public class FleetManagerModule {
         AircraftConfiguration aircraftConfiguration = new AircraftConfiguration(aircraftConfigurationName, numberOfCabinClasses);
         List<CabinClassConfiguration> cabinClassConfigurations = new ArrayList<>();
         
-        OUTER:
         for (int i = 1; i <= numberOfCabinClasses; i++) {
             System.out.println("Details of cabin classes: Class " + i + "\n");
             System.out.println("Choose cabin class type");
@@ -125,22 +115,15 @@ public class FleetManagerModule {
             System.out.print("> ");
             classTypeInt = sc.nextInt();
             
-            switch (classTypeInt) {
-                case 1:
-                    cabinClassType = CabinClassType.FIRST_CLASS;
-                    break;
-                case 2:
-                    cabinClassType = CabinClassType.BUSINESS_CLASS;
-                    break;
-                case 3:
-                    cabinClassType = CabinClassType.PREMIUM_ECONOMY;
-                    break;
-                case 4:
-                    cabinClassType = CabinClassType.ECONOMY;
-                    break;
-                default:
-                    System.out.println("Cabin class does not exist!\n");
-                    break OUTER;
+            if (classTypeInt == 1) {
+                cabinClassType = CabinClassType.FIRST_CLASS;
+            } else if (classTypeInt == 2) {
+                cabinClassType = CabinClassType.BUSINESS_CLASS;
+            } else if (classTypeInt == 3) {
+                cabinClassType = CabinClassType.PREMIUM_ECONOMY;
+            } else if (classTypeInt == 4) {
+                cabinClassType = CabinClassType.ECONOMY;
+            
             }
             sc.nextLine();
             System.out.print("Enter number of aisles> ");
