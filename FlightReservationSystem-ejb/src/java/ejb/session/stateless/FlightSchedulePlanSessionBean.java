@@ -57,6 +57,7 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         Flight flight = flightSessionBeanLocal.retrieveFlightById(flightId);
         
         newFlightSchedulePlan.setFlight(flight);
+        newFlightSchedulePlan.setEnableFlight(Boolean.TRUE);
         
         flight.getFlightSchedulePlans().add(newFlightSchedulePlan);
         
@@ -65,4 +66,27 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
         
         return newFlightSchedulePlan.getFlightSchedulePlanId();
     }
+    
+    @Override
+    public Long createNewComplementaryReturnFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Long originalFlightSchedulePlanId , Long flightId) throws FlightNotFoundException, FlightSchedulePlanNotFoundException {
+        Flight flight = flightSessionBeanLocal.retrieveFlightById(flightId);
+        FlightSchedulePlan originalFlightSchedulePlan = retrieveFlightSchedulePlanById(originalFlightSchedulePlanId);
+        
+        newFlightSchedulePlan.setFlight(flight);
+        newFlightSchedulePlan.setEnableFlight(Boolean.TRUE);
+        
+        flight.getFlightSchedulePlans().add(newFlightSchedulePlan);
+        
+        originalFlightSchedulePlan.setComplementaryReturnFlightSchedulePlan(newFlightSchedulePlan);
+        newFlightSchedulePlan.setOrginalFlightSchedulePlan(originalFlightSchedulePlan);
+                
+        em.persist(newFlightSchedulePlan);
+        em.flush();
+        
+        return newFlightSchedulePlan.getFlightSchedulePlanId();
+    }
+    
+//    public List<FlightSchedulePlan> retrieveAllFlightSchedulePlans() {
+//        
+//    }
 }
