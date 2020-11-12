@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,6 +33,7 @@ public class FlightSchedulePlan implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightSchedulePlanId;
+    @Enumerated(EnumType.STRING)
     private FlightSchedulePlanType flightSchedulePlanType;
     @Temporal(TemporalType.DATE)
     private Date endDate;
@@ -49,6 +52,17 @@ public class FlightSchedulePlan implements Serializable {
     public FlightSchedulePlan() {
         this.fares = new ArrayList<>();
         this.flightSchedules = new ArrayList<>();
+    }
+
+    public FlightSchedulePlan(FlightSchedulePlanType flightSchedulePlanType) {
+        this();
+        this.flightSchedulePlanType = flightSchedulePlanType;
+    }
+
+    public FlightSchedulePlan(FlightSchedulePlanType flightSchedulePlanType, Flight flight) {
+        this();
+        this.flightSchedulePlanType = flightSchedulePlanType;
+        this.flight = flight;
     }
     
     

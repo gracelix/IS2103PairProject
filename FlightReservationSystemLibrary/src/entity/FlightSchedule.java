@@ -30,11 +30,11 @@ public class FlightSchedule implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightScheduleId;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date departureDateTime;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIME)
     private Date estimatedFlightDuration;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date arrivalDateTime;
     
     @ManyToOne(optional = false)
@@ -46,6 +46,13 @@ public class FlightSchedule implements Serializable {
 
     public FlightSchedule() {
         this.seatInventories = new ArrayList<>();
+    }
+
+    public FlightSchedule(Date departureDateTime, Date estimatedFlightDuration, Date arrivalDateTime) {
+        this();
+        this.departureDateTime = departureDateTime;
+        this.estimatedFlightDuration = estimatedFlightDuration;
+        this.arrivalDateTime = arrivalDateTime;
     }
     
     

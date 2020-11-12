@@ -29,6 +29,11 @@ public class Seat implements Serializable {
 
     public Seat() {
     }
+
+    public Seat(Integer seatNumber, String rowAlphabet) {
+        this.seatNumber = seatNumber;
+        this.rowAlphabet = rowAlphabet;
+    }
     
     
 
