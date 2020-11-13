@@ -49,7 +49,7 @@ public class SalesManagerModule {
         
         while(true) {
         
-            System.out.println("*** Flight Reservation System Management :: Sales Manager ***\n");
+            System.out.println("\n*** Flight Reservation System Management :: Sales Manager ***\n");
             System.out.println("1: View Seats Inventory");
             System.out.println("2: View Flight Reservations");
             System.out.println("3: Logout\n");

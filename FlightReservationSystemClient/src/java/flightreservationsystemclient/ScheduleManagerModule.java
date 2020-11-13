@@ -117,7 +117,7 @@ public class ScheduleManagerModule {
         
         while(true) {
         
-            System.out.println("*** Flight Reservation System Management :: Schedule Manager ***\n");
+            System.out.println("\n*** Flight Reservation System Management :: Schedule Manager ***\n");
             System.out.println("1: Create flight");
             System.out.println("2: View all flights");
             System.out.println("3: View flight details");

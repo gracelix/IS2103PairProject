@@ -39,7 +39,7 @@ public class RoutePlannerModule {
         
         while(true) {
         
-            System.out.println("*** Flight Reservation System Management :: Route Planner ***\n");
+            System.out.println("\n*** Flight Reservation System Management :: Route Planner ***\n");
             System.out.println("1: Create Flight Route");
             System.out.println("2: View All Flight Routes");
             System.out.println("3: Delete Flight Route");
