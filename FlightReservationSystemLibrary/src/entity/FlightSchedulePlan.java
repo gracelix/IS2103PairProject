@@ -42,9 +42,9 @@ public class FlightSchedulePlan implements Serializable {
     private Boolean enableFlight;
     
     @OneToOne
-    private FlightSchedulePlan orginalFlightSchedulePlan;
+    private FlightSchedulePlan originalFlightSchedulePlan;
     
-    @OneToOne(mappedBy = "orginalFlightSchedulePlan")
+    @OneToOne(mappedBy = "originalFlightSchedulePlan")
     private FlightSchedulePlan complementaryReturnFlightSchedulePlan;
     
     @ManyToOne(optional = false)
@@ -166,12 +166,12 @@ public class FlightSchedulePlan implements Serializable {
         this.enableFlight = enableFlight;
     }
 
-    public FlightSchedulePlan getOrginalFlightSchedulePlan() {
-        return orginalFlightSchedulePlan;
+    public FlightSchedulePlan getOriginalFlightSchedulePlan() {
+        return originalFlightSchedulePlan;
     }
 
-    public void setOrginalFlightSchedulePlan(FlightSchedulePlan orginalFlightSchedulePlan) {
-        this.orginalFlightSchedulePlan = orginalFlightSchedulePlan;
+    public void setOriginalFlightSchedulePlan(FlightSchedulePlan originalFlightSchedulePlan) {
+        this.originalFlightSchedulePlan = originalFlightSchedulePlan;
     }
 
     public FlightSchedulePlan getComplementaryReturnFlightSchedulePlan() {

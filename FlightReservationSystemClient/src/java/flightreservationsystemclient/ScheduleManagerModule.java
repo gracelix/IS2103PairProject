@@ -36,6 +36,7 @@ import util.enumeration.FlightSchedulePlanType;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.CabinClassConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
+import util.exception.DeleteFlightSchedulePlanException;
 import util.exception.FareNotFoundException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
@@ -43,6 +44,7 @@ import util.exception.FlightScheduleOverlapException;
 import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.SeatInventoryNotFoundException;
 import util.exception.UpdateFlightException;
+import util.exception.UpdateFlightSchedulePlanException;
 
 /**
  *
@@ -331,7 +333,7 @@ public class ScheduleManagerModule {
             }
             catch (FlightNotFoundException | DeleteFlightException ex) 
             {
-                System.out.println("An error has occurred while deleting the staff: " + ex.getMessage() + "\n");
+                System.out.println("An error has occurred while deleting the flight: " + ex.getMessage() + "\n");
             }
         }
         else
@@ -1083,11 +1085,89 @@ public class ScheduleManagerModule {
         }
     }
     
-    public void doUpdateFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) {
-        System.out.println("hehe");
+    public void doUpdateFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) throws FlightSchedulePlanNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        Integer integerInput;
+        Long longInput;
+        System.out.println("*** Flight Reservation System Management :: View Flight Schedule Plan Details :: Update Flight Schedule Plan ***\n");
+        
+        if (flightSchedulePlan.getnDays() != null) {  
+           System.out.print("Enter recurring n days (0 or negative number if no change)> ");
+           integerInput = sc.nextInt();
+           sc.nextLine();
+           if(integerInput > 0) {
+               flightSchedulePlan.setnDays(integerInput);
+           }
+        }
+        if (flightSchedulePlan.getEndDate() != null) {   
+            System.out.print("Edit recurrence end date? (Press Y to create, N otherwise)> ");
+            String responseString = sc.nextLine().trim();
+            if (responseString.equals("Y")) {
+                System.out.print("Enter recurrence end date in DD-MM-YYYY (eg. 23-04-2020)> ");
+                String dateInput = sc.nextLine().trim();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                try {
+                    Date date = dateFormat.parse(dateInput);
+                    flightSchedulePlan.setEndDate(date);
+                    for (FlightSchedule flightSchedule : flightSchedulePlan.getFlightSchedules()) {
+                        if (flightSchedule.getDepartureDateTime().getTime() > date.getTime()) {
+                            for (SeatInventory seatInventory : flightSchedule.getSeatInventories()) {
+                                if (seatInventory.getReservedSeats() > 0) {
+                                    System.out.println("Cannot be update, flight tickets have been sold for this schedule!");
+                                    return;
+                                }
+                            }
+                            flightScheduleSessionBeanRemote.deleteFlightSchedule(flightSchedule.getFlightScheduleId());
+                        }
+                    }
+                } catch (ParseException ex) {
+                    System.out.println(ex.getMessage() + "\n");
+                }
+            }
+        }
+        
+        while(true) {
+            System.out.print("Enter Fare ID to Change (negative number if no change)> ");
+            longInput = sc.nextLong();
+            if (longInput >= 0) {
+                System.out.print("Enter new Fare ID)> ");
+                Long fareId = sc.nextLong();
+                sc.nextLine();
+                try {
+                    flightSchedulePlan.getFares().remove(fareSessionBeanRemote.retrieveFareByFareId(longInput));
+                    flightSchedulePlan.getFares().add(fareSessionBeanRemote.retrieveFareByFareId(fareId));
+                } catch (FareNotFoundException ex) {
+                    System.out.println("Fare " + longInput + "/" + fareId + " does not exist!");
+                }
+            } else {
+                break;
+            }
+        }
+        try {
+            flightSchedulePlanSessionBeanRemote.updateFlightSchedulePlan(flightSchedulePlan);
+        } catch (FlightSchedulePlanNotFoundException | UpdateFlightSchedulePlanException ex) {
+            System.out.println("Flight Schedule Plan could not be updated, " + ex.getMessage() + "\n");
+        }
+        
+        System.out.println("Flight Schedule Plan " + flightSchedulePlan.getFlightSchedulePlanId() + " updated successfully!");
     }
     
     public void doDeleteFlightSchedulePlan(FlightSchedulePlan flightSchedulePlan) {
-        System.out.println("hehe");
+        Scanner sc = new Scanner(System.in);
+        String input;
+        System.out.println("*** Flight Reservation System Management :: View Flight Details :: Delete Flight Schedule Plan ***\n");
+        System.out.printf("Confirm Delete Flight Schedule Plan (Flight Schedule Plan ID: %d) (Enter 'Y' to Delete)> ", flightSchedulePlan.getFlightSchedulePlanId());
+        input = sc.nextLine().trim();
+//        
+        if(input.equals("Y")) { 
+            try {
+                flightSchedulePlanSessionBeanRemote.deleteFlightSchedulePlan(flightSchedulePlan.getFlightSchedulePlanId());
+                System.out.println("Flight Schedule Plan deleted successfully!");
+            } catch (FlightSchedulePlanNotFoundException | DeleteFlightSchedulePlanException ex) {
+                System.out.println("Flight Not Deleted, " + ex.getMessage() + "\n");
+            }
+        } else {
+            System.out.println("Flight schedule plan NOT deleted!\n");
+        }
     }
 }

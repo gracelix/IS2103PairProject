@@ -8,8 +8,10 @@ package ejb.session.stateless;
 import entity.FlightSchedulePlan;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.DeleteFlightSchedulePlanException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightSchedulePlanNotFoundException;
+import util.exception.UpdateFlightSchedulePlanException;
 
 /**
  *
@@ -26,4 +28,11 @@ public interface FlightSchedulePlanSessionBeanRemote {
     public Long createNewComplementaryReturnFlightSchedulePlan(FlightSchedulePlan newFlightSchedulePlan, Long originalFlightSchedulePlanId, Long flightId) throws FlightNotFoundException, FlightSchedulePlanNotFoundException;
 
     public List<FlightSchedulePlan> retrieveAllFlightSchedulePlans();
+    
+    public void updateFlightSchedulePlan(FlightSchedulePlan updatedFlightSchedulePlan) throws FlightSchedulePlanNotFoundException, UpdateFlightSchedulePlanException;
+
+    public void deleteFlightSchedulePlan(Long flightSchedulePlanId) throws FlightSchedulePlanNotFoundException, DeleteFlightSchedulePlanException;
+
+    public List<FlightSchedulePlan> retrieveFlightSchedulePlansByFlightNumber(String flightNumber);
+
 }
