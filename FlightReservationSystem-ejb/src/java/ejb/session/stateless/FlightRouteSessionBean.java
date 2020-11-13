@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.DeleteFlightRouteException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.InvalidIataCodeException;
 
@@ -83,8 +84,9 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
         return complementaryFlightRoute.getFlightRouteId();
     }
     
+    @Override
     public List<FlightRoute> retrieveAllFlightRoutes() {
-        Query query = em.createQuery("SELECT fr FROM FlightRoute fr WHERE fr.originalFlightRoute IS NULL ORDER BY fr.originAirport ASC");
+        Query query = em.createQuery("SELECT fr FROM FlightRoute fr WHERE fr.originalFlightRoute IS NULL ORDER BY fr.originAirport.iataCode ASC");
         List<FlightRoute> flightRoutes = query.getResultList();
         FlightRoute complementaryFlightRoute = null;
         List<FlightRoute> finalFlightRouteList = new ArrayList<>();
@@ -114,14 +116,26 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
     }
     
     @Override
-    public void disableFlightRoute(Long flightRouteId) throws FlightRouteNotFoundException {
+    public void disableFlightRoute(Long flightRouteId) throws FlightRouteNotFoundException, DeleteFlightRouteException {
         FlightRoute flightRoute = retrieveFlightRouteById(flightRouteId);
         List<Flight> flights = flightRoute.getFlights();
         
         if (flights.isEmpty()) {
+            flightRoute.getDestinationAirport().getOriginFlightRoutes().remove(flightRoute);
+            flightRoute.getOriginAirport().getDestinationFlightRoutes().remove(flightRoute);
+            flightRoute.getDestinationAirport().getDestinationFlightRoutes().remove(flightRoute);
+            flightRoute.getOriginAirport().getOriginFlightRoutes().remove(flightRoute);
+            if (flightRoute.getComplementaryFlightRoute() != null) {
+                flightRoute.getComplementaryFlightRoute().setOriginalFlightRoute(null);
+            }
+            
+            if (flightRoute.getOriginalFlightRoute() != null) {
+                flightRoute.getOriginalFlightRoute().setComplementaryFlightRoute(null);
+            }
             em.remove(flightRoute);
         } else {
             flightRoute.setEnabledFlightRoute(Boolean.FALSE);
+            throw new DeleteFlightRouteException("Flight Route ID " + flightRouteId + " is associated with a flight and would be disabled instead.");
         }
     }
 }

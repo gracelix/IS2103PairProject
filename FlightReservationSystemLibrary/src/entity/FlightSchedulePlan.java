@@ -10,12 +10,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import util.enumeration.FlightSchedulePlanType;
@@ -31,9 +34,18 @@ public class FlightSchedulePlan implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightSchedulePlanId;
+    @Enumerated(EnumType.STRING)
     private FlightSchedulePlanType flightSchedulePlanType;
     @Temporal(TemporalType.DATE)
     private Date endDate;
+    private Integer nDays;
+    private Boolean enableFlight;
+    
+    @OneToOne
+    private FlightSchedulePlan originalFlightSchedulePlan;
+    
+    @OneToOne(mappedBy = "originalFlightSchedulePlan")
+    private FlightSchedulePlan complementaryReturnFlightSchedulePlan;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -49,6 +61,17 @@ public class FlightSchedulePlan implements Serializable {
     public FlightSchedulePlan() {
         this.fares = new ArrayList<>();
         this.flightSchedules = new ArrayList<>();
+    }
+
+    public FlightSchedulePlan(FlightSchedulePlanType flightSchedulePlanType) {
+        this();
+        this.flightSchedulePlanType = flightSchedulePlanType;
+    }
+
+    public FlightSchedulePlan(FlightSchedulePlanType flightSchedulePlanType, Flight flight) {
+        this();
+        this.flightSchedulePlanType = flightSchedulePlanType;
+        this.flight = flight;
     }
     
     
@@ -125,6 +148,38 @@ public class FlightSchedulePlan implements Serializable {
 
     public void setFares(List<Fare> fares) {
         this.fares = fares;
+    }
+
+    public Integer getnDays() {
+        return nDays;
+    }
+
+    public void setnDays(Integer nDays) {
+        this.nDays = nDays;
+    }
+
+    public Boolean getEnableFlight() {
+        return enableFlight;
+    }
+
+    public void setEnableFlight(Boolean enableFlight) {
+        this.enableFlight = enableFlight;
+    }
+
+    public FlightSchedulePlan getOriginalFlightSchedulePlan() {
+        return originalFlightSchedulePlan;
+    }
+
+    public void setOriginalFlightSchedulePlan(FlightSchedulePlan originalFlightSchedulePlan) {
+        this.originalFlightSchedulePlan = originalFlightSchedulePlan;
+    }
+
+    public FlightSchedulePlan getComplementaryReturnFlightSchedulePlan() {
+        return complementaryReturnFlightSchedulePlan;
+    }
+
+    public void setComplementaryReturnFlightSchedulePlan(FlightSchedulePlan complementaryReturnFlightSchedulePlan) {
+        this.complementaryReturnFlightSchedulePlan = complementaryReturnFlightSchedulePlan;
     }
     
 }

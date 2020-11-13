@@ -52,6 +52,15 @@ public class AircraftConfiguration implements Serializable {
         this.numberOfCabinClasses = numberOfCabinClasses;
     }
 
+    public AircraftConfiguration(String aircraftConfigurationName, Integer numberOfCabinClasses, Integer totalMaximumSeatCapacity) {
+        this.aircraftConfigurationName = aircraftConfigurationName;
+        this.numberOfCabinClasses = numberOfCabinClasses;
+        this.totalMaximumSeatCapacity = totalMaximumSeatCapacity;
+    }
+    
+    
+    
+
     public Long getAircraftConfigurationId() {
         return aircraftConfigurationId;
     }

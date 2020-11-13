@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,6 +29,7 @@ public class Flight implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightId;
+    @Column(unique = true)
     private String flightNumber;
     private Boolean enableFlight;
     
@@ -40,6 +42,9 @@ public class Flight implements Serializable {
     private AircraftConfiguration aircraftConfiguration;
     
     @OneToOne
+    private Flight originalFlight;
+    
+    @OneToOne(mappedBy = "originalFlight")
     private Flight complementaryReturnFlight;
     
     @OneToMany(mappedBy = "flight")
@@ -48,6 +53,11 @@ public class Flight implements Serializable {
     public Flight() {
         this.flightSchedulePlans = new ArrayList<>();
     }
+
+    public Flight(String flightNumber) {
+        this();
+        this.flightNumber = flightNumber;
+    }   
     
 
     public Long getFlightId() {
@@ -129,6 +139,14 @@ public class Flight implements Serializable {
 
     public void setFlightSchedulePlans(List<FlightSchedulePlan> flightSchedulePlans) {
         this.flightSchedulePlans = flightSchedulePlans;
+    }
+
+    public Flight getOriginalFlight() {
+        return originalFlight;
+    }
+
+    public void setOriginalFlight(Flight originalFlight) {
+        this.originalFlight = originalFlight;
     }
     
 }

@@ -29,6 +29,7 @@ public class Airport implements Serializable {
     private String city;
     private String countryState;
     private String country;
+    private Double timeZone;
     
     @OneToMany(mappedBy = "originAirport")
     private List<FlightRoute> originFlightRoutes;
@@ -39,12 +40,13 @@ public class Airport implements Serializable {
     public Airport() {
     }
 
-    public Airport(String airportName, String iataCode, String city, String countryState, String country) {
+    public Airport(String airportName, String iataCode, String city, String countryState, String country, Double timeZone) {
         this.airportName = airportName;
         this.iataCode = iataCode;
         this.city = city;
         this.countryState = countryState;
         this.country = country;
+        this.timeZone = timeZone;
     }
     
     
@@ -136,6 +138,14 @@ public class Airport implements Serializable {
 
     public void setAirportName(String airportName) {
         this.airportName = airportName;
+    }
+
+    public Double getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(Double timeZone) {
+        this.timeZone = timeZone;
     }
     
 }

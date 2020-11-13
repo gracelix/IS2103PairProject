@@ -44,7 +44,7 @@ public class FleetManagerModule {
         
         while(true) {
         
-            System.out.println("*** Flight Reservation System Management :: Fleet Manager ***\n");
+            System.out.println("\n*** Flight Reservation System Management :: Fleet Manager ***\n");
             System.out.println("1: Create aircraft configuration");
             System.out.println("2: View all aircraft configuration");
             System.out.println("3: View aircraft configuration details");
@@ -82,7 +82,7 @@ public class FleetManagerModule {
     public void doCreateAircraftConfiguration() throws AircraftConfigurationNotFoundException, AircraftTypeNotFoundException {
         Scanner sc = new Scanner(System.in);
         Integer classTypeInt;
-        CabinClassType cabinClassType;
+        CabinClassType cabinClassType = null;
         Integer numberOfAisles;
         Integer numberOfRows;
         Integer numberOfSeatsAbreast;
@@ -92,21 +92,11 @@ public class FleetManagerModule {
         
         System.out.println("*** Flight Reservation System Management :: Create Aircraft Configuration ***\n");
         
-        System.out.println("Choose aircraft type");
-        System.out.println("1: Boeing 737-800");
-        System.out.println("2: Boeing 747-8\n");
-        
-        System.out.print("> ");
-        Integer aircraftTypeInt = sc.nextInt();
-        
-        String aircraftConfigurationName = "";
-        Long aircraftTypeId = 0l;
-        if (aircraftTypeInt == 1) {
-            aircraftTypeId = 1l;
-        } else if (aircraftTypeInt == 2) {
-            aircraftTypeId = 2l;
-        }
-        aircraftConfigurationName = aircraftTypeSessionBeanRemote.retrieveAircraftTypeById(aircraftTypeId).getAircraftTypeName();
+        System.out.print("Enter aircraft type ID> ");
+        Long aircraftTypeId = sc.nextLong();
+        sc.nextLine();
+        System.out.print("Enter aircraft configuration name> ");
+        String aircraftConfigurationName = sc.nextLine().trim();
         
         System.out.print("Enter number of cabin classes> ");
         Integer numberOfCabinClasses = sc.nextInt();
@@ -114,7 +104,6 @@ public class FleetManagerModule {
         AircraftConfiguration aircraftConfiguration = new AircraftConfiguration(aircraftConfigurationName, numberOfCabinClasses);
         List<CabinClassConfiguration> cabinClassConfigurations = new ArrayList<>();
         
-        OUTER:
         for (int i = 1; i <= numberOfCabinClasses; i++) {
             System.out.println("Details of cabin classes: Class " + i + "\n");
             System.out.println("Choose cabin class type");
@@ -125,22 +114,15 @@ public class FleetManagerModule {
             System.out.print("> ");
             classTypeInt = sc.nextInt();
             
-            switch (classTypeInt) {
-                case 1:
-                    cabinClassType = CabinClassType.FIRST_CLASS;
-                    break;
-                case 2:
-                    cabinClassType = CabinClassType.BUSINESS_CLASS;
-                    break;
-                case 3:
-                    cabinClassType = CabinClassType.PREMIUM_ECONOMY;
-                    break;
-                case 4:
-                    cabinClassType = CabinClassType.ECONOMY;
-                    break;
-                default:
-                    System.out.println("Cabin class does not exist!\n");
-                    break OUTER;
+            if (classTypeInt == 1) {
+                cabinClassType = CabinClassType.FIRST_CLASS;
+            } else if (classTypeInt == 2) {
+                cabinClassType = CabinClassType.BUSINESS_CLASS;
+            } else if (classTypeInt == 3) {
+                cabinClassType = CabinClassType.PREMIUM_ECONOMY;
+            } else if (classTypeInt == 4) {
+                cabinClassType = CabinClassType.ECONOMY;
+            
             }
             sc.nextLine();
             System.out.print("Enter number of aisles> ");
@@ -176,10 +158,10 @@ public class FleetManagerModule {
         
         List<AircraftConfiguration> aircraftConfigurations = aircraftConfigurationSessionBeanRemote.retrieveAllAircraftConfigurations();
         
-        System.out.printf("%10s%20s%20s\n", "Aircraft Type", "Name", "Max Capacity");
+        System.out.printf("%20s%20s%30s%20s\n", "AircraftConfig ID", "Aircraft Type", "Name", "Max Capacity");
         
         for (AircraftConfiguration aircraftConfiguration : aircraftConfigurations) {
-            System.out.printf("%10s%20s%20s\n", aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getTotalMaximumSeatCapacity());
+            System.out.printf("%20s%20s%30s%20s\n", aircraftConfiguration.getAircraftConfigurationId(),aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getTotalMaximumSeatCapacity());
         }
         
         System.out.print("Press any key to continue...> ");
@@ -189,6 +171,13 @@ public class FleetManagerModule {
     public void doViewAircraftConfigurationDetails() throws AircraftConfigurationNotFoundException {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System Management :: View Aircraft Configuration Details ***\n");
+        
+        // display list of aircraft configurations 
+        List<AircraftConfiguration> aircraftConfigurations = aircraftConfigurationSessionBeanRemote.retrieveAllAircraftConfigurations();
+        System.out.printf("%20s%20s%30s%20s\n", "AircraftConfig ID", "Aircraft Type", "Name", "Max Capacity");
+        for (AircraftConfiguration aircraftConfiguration : aircraftConfigurations) {
+            System.out.printf("%20s%20s%30s%20s\n", aircraftConfiguration.getAircraftConfigurationId(),aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getTotalMaximumSeatCapacity());
+        }
         
         System.out.print("Enter Aircraft Configuration ID> ");
         Long aircraftConfigurationId = sc.nextLong();

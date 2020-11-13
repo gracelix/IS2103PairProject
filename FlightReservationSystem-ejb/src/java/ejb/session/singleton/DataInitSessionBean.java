@@ -31,7 +31,7 @@ import util.exception.PartnerNotFoundException;
  */
 @Singleton
 @LocalBean
-@Startup
+//@Startup
 public class DataInitSessionBean {
 
     @EJB
@@ -100,46 +100,46 @@ public class DataInitSessionBean {
     }
      
     public void loadAirportData() {
-        Airport singaporeChangiAirport = new Airport("Singapore Changi Airport", "SIN", "Singapore", "Singapore", "Singapore");
+        Airport singaporeChangiAirport = new Airport("Singapore Changi Airport", "SIN", "Singapore", "Singapore", "Singapore", 8.0);
         airportSessionBean.createNewAirport(singaporeChangiAirport);
         
-        Airport kualaLumpurInternationalAirport = new Airport("Kuala Lumpur International Airport", "KUL", "Kuala Lumpur", "Selangor", "Malaysia");
+        Airport kualaLumpurInternationalAirport = new Airport("Kuala Lumpur International Airport", "KUL", "Kuala Lumpur", "Selangor", "Malaysia", 8.0);
         airportSessionBean.createNewAirport(kualaLumpurInternationalAirport);
         
-        Airport suvarnabhumiAirport = new Airport("Suvarnabhumi Airport", "BKK", "Bangkok", "Bangkok", "Thailand");
+        Airport suvarnabhumiAirport = new Airport("Suvarnabhumi Airport", "BKK", "Bangkok", "Bangkok", "Thailand", 7.0);
         airportSessionBean.createNewAirport(suvarnabhumiAirport);
         
-        Airport soekarnoHattaInternationalAirport = new Airport("Soekarno Hatta International Airport", "CGK", "Jakarta", "Jakarta", "Indonesia");
+        Airport soekarnoHattaInternationalAirport = new Airport("Soekarno Hatta International Airport", "CGK", "Jakarta", "Jakarta", "Indonesia", 7.0);
         airportSessionBean.createNewAirport(soekarnoHattaInternationalAirport);
         
-        Airport noiBaiInternationalAirport = new Airport("Noi Bai International Airport", "HAN", "Hanoi", "Hanoi", "Vietnam");
+        Airport noiBaiInternationalAirport = new Airport("Noi Bai International Airport", "HAN", "Hanoi", "Hanoi", "Vietnam", 7.0);
         airportSessionBean.createNewAirport(noiBaiInternationalAirport);
         
-        Airport ninoyAquinoInternationalAirport = new Airport("Ninoy Aquino International Airport", "MNL", "Manila", "Manila", "Philippines");
+        Airport ninoyAquinoInternationalAirport = new Airport("Ninoy Aquino International Airport", "MNL", "Manila", "Manila", "Philippines", 8.0);
         airportSessionBean.createNewAirport(ninoyAquinoInternationalAirport);
         
-        Airport hongKongInternationalAirport = new Airport("Hong Kong International Airport", "HKG", "Hong Kong", "Hong Kong", "Hong Kong");
+        Airport hongKongInternationalAirport = new Airport("Hong Kong International Airport", "HKG", "Hong Kong", "Hong Kong", "Hong Kong", 8.0);
         airportSessionBean.createNewAirport(hongKongInternationalAirport);
         
-        Airport taiwanTaoyuanInternationalAirport = new Airport("Taiwan Taoyuan International Airport", "TPE", "Taoyuan", "Taoyuan", "Taiwan");
+        Airport taiwanTaoyuanInternationalAirport = new Airport("Taiwan Taoyuan International Airport", "TPE", "Taoyuan", "Taoyuan", "Taiwan", 8.0);
         airportSessionBean.createNewAirport(taiwanTaoyuanInternationalAirport);
         
-        Airport indiraGandhiInternationalAirport = new Airport("Indira Gandhi International Airport", "DEL", "Delhi", "Delhi", "India");
+        Airport indiraGandhiInternationalAirport = new Airport("Indira Gandhi International Airport", "DEL", "Delhi", "Delhi", "India", 5.5);
         airportSessionBean.createNewAirport(indiraGandhiInternationalAirport);
         
-        Airport beijingCapitalInternationalAirport = new Airport("Beijing Capital International Airport", "PEK", "Beijing", "Beijing", "China");
+        Airport beijingCapitalInternationalAirport = new Airport("Beijing Capital International Airport", "PEK", "Beijing", "Beijing", "China", 8.0);
         airportSessionBean.createNewAirport(beijingCapitalInternationalAirport);
         
-        Airport incheonInternationalAirport = new Airport("Incheon International Airport", "ICN", "Incheon", "Incheon", "South Korea");
+        Airport incheonInternationalAirport = new Airport("Incheon International Airport", "ICN", "Incheon", "Incheon", "South Korea", 9.0);
         airportSessionBean.createNewAirport(incheonInternationalAirport);
         
-        Airport hamadInternationalAirport = new Airport("Hamad International Airport", "DOH", "Doha", "Doha", "Qatar");
+        Airport hamadInternationalAirport = new Airport("Hamad International Airport", "DOH", "Doha", "Doha", "Qatar", 3.0);
         airportSessionBean.createNewAirport(hamadInternationalAirport);
         
-        Airport naritaInternationalAirport = new Airport("Narita International Airport", "NRT", "Narita", "Chiba", "Japan");
+        Airport naritaInternationalAirport = new Airport("Narita International Airport", "NRT", "Narita", "Chiba", "Japan", 9.0);
         airportSessionBean.createNewAirport(naritaInternationalAirport);
         
-        Airport canberraAirport = new Airport("Canberra Airport", "CBR", "Canberra", "Canberra", "Australia");
+        Airport canberraAirport = new Airport("Canberra Airport", "CBR", "Canberra", "Canberra", "Australia", 11.0);
         airportSessionBean.createNewAirport(canberraAirport);
 
     }

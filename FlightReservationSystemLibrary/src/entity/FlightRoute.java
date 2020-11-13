@@ -50,6 +50,7 @@ public class FlightRoute implements Serializable {
     }
 
     public FlightRoute(Airport originAirport, Airport destinationAirport) {
+        this();
         this.originAirport = originAirport;
         this.destinationAirport = destinationAirport;
     }

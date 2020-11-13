@@ -11,6 +11,7 @@ import entity.Employee;
 import entity.FlightRoute;
 import java.util.List;
 import java.util.Scanner;
+import util.exception.DeleteFlightRouteException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.InvalidIataCodeException;
 
@@ -38,7 +39,7 @@ public class RoutePlannerModule {
         
         while(true) {
         
-            System.out.println("*** Flight Reservation System Management :: Route Planner ***\n");
+            System.out.println("\n*** Flight Reservation System Management :: Route Planner ***\n");
             System.out.println("1: Create Flight Route");
             System.out.println("2: View All Flight Routes");
             System.out.println("3: Delete Flight Route");
@@ -63,7 +64,11 @@ public class RoutePlannerModule {
                     }
                 } else if (response == 3) {
                     try {
-                        doDeleteFlightRoute();
+                        try {
+                            doDeleteFlightRoute();
+                        } catch (DeleteFlightRouteException ex) {
+                            System.out.println(ex.getMessage() + "\n");
+                        }
                     } catch (FlightRouteNotFoundException ex) {
                         System.out.println(ex.getMessage() + "\n");
                     }
@@ -92,7 +97,7 @@ public class RoutePlannerModule {
         
         System.out.println("Flight route " + flightRouteId + " from " + originAirportIata + " to " + destinationAirportIata + " created successfully!\n");
         
-        System.out.print("Create complementary flight? (Press Y to create, N otherwise)> ");
+        System.out.print("Create complementary flight route? (Press Y to create, N otherwise)> ");
         String responseString = sc.nextLine().trim();
         if (responseString.equals("Y")) {
             FlightRoute complementaryFlightRoute = new FlightRoute();
@@ -101,7 +106,7 @@ public class RoutePlannerModule {
                 Long complementaryFlightRouteId = flightRouteSessionBeanRemote.createNewComplementaryFlightRoute(complementaryFlightRoute, flightRouteId, destinationAirportIata, originAirportIata);
                 System.out.println("Flight route " + complementaryFlightRouteId + " from " + destinationAirportIata + " to " + originAirportIata + " created successfully!\n");
             } catch (FlightRouteNotFoundException | InvalidIataCodeException ex) {
-                System.out.println("Complementary flight cannot be created: " + ex.getMessage() + "\n");
+                System.out.println("Complementary flight route cannot be created: " + ex.getMessage() + "\n");
             }
         }
     }
@@ -120,14 +125,27 @@ public class RoutePlannerModule {
         sc.nextLine();
     }
     
-    public void doDeleteFlightRoute() throws FlightRouteNotFoundException {
+    public void doDeleteFlightRoute() throws FlightRouteNotFoundException, DeleteFlightRouteException {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System Management :: Delete Flight Route ***\n");
         
-        System.out.print("Enter flight route ID> ");
+        // display list of flight routes
+        List<FlightRoute> flightRoutes = flightRouteSessionBeanRemote.retrieveAllFlightRoutes();
+        System.out.printf("%20s%20s%20s\n", "Flight Route ID", "Origin Airport", "Destination Airport");
+        for (FlightRoute flightRoute : flightRoutes) {
+            System.out.printf("%20s%20s%20s\n", flightRoute.getFlightRouteId(), flightRoute.getOriginAirport().getIataCode(), flightRoute.getDestinationAirport().getIataCode());
+        }
+        
+        System.out.print("Enter Flight Route ID to be deleted> ");
         Long flightRouteId = sc.nextLong();
         
-        flightRouteSessionBeanRemote.disableFlightRoute(flightRouteId);
-        System.out.println("Flight Route " + flightRouteId + " successfully deleted.\n");
+        try {
+            flightRouteSessionBeanRemote.disableFlightRoute(flightRouteId);
+            System.out.println("Flight Route " + flightRouteId + " successfully deleted.\n");
+    
+        } catch (FlightRouteNotFoundException | DeleteFlightRouteException ex) {
+            flightRouteSessionBeanRemote.disableFlightRoute(flightRouteId);
+            System.out.println("Error encountered: " + ex.getMessage() + "\n");
+        }
     }
 }
