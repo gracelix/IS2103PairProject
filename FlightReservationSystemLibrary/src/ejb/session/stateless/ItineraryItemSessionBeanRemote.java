@@ -6,18 +6,15 @@
 package ejb.session.stateless;
 
 import entity.ItineraryItem;
-import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Remote;
+import util.exception.FlightSchedulePlanNotFoundException;
 
 /**
  *
  * @author Ziyue
  */
-@Local
-public interface FlightReservationSessionBeanLocal {
+@Remote
+public interface ItineraryItemSessionBeanRemote {
+    public Long createItineraryItem(ItineraryItem itineraryItem, Long flightScheduleId) throws FlightSchedulePlanNotFoundException;
 
-    public List<ItineraryItem> retrieveAllItineraryItems();
-
-    public List<ItineraryItem> retrieveAllItineraryItemsByFlightScheduleId(Long flightScheduleId);
-    
 }

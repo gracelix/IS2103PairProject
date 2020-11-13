@@ -6,11 +6,13 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -31,15 +33,27 @@ public class ItineraryItem implements Serializable {
     private String cabinClass;
     @Column(length = 32, nullable = false)
     private String seatNumber;
+    @Column(nullable = false, precision = 18, scale = 4)
+    private BigDecimal fareAmount;
+    @Column(length = 64, nullable = false)
+    private String passengerName;
+    @Column(length = 32, nullable = false)
+    private String fareBasisCode;
+    
+    @ManyToOne
+    private FlightSchedule flightSchedule;
 
     public ItineraryItem() {
     }
 
-    public ItineraryItem(String odDateTime, String odCode, String cabinClass, String seatNumber) {
+    public ItineraryItem(String odDateTime, String odCode, String cabinClass, String seatNumber, BigDecimal fareAmount, String passengerName, String fareBasisCode) {
         this.odDateTime = odDateTime;
         this.odCode = odCode;
         this.cabinClass = cabinClass;
         this.seatNumber = seatNumber;
+        this.fareAmount = fareAmount;
+        this.passengerName = passengerName;
+        this.fareBasisCode = fareBasisCode;
     }
     
 
@@ -106,6 +120,38 @@ public class ItineraryItem implements Serializable {
 
     public void setSeatNumber(String seatNumber) {
         this.seatNumber = seatNumber;
+    }
+
+    public BigDecimal getFareAmount() {
+        return fareAmount;
+    }
+
+    public void setFareAmount(BigDecimal fareAmount) {
+        this.fareAmount = fareAmount;
+    }
+
+    public FlightSchedule getFlightSchedule() {
+        return flightSchedule;
+    }
+
+    public void setFlightSchedule(FlightSchedule flightSchedule) {
+        this.flightSchedule = flightSchedule;
+    }
+
+    public String getPassengerName() {
+        return passengerName;
+    }
+
+    public void setPassengerName(String passengerName) {
+        this.passengerName = passengerName;
+    }
+
+    public String getFareBasisCode() {
+        return fareBasisCode;
+    }
+
+    public void setFareBasisCode(String fareBasisCode) {
+        this.fareBasisCode = fareBasisCode;
     }
     
 }

@@ -5,6 +5,8 @@
  */
 package ejb.session.stateless;
 
+import entity.ItineraryItem;
+import java.util.List;
 import javax.ejb.Remote;
 
 /**
@@ -13,5 +15,7 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface FlightReservationSessionBeanRemote {
-    
+    public List<ItineraryItem> retrieveAllItineraryItems();
+    public List<ItineraryItem> retrieveAllItineraryItemsByFlightScheduleId(Long flightScheduleId);
+
 }
