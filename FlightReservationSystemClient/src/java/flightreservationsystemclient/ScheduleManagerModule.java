@@ -154,7 +154,7 @@ public class ScheduleManagerModule {
         
         if (flightRouteSessionBeanRemote.retrieveFlightRouteById(flightRouteId).getComplementaryFlightRoute() != null) {
             sc.nextLine();
-            System.out.print("Create complementary flight? (Press Y to create, N otherwise)> ");
+            System.out.print("Create complementary flight? (Enter Y to create, N otherwise)> ");
             String responseString = sc.nextLine().trim();
             if (responseString.equals("Y")) {
                 System.out.print("Enter return flight number> ");
@@ -472,7 +472,7 @@ public class ScheduleManagerModule {
                     fare = new Fare(fareBasisCode, fareAmount, cabinClassConfiguration);
                     fares.add(fare);
                     //session bean create Fare, associate, if returnFlightSchedulePlan true, add to the return also
-                    System.out.print("Add another fare? (Press Y to create, N otherwise)> ");
+                    System.out.print("Add another fare? (Enter Y to create, N otherwise)> ");
                     sc.nextLine();
                     String responseString = sc.nextLine().trim();
                     if (responseString.equals("Y")) {
@@ -493,7 +493,7 @@ public class ScheduleManagerModule {
                     fare = new Fare(fareBasisCode, fareAmount, cabinClassConfiguration);
                     fares.add(fare);
                     //session bean create Fare, associate, if returnFlightSchedulePlan true, add to the return also
-                    System.out.print("Add another fare? (Press Y to create, N otherwise)> ");
+                    System.out.print("Add another fare? (Enter Y to create, N otherwise)> ");
                     sc.nextLine();
                     String responseString = sc.nextLine().trim();
                     if (responseString.equals("Y")) {
@@ -883,7 +883,7 @@ public class ScheduleManagerModule {
                     //sessionbean to create RETURN schedule. pass in flight, the 3 dates, rmb check overlap
 
                 Long returnFlightSchedulePlanId = flightSchedulePlanSessionBeanRemote.createNewComplementaryReturnFlightSchedulePlan(returnFlightSchedulePlan, flightSchedulePlanId, returnFlight.getFlightId());
-                //System.out.println("FlightSchedulePlan " + flightSchedulePlanId + "created successfully!");
+                
                 for (FlightSchedule returnFlightSchedule : returnFlightSchedules) {
 
                     Long returnFlightScheduleId = flightScheduleSessionBeanRemote.createNewFlightSchedule(returnFlightSchedule, returnFlightSchedulePlanId);
