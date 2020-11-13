@@ -44,7 +44,7 @@ public class FleetManagerModule {
         
         while(true) {
         
-            System.out.println("*** Flight Reservation System Management :: Fleet Manager ***\n");
+            System.out.println("\n*** Flight Reservation System Management :: Fleet Manager ***\n");
             System.out.println("1: Create aircraft configuration");
             System.out.println("2: View all aircraft configuration");
             System.out.println("3: View aircraft configuration details");
@@ -94,10 +94,9 @@ public class FleetManagerModule {
         
         System.out.print("Enter aircraft type ID> ");
         Long aircraftTypeId = sc.nextLong();
-        
-        String aircraftConfigurationName = "";
-        
-        aircraftConfigurationName = aircraftTypeSessionBeanRemote.retrieveAircraftTypeById(aircraftTypeId).getAircraftTypeName();
+        sc.nextLine();
+        System.out.print("Enter aircraft configuration name> ");
+        String aircraftConfigurationName = sc.nextLine().trim();
         
         System.out.print("Enter number of cabin classes> ");
         Integer numberOfCabinClasses = sc.nextInt();
@@ -159,10 +158,10 @@ public class FleetManagerModule {
         
         List<AircraftConfiguration> aircraftConfigurations = aircraftConfigurationSessionBeanRemote.retrieveAllAircraftConfigurations();
         
-        System.out.printf("%20s%30s%20s\n", "Aircraft Type", "Name", "Max Capacity");
+        System.out.printf("%20s%20s%30s%20s\n", "AircraftConfig ID", "Aircraft Type", "Name", "Max Capacity");
         
         for (AircraftConfiguration aircraftConfiguration : aircraftConfigurations) {
-            System.out.printf("%20s%30s%20s\n", aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getTotalMaximumSeatCapacity());
+            System.out.printf("%20s%20s%30s%20s\n", aircraftConfiguration.getAircraftConfigurationId(),aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getTotalMaximumSeatCapacity());
         }
         
         System.out.print("Press any key to continue...> ");
@@ -172,6 +171,8 @@ public class FleetManagerModule {
     public void doViewAircraftConfigurationDetails() throws AircraftConfigurationNotFoundException {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System Management :: View Aircraft Configuration Details ***\n");
+        
+        doViewAllAircraftConfigurations();
         
         System.out.print("Enter Aircraft Configuration ID> ");
         Long aircraftConfigurationId = sc.nextLong();
