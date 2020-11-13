@@ -15,6 +15,7 @@ import ejb.session.stateless.FlightRouteSessionBeanLocal;
 import ejb.session.stateless.FlightSchedulePlanSessionBeanLocal;
 import ejb.session.stateless.FlightScheduleSessionBeanLocal;
 import ejb.session.stateless.FlightSessionBeanLocal;
+import ejb.session.stateless.ItineraryItemSessionBeanLocal;
 import ejb.session.stateless.PartnerSessionBeanLocal;
 import ejb.session.stateless.SeatInventorySessionBean;
 import ejb.session.stateless.SeatInventorySessionBeanLocal;
@@ -28,6 +29,7 @@ import entity.Flight;
 import entity.FlightRoute;
 import entity.FlightSchedule;
 import entity.FlightSchedulePlan;
+import entity.ItineraryItem;
 import entity.Partner;
 import entity.SeatInventory;
 import java.math.BigDecimal;
@@ -62,6 +64,9 @@ import util.exception.PartnerNotFoundException;
 @LocalBean
 @Startup
 public class TestDataInitSessionBean {
+
+    @EJB
+    private ItineraryItemSessionBeanLocal itineraryItemSessionBeanLocal;
 
     @EJB
     private SeatInventorySessionBeanLocal seatInventorySessionBeanLocal;
@@ -151,6 +156,12 @@ public class TestDataInitSessionBean {
         } catch (FlightSchedulePlanNotFoundException ex) {
             loadFlightSchedulePlan();
         }
+        
+//        try {
+//            flightScheduleSessionBean.retrieveFlightScheduleById(1l);
+//        } catch (FlightSchedulePlanNotFoundException ex) {
+//            loadTest();
+//        }
         
     }
     
@@ -331,4 +342,12 @@ public class TestDataInitSessionBean {
         }
     }
     
+//    public void loadTest() {
+//        try {
+//            itineraryItemSessionBeanLocal.createItineraryItem(new ItineraryItem("11-11-2222 12-11-2222", "SIN-KUL", "FIRST_CLASS", "B2", BigDecimal.valueOf(12.00), "Wang Ziyue", "F001"), 1l);
+//            itineraryItemSessionBeanLocal.createItineraryItem(new ItineraryItem("11-11-2222 12-11-2222", "SIN-KUL", "FIRST_CLASS", "A2", BigDecimal.valueOf(13.00), "Grace Li", "F002"), 1l);
+//        } catch (FlightSchedulePlanNotFoundException ex) {
+//            System.out.println(ex.getMessage() + "\n");
+//        } 
+//    }    
 }

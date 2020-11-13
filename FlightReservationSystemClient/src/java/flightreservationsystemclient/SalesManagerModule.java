@@ -13,6 +13,8 @@ import ejb.session.stateless.SeatInventorySessionBeanRemote;
 import entity.Employee;
 import entity.FlightSchedule;
 import entity.FlightSchedulePlan;
+import entity.ItineraryItem;
+import entity.Seat;
 import entity.SeatInventory;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -66,7 +68,11 @@ public class SalesManagerModule {
                         System.out.println("Error encountered: " + ex.getMessage() + "\n");
                     }
                 } else if (response == 2) {
-                    doViewFlightReservations();
+                    try {
+                        doViewFlightReservations();
+                    } catch (FlightSchedulePlanNotFoundException ex) {
+                        System.out.println("Error encountered: " + ex.getMessage() + "\n");
+                    }
                 } else if (response == 3) {
                     break;
                 }
@@ -99,6 +105,9 @@ public class SalesManagerModule {
             }
         }
         
+        System.out.print("Press any key to continue...> ");
+        sc.nextLine();
+        
         System.out.print("Enter Flight Schedule Id> ");
         Long flightScheduleId = sc.nextLong();
         FlightSchedule flightSchedule = flightScheduleSessionBeanRemote.retrieveFlightScheduleById(flightScheduleId);
@@ -120,7 +129,41 @@ public class SalesManagerModule {
         System.out.println("Total balance seats: " + totalBalance);
     }
     
-    public void doViewFlightReservations() {
+    public void doViewFlightReservations() throws FlightSchedulePlanNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Flight Reservation System Management :: View Seats Inventory ***\n");
+        System.out.print("Enter Flight Number> ");
+        String flightNumber = sc.nextLine().trim();
+        List<FlightSchedulePlan> flightSchedulePlans = flightSchedulePlanSessionBeanRemote.retrieveFlightSchedulePlansByFlightNumber(flightNumber);
         
+        
+        //this chunk may produce error when recurrent come, if so dont show
+        System.out.printf("%20s%32s%32s%20s\n", "Flight Schedule Id", "Departure Date", "Arrival Date", "Flight Duration");
+            
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        //System.out.println(sdf.format(date));  
+        for (FlightSchedulePlan flightSchedulePlan : flightSchedulePlans) {
+            for (FlightSchedule flightSchedule : flightSchedulePlan.getFlightSchedules()) {
+                Long flightScheduleId = flightSchedule.getFlightScheduleId();
+                FlightSchedule flightScheduleToPrint = flightScheduleSessionBeanRemote.retrieveFlightScheduleById(flightScheduleId);
+                System.out.printf("%20s%32s%32s%20s\n", flightScheduleId, flightScheduleToPrint.getDepartureDateTime(), flightScheduleToPrint.getArrivalDateTime(), format.format(flightScheduleToPrint.getEstimatedFlightDuration()));
+            }
+        }
+        
+        System.out.print("Press any key to continue...> ");
+        sc.nextLine();
+        
+        System.out.print("Enter Flight Schedule Id> ");
+        Long flightScheduleId = sc.nextLong();
+        //FlightSchedule flightSchedule = flightScheduleSessionBeanRemote.retrieveFlightScheduleById(flightScheduleId);
+        
+        System.out.printf("%15s%20s%32s%20s\n", "Seat Number", "Cabin Class", "Passenger Name", "Fare Basis Code");
+         
+        List<ItineraryItem> itineraryItems = flightReservationSessionBeanRemote.retrieveAllItineraryItemsByFlightScheduleId(flightScheduleId);
+        for (ItineraryItem itineraryItem : itineraryItems) {
+            System.out.printf("%15s%20s%32s%20s\n",itineraryItem.getSeatNumber(), itineraryItem.getCabinClass(), itineraryItem.getPassengerName(), itineraryItem.getFareBasisCode());
+        }
+        System.out.print("Press any key to continue...> ");
+        sc.nextLine();
     }
 }

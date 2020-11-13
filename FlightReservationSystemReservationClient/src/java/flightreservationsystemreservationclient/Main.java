@@ -5,6 +5,7 @@
  */
 package flightreservationsystemreservationclient;
 
+import ejb.session.stateful.CustomerFlightReservationSessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import javax.ejb.EJB;
 
@@ -15,14 +16,19 @@ import javax.ejb.EJB;
 public class Main {
 
     @EJB
+    private static CustomerFlightReservationSessionBeanRemote customerFlightReservationSessionBeanRemote;
+
+    @EJB
     private static CustomerSessionBeanRemote customerSessionBean;
+    
+    
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        MainApp mainApp = new MainApp(customerSessionBean);
+        MainApp mainApp = new MainApp(customerSessionBean, customerFlightReservationSessionBeanRemote);
         mainApp.runApp();
     }
     

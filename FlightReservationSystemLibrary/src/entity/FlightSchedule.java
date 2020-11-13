@@ -43,9 +43,13 @@ public class FlightSchedule implements Serializable {
     
     @OneToMany
     private List<SeatInventory> seatInventories;
+    
+    @OneToMany(mappedBy = "flightSchedule")
+    private List<ItineraryItem> itineraryItems;
 
     public FlightSchedule() {
         this.seatInventories = new ArrayList<>();
+        this.itineraryItems = new ArrayList<>();
     }
 
     public FlightSchedule(Date departureDateTime, Date estimatedFlightDuration, Date arrivalDateTime) {
@@ -129,6 +133,14 @@ public class FlightSchedule implements Serializable {
 
     public void setSeatInventories(List<SeatInventory> seatInventories) {
         this.seatInventories = seatInventories;
+    }
+
+    public List<ItineraryItem> getItineraryItems() {
+        return itineraryItems;
+    }
+
+    public void setItineraryItems(List<ItineraryItem> itineraryItems) {
+        this.itineraryItems = itineraryItems;
     }
     
 }

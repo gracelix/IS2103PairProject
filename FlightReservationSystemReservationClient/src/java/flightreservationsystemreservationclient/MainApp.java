@@ -5,15 +5,21 @@
  */
 package flightreservationsystemreservationclient;
 
+import ejb.session.stateful.CustomerFlightReservationSessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import entity.Customer;
+import entity.Fare;
 import entity.FlightSchedule;
 import entity.ItineraryItem;
+import entity.SeatInventory;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import util.enumeration.CabinClassType;
 import util.exception.InvalidLoginCredentialException;
 
 /**
@@ -22,6 +28,7 @@ import util.exception.InvalidLoginCredentialException;
  */
 public class MainApp {
     private CustomerSessionBeanRemote customerSessionBeanRemote;
+    private CustomerFlightReservationSessionBeanRemote customerFlightReservationSessionBeanRemote;
     private Customer currentCustomer;
 
     public MainApp() {
@@ -32,6 +39,14 @@ public class MainApp {
         this.customerSessionBeanRemote = customerSessionBeanRemote;
         this.currentCustomer = null;
     }
+
+    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, CustomerFlightReservationSessionBeanRemote customerFlightReservationSessionBeanRemote) {
+        this.customerSessionBeanRemote = customerSessionBeanRemote;
+        this.customerFlightReservationSessionBeanRemote = customerFlightReservationSessionBeanRemote;
+        this.currentCustomer = null;
+    }
+    
+    
     
     public void runApp() {
         Scanner sc = new Scanner(System.in);
@@ -143,8 +158,9 @@ public class MainApp {
         try {
             Scanner sc = new Scanner(System.in);
             Integer response = 0;
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
-            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            //SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
             System.out.println("*** Flight Reservation System :: Search For Flights ***\n");
 
@@ -153,33 +169,120 @@ public class MainApp {
             System.out.println("2: Round trip\n");
             System.out.print("> ");
             Integer tripType = sc.nextInt();
+            sc.nextLine();
             
-            System.out.print("Enter departure airport> ");
+            System.out.print("Enter departure airport (eg. SIN)> ");
             String departureAirport = sc.nextLine().trim();
-            System.out.print("Enter destination airport> ");
+            System.out.print("Enter destination airport (eg. KUL)> ");
             String destinationAirport = sc.nextLine().trim();
-            System.out.print("Enter departure date (dd/mm/yyyy)> ");
+            System.out.print("Enter departure date (dd-mm-yyyy)> ");
             Date departureDate = inputDateFormat.parse(sc.nextLine().trim());
-            System.out.print("Enter return date (dd/mm/yyyy)> ");
-            Date returnDate = inputDateFormat.parse(sc.nextLine().trim());
+            Date returnDate;
+            if (tripType == 2) {
+                System.out.print("Enter return date (dd-mm-yyyy)> ");
+                returnDate = inputDateFormat.parse(sc.nextLine().trim());
+            }
             System.out.print("Enter number of passengers> ");
             Integer numberOfPassengers = sc.nextInt();
 
             System.out.println("Select flight type preference");
             System.out.println("1: Direct flight");
-            System.out.println("2: Connecting flight\n");
+            System.out.println("2: Connecting flight");
+            System.out.println("3: No Preference\n");
             System.out.print("> ");
             Integer flightType = sc.nextInt();
+            sc.nextLine();
             
-            if (flightType == 1) {
+            if (flightType == 1 || flightType == 3) {
+                //print directs
+                List<FlightSchedule> flightSchedules = customerFlightReservationSessionBeanRemote.searchSingleFlights(departureAirport, destinationAirport, departureDate, numberOfPassengers);
                 
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                Date currentDate;
+                Date nextDate;
+                
+                Date dateWithoutTime = dateFormat.parse(dateFormat.format(departureDate));
+                Integer counter = -3;
+                
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(dateWithoutTime);
+                calendar.add(Calendar.DAY_OF_MONTH, -3);
+                currentDate = calendar.getTime();
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                nextDate = calendar.getTime();
+                for (int i = 0; i < 6; i++) {
+                    currentDate = nextDate;
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    nextDate = calendar.getTime();
+                    System.out.println("Flights for Date: " + currentDate);
+                    System.out.printf("%20s%25s%20s%25s%15s%20s\n",
+                            "Flight Number", "Departure Time",
+                            "Seats Available",
+                            "Cabin Classes Available", 
+                            "Fare/pax", "Total Fare Amount"); 
+
+                    for (FlightSchedule flightSchedule : flightSchedules) {
+                        if (flightSchedule.getDepartureDateTime().after(currentDate) && flightSchedule.getDepartureDateTime().before(nextDate)) {
+                            Date dateTime = timeFormat.parse(timeFormat.format(flightSchedule.getDepartureDateTime()));
+        //                        Integer seats = 0;
+        //                        String cabinClass = "";
+                            for (SeatInventory seatInventory : flightSchedule.getSeatInventories()) {
+        //                            seats += seatInventory.getAvailableSeats();
+        //                            if (seatInventory.getAvailableSeats() > 0) {
+        //                                if (seatInventory.getCabinClass().getCabinClassType().equals(CabinClassType.FIRST_CLASS)) {
+        //                                    cabinClass += "F";
+        //                                } else if (seatInventory.getCabinClass().getCabinClassType().equals(CabinClassType.BUSINESS_CLASS)) {
+        //                                    cabinClass += "J";
+        //                                } else if (seatInventory.getCabinClass().getCabinClassType().equals(CabinClassType.PREMIUM_ECONOMY)) {
+        //                                    cabinClass += "W";
+        //                                } else if (seatInventory.getCabinClass().getCabinClassType().equals(CabinClassType.ECONOMY)) {
+        //                                    cabinClass += "Y";
+        //                                }
+        //                            }
+                                if (seatInventory.getAvailableSeats() > 0) {
+                                    BigDecimal farePax = BigDecimal.ZERO;
+                                    for (Fare fare : flightSchedule.getFlightSchedulePlan().getFares()) {
+                                        if (fare.getCabinClassConfiguration().equals(seatInventory.getCabinClass())) {
+                                            if (farePax.equals(BigDecimal.ZERO) || farePax.compareTo(fare.getFareAmount()) > 0) {
+                                                farePax = fare.getFareAmount();
+                                            }
+                                        }
+                                    }
+                                    BigDecimal totalFare = farePax.multiply(new BigDecimal(numberOfPassengers));
+
+                                    System.out.printf("%20s%25s%20s%25s%15s%20s\n",
+                                    flightSchedule.getFlightSchedulePlan().getFlight().getFlightNumber(), 
+                                    dateTime,
+                                    seatInventory.getAvailableSeats(),
+                                    seatInventory.getCabinClass().getCabinClassType(), 
+                                    farePax, totalFare);                            
+                                }
+                            }
+
+
+                        }
+                    }
+                }
+                
+            } 
+            
+            System.out.print("Press any key to continue...> ");
+            sc.nextLine();
+            
+            if (flightType == 2 || flightType == 3) {
+                //print connecting
             }
             
-            System.out.println("searching for flight....");
-            System.out.println("flight found!");
+            System.out.print("Press any key to continue...> ");
+            sc.nextLine();
+            
+            
+//            System.out.println("searching for flight....");
+//            System.out.println("flight found!");
 
             System.out.print("Do you want to make a reservation? (Y: Yes, N: No)> ");
-            String responseString = sc.nextLine();
+            String responseString = sc.nextLine().trim();
 
             if (responseString.equals("Y")) {
 
