@@ -16,6 +16,8 @@ import ejb.session.stateless.FlightSchedulePlanSessionBeanLocal;
 import ejb.session.stateless.FlightScheduleSessionBeanLocal;
 import ejb.session.stateless.FlightSessionBeanLocal;
 import ejb.session.stateless.PartnerSessionBeanLocal;
+import ejb.session.stateless.SeatInventorySessionBean;
+import ejb.session.stateless.SeatInventorySessionBeanLocal;
 import entity.AircraftConfiguration;
 import entity.AircraftType;
 import entity.Airport;
@@ -27,6 +29,7 @@ import entity.FlightRoute;
 import entity.FlightSchedule;
 import entity.FlightSchedulePlan;
 import entity.Partner;
+import entity.SeatInventory;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,6 +62,9 @@ import util.exception.PartnerNotFoundException;
 @LocalBean
 @Startup
 public class TestDataInitSessionBean {
+
+    @EJB
+    private SeatInventorySessionBeanLocal seatInventorySessionBeanLocal;
 
     @EJB
     private FareSessionBeanLocal fareSessionBean;
@@ -289,15 +295,36 @@ public class TestDataInitSessionBean {
             
             // ML511, 7 Dec 20, 5:00 PM, 3 Hours 0 Minute
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 17:00"), timeFormat.parse("03:00"), dateFormat.parse("07-12-2020 21:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 1l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 1l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 1l);
+            
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 23:00"), timeFormat.parse("03:00"), dateFormat.parse("08-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 2l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 2l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 2l);
             
             // ML511, 8 Dec 20, 5:00 PM, 3 Hours 0 Minute
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 17:00"), timeFormat.parse("03:00"), dateFormat.parse("08-12-2020 21:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 3l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 3l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 3l);
+            
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 23:00"), timeFormat.parse("03:00"), dateFormat.parse("09-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 4l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 4l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 4l);
             
             // ML511, 9 Dec 20, 5:00 PM, 3 Hours 0 Minute
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("09-12-2020 17:00"), timeFormat.parse("03:00"), dateFormat.parse("09-12-2020 21:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 5l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 5l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 5l);
+            
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("09-12-2020 23:00"), timeFormat.parse("03:00"), dateFormat.parse("10-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 6l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 6l);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 6l);
             
         } catch (FlightNotFoundException | ParseException | FlightSchedulePlanNotFoundException | CabinClassConfigurationNotFoundException ex) {
             System.out.println(ex.getMessage() + "\n");

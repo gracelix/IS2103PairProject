@@ -62,6 +62,8 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
             throw new FlightSchedulePlanNotFoundException("Flight Schedule "+ flightScheduleId + " does not exist!");
         }
         
+        flightSchedule.getSeatInventories().size();
+        
         return flightSchedule;
         
     }
@@ -90,4 +92,8 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
         flightScheduleToRemove.getFlightSchedulePlan().getFlightSchedules().remove(flightScheduleToRemove);
         em.remove(flightScheduleToRemove);
     }
+    
+//    public List<FlightSchedule> retrieveFlightSchedulesByFlightNumber(String flightNumber) {
+//        Query query = em.createQuery("SELECT fsp.f FROM FlightSchedulePlan fsp");
+//    }
 }

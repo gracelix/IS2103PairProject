@@ -11,6 +11,7 @@ import ejb.session.stateless.AirportSessionBeanRemote;
 import ejb.session.stateless.CabinClassConfigurationSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.FareSessionBeanRemote;
+import ejb.session.stateless.FlightReservationSessionBeanRemote;
 import ejb.session.stateless.FlightRouteSessionBeanRemote;
 import ejb.session.stateless.FlightSchedulePlanSessionBeanRemote;
 import ejb.session.stateless.FlightScheduleSessionBeanRemote;
@@ -39,12 +40,14 @@ public class MainApp {
     private SeatInventorySessionBeanRemote seatInventorySessionBeanRemote;
     private SeatSessionBeanRemote seatSessionBeanRemote;
     private FareSessionBeanRemote fareSessionBeanRemote;
+    private FlightReservationSessionBeanRemote flightReservationSessionBeanRemote;
     private Employee currentEmployee;
     private Integer response;
     
     private FleetManagerModule fleetManagerModule;
     private RoutePlannerModule routePlannerModule;
     private ScheduleManagerModule scheduleManagerModule;
+    private SalesManagerModule salesManagerModule;
     
     public MainApp() {
         
@@ -61,7 +64,8 @@ public class MainApp {
             FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote,
             SeatInventorySessionBeanRemote seatInventorySessionBeanRemote,
             SeatSessionBeanRemote seatSessionBeanRemote,
-            FareSessionBeanRemote fareSessionBeanRemote) {
+            FareSessionBeanRemote fareSessionBeanRemote,
+            FlightReservationSessionBeanRemote flightReservationSessionBeanRemote) {
         
         this.currentEmployee = null;
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
@@ -76,6 +80,7 @@ public class MainApp {
         this.seatInventorySessionBeanRemote = seatInventorySessionBeanRemote;
         this.seatSessionBeanRemote = seatSessionBeanRemote;
         this.fareSessionBeanRemote = fareSessionBeanRemote;
+        this.flightReservationSessionBeanRemote = flightReservationSessionBeanRemote;
     
     }
     
@@ -132,7 +137,9 @@ public class MainApp {
                 currentEmployee = null;
                 
             } else if (currentEmployee != null && currentEmployee.getEmployeeAccessRights().equals(EmployeeAccessRights.SALES_MANAGER)) {
-                
+                salesManagerModule = new SalesManagerModule(flightScheduleSessionBeanRemote, flightSchedulePlanSessionBeanRemote, flightSessionBeanRemote, flightReservationSessionBeanRemote, seatInventorySessionBeanRemote, currentEmployee);
+                salesManagerModule.doSalesManagerMenu();
+                currentEmployee = null;
             }
             
             if (response == 2) {

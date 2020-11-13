@@ -173,4 +173,18 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
             em.remove(flightSchedule);
         }
     }
+    
+    @Override
+    public List<FlightSchedulePlan> retrieveFlightSchedulePlansByFlightNumber(String flightNumber) {
+        Query query = em.createQuery("SELECT fsp FROM FlightSchedulePlan fsp WHERE fsp.flight.flightNumber = :inFlightNumber");
+        query.setParameter("inFlightNumber", flightNumber);
+        
+        List<FlightSchedulePlan> flightSchedulePlans = query.getResultList();
+        
+        for (FlightSchedulePlan flightSchedulePlan : flightSchedulePlans) {
+            flightSchedulePlan.getFlightSchedules().size();
+        }
+        
+        return flightSchedulePlans;
+    }
 }
