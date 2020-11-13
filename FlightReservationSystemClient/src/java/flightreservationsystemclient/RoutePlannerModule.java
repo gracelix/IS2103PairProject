@@ -129,7 +129,14 @@ public class RoutePlannerModule {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System Management :: Delete Flight Route ***\n");
         
-        System.out.print("Enter flight route ID> ");
+        // display list of flight routes
+        List<FlightRoute> flightRoutes = flightRouteSessionBeanRemote.retrieveAllFlightRoutes();
+        System.out.printf("%20s%20s%20s\n", "Flight Route ID", "Origin Airport", "Destination Airport");
+        for (FlightRoute flightRoute : flightRoutes) {
+            System.out.printf("%20s%20s%20s\n", flightRoute.getFlightRouteId(), flightRoute.getOriginAirport().getIataCode(), flightRoute.getDestinationAirport().getIataCode());
+        }
+        
+        System.out.print("Enter Flight Route ID to be deleted> ");
         Long flightRouteId = sc.nextLong();
         
         try {

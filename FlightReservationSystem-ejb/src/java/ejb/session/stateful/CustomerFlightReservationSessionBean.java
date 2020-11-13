@@ -30,9 +30,6 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
     @EJB(name = "FlightScheduleSessionBeanLocal")
     private FlightScheduleSessionBeanLocal flightScheduleSessionBeanLocal;
 
-    
-    
-    
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
@@ -53,8 +50,6 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
     {
         // Do nothing
     }
-    
-    
     
     @PreDestroy
     public void preDestroy()

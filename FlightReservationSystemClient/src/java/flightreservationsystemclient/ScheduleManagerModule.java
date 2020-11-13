@@ -38,6 +38,7 @@ import util.exception.CabinClassConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
 import util.exception.DeleteFlightSchedulePlanException;
 import util.exception.FareNotFoundException;
+import util.exception.FlightAlreadyExistsException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.FlightScheduleOverlapException;
@@ -65,33 +66,6 @@ public class ScheduleManagerModule {
     public ScheduleManagerModule() {
     }
 
-    public ScheduleManagerModule(FlightSessionBeanRemote flightSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote, Employee employee) {
-        this.flightSessionBeanRemote = flightSessionBeanRemote;
-        this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
-        this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
-        this.cabinClassConfigurationSessionBeanRemote = cabinClassConfigurationSessionBeanRemote;
-        this.employee = employee;
-    }
-
-    public ScheduleManagerModule(FlightSessionBeanRemote flightSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote, FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote, Employee employee) {
-        this.flightSessionBeanRemote = flightSessionBeanRemote;
-        this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
-        this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
-        this.cabinClassConfigurationSessionBeanRemote = cabinClassConfigurationSessionBeanRemote;
-        this.flightSchedulePlanSessionBeanRemote = flightSchedulePlanSessionBeanRemote;
-        this.employee = employee;
-    }
-
-    public ScheduleManagerModule(FlightSessionBeanRemote flightSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote, FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote, FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote, Employee employee) {
-        this.flightSessionBeanRemote = flightSessionBeanRemote;
-        this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
-        this.aircraftConfigurationSessionBeanRemote = aircraftConfigurationSessionBeanRemote;
-        this.cabinClassConfigurationSessionBeanRemote = cabinClassConfigurationSessionBeanRemote;
-        this.flightSchedulePlanSessionBeanRemote = flightSchedulePlanSessionBeanRemote;
-        this.flightScheduleSessionBeanRemote = flightScheduleSessionBeanRemote;
-        this.employee = employee;
-    }
-
     public ScheduleManagerModule(FlightSessionBeanRemote flightSessionBeanRemote, FlightRouteSessionBeanRemote flightRouteSessionBeanRemote, AircraftConfigurationSessionBeanRemote aircraftConfigurationSessionBeanRemote, CabinClassConfigurationSessionBeanRemote cabinClassConfigurationSessionBeanRemote, FlightSchedulePlanSessionBeanRemote flightSchedulePlanSessionBeanRemote, FlightScheduleSessionBeanRemote flightScheduleSessionBeanRemote, SeatInventorySessionBeanRemote seatInventorySessionBeanRemote, SeatSessionBeanRemote seatSessionBeanRemote, FareSessionBeanRemote fareSessionBeanRemote, Employee employee) {
         this.flightSessionBeanRemote = flightSessionBeanRemote;
         this.flightRouteSessionBeanRemote = flightRouteSessionBeanRemote;
@@ -105,12 +79,6 @@ public class ScheduleManagerModule {
         this.employee = employee;
     }
 
-    
-    
-    
-    
-    
-    
     public void doScheduleManagerMenu() {
         Scanner sc = new Scanner(System.in);
         Integer response = 0;
@@ -134,7 +102,7 @@ public class ScheduleManagerModule {
                 if (response == 1) {
                     try {
                         doCreateFlight();
-                    } catch (FlightNotFoundException | AircraftConfigurationNotFoundException | FlightRouteNotFoundException ex) {
+                    } catch (FlightNotFoundException | AircraftConfigurationNotFoundException | FlightRouteNotFoundException | FlightAlreadyExistsException ex) {
                         System.out.println(ex.getMessage() + "\n");
                     }
                 } else if (response == 2) {
@@ -161,24 +129,26 @@ public class ScheduleManagerModule {
         }
     }
     
-    public void doCreateFlight() throws FlightNotFoundException, AircraftConfigurationNotFoundException, FlightRouteNotFoundException {
+    public void doCreateFlight() throws FlightNotFoundException, AircraftConfigurationNotFoundException, FlightRouteNotFoundException, FlightAlreadyExistsException {
         Scanner sc = new Scanner(System.in);
         
         System.out.println("*** Flight Reservation System Management :: Create Flight ***\n");
         
-        System.out.print("Enter flight number (eg. 123)> ");
-        Integer flightInt = sc.nextInt();
+        System.out.print("Enter flight number (eg. ML123)> ");
+        String flightNumber = sc.nextLine().trim();
         System.out.print("Enter flight route ID> ");
-        //perhaps a retrieve all flight route here?
         Long flightRouteId = sc.nextLong();
         System.out.print("Enter aircraft configuration ID> ");
         Long aircraftConfigurationID = sc.nextLong();
         
-        String flightNumber = "ML" + flightInt;
-        
         Flight flight = new Flight(flightNumber);
+        Long flightId;
         
-        Long flightId = flightSessionBeanRemote.createNewFlight(flight, flightRouteId, aircraftConfigurationID);
+        try {
+            flightId = flightSessionBeanRemote.createNewFlight(flight, flightRouteId, aircraftConfigurationID);
+        } catch (FlightAlreadyExistsException ex) {
+            throw new FlightAlreadyExistsException(ex.getMessage());
+        }
         
         System.out.println("Flight " + flightId + " of flight number " + flightNumber + " created successfully!\n");
         
@@ -198,25 +168,6 @@ public class ScheduleManagerModule {
         }
     }
     
-//    public void doViewAllFlights() {
-//        Scanner sc = new Scanner(System.in);
-//        System.out.println("*** Flight Reservation System Management :: View All Flight ***\n");
-//        
-//        List<Flight> flights = flightSessionBeanRemote.retrieveAllFlights();
-//        
-//        Flight complementaryFlight = null;
-//        
-//        System.out.printf("%20s%20s%20s%20s\n", "Flight ID", "Flight Number", "Flight Route ID", "Aircraft Configuration ID");
-//        for (Flight flight : flights) {
-//            System.out.printf("%20s%20s%20s%20\n", flight.getFlightId(), flight.getFlightNumber(), flight.getFlightRoute().getFlightRouteId(), flight.getAircraftConfiguration().getAircraftConfigurationId());
-//            if (flight.getComplementaryReturnFlight() != null) {
-//                complementaryFlight = flight.getComplementaryReturnFlight();
-//                System.out.printf("%20s%20s%20s%20\n", complementaryFlight.getFlightId(), complementaryFlight.getFlightNumber(), complementaryFlight.getFlightRoute().getFlightRouteId(), complementaryFlight.getAircraftConfiguration().getAircraftConfigurationId());
-//            }
-//        }
-//        System.out.print("Press any key to continue...> ");
-//        sc.nextLine();
-//    }
     
     public void doViewAllFlights() {
         Scanner sc = new Scanner(System.in);
@@ -237,7 +188,14 @@ public class ScheduleManagerModule {
         Integer response = 0;
         System.out.println("*** Flight Reservation System Management :: View Flight Details ***\n");
         
-        System.out.print("Enter Flight ID> ");
+        // display a list of flights
+        List<Flight> flights = flightSessionBeanRemote.retrieveAllFlights();
+        System.out.printf("%20s%20s%20s%28s\n", "Flight Number", "Flight ID", "Flight Route ID", "Aircraft Configuration ID");
+        for (Flight flight : flights) {
+            System.out.printf("%20s%20s%20s%28s\n", flight.getFlightNumber(), flight.getFlightId(), flight.getFlightRoute().getFlightRouteId(), flight.getAircraftConfiguration().getAircraftConfigurationId());
+        }
+        
+        System.out.print("Enter Flight ID to view> ");
         Long flightId = sc.nextLong();
         
         try {
@@ -245,7 +203,7 @@ public class ScheduleManagerModule {
             
             System.out.printf("%15s%18s%25s%15s%15s\n", "Flight Number", "Flight Route ID", "Origin-Destination", "Cabin Classes", "Total Seats");
             String odPair = flight.getFlightRoute().getOriginAirport().getIataCode() + "-" + flight.getFlightRoute().getDestinationAirport().getIataCode();
-            //List<CabinClassConfiguration> cabinClassConfigurations = flight.getAircraftConfiguration().getCabinClassConfigurations();
+            
             List<CabinClassConfiguration> cabinClassConfigurations = cabinClassConfigurationSessionBeanRemote.retrieveCabinClassConfigurationsByAircraftConfigurationId(flight.getAircraftConfiguration().getAircraftConfigurationId());
             String cabinClasses = "";
             for (CabinClassConfiguration cabinClassConfiguration : cabinClassConfigurations) {
@@ -268,18 +226,16 @@ public class ScheduleManagerModule {
             System.out.print("> ");
             response = sc.nextInt();
 
-            if(response == 1)
-            {
+            if(response == 1) {
                 doUpdateFlight(flight);
-            }
-            else if(response == 2)
-            {
+            } else if(response == 2) {
                 doDeleteFlight(flight);
             }
         } catch (FlightNotFoundException ex) {
             System.out.println("Flight " + flightId + " not found!" + "\n");
         }
     }
+    
     public void doUpdateFlight(Flight flight) {
         Scanner sc = new Scanner(System.in);
         Integer integerInput;
@@ -453,9 +409,6 @@ public class ScheduleManagerModule {
         
         FlightSchedule flightSchedule = new FlightSchedule(departureDate, flightTime, arrivalDate);
         flightSchedules.add(flightSchedule);
-        //sessionbean to create schedule. pass in flight, the 3 dates, rmb check overlap
-        
-        
         
         System.out.print("Please enter fare details for the following cabin classes ");
         System.out.print("Press any key to continue...> ");
@@ -574,9 +527,7 @@ public class ScheduleManagerModule {
                         seatSessionBeanRemote.createNewSeat(seat, seatInventoryId);
                     }
                 }
-
                 System.out.println("Seat Inventory " + seatInventoryId + " created for Flight Schedule " + flightScheduleId + " under flight schedule plan " + flightSchedulePlanId);
-
             }                
         }
 
@@ -754,6 +705,7 @@ public class ScheduleManagerModule {
         
         List<CabinClassConfiguration> cabinClassConfigurations = cabinClassConfigurationSessionBeanRemote.retrieveCabinClassConfigurationsByAircraftConfigurationId(flight.getAircraftConfiguration().getAircraftConfigurationId());
         Fare fare;
+        
         for (CabinClassConfiguration cabinClassConfiguration : cabinClassConfigurations) {
             if (cabinClassConfiguration.getCabinClassType() == CabinClassType.FIRST_CLASS) {
                 
@@ -845,7 +797,7 @@ public class ScheduleManagerModule {
         
             
         Long flightSchedulePlanId = flightSchedulePlanSessionBeanRemote.createNewFlightSchedulePlan(flightSchedulePlan, flight.getFlightId());
-        //System.out.println("FlightSchedulePlan " + flightSchedulePlanId + "created successfully!");
+        
         for (FlightSchedule flightScheduleToCreate : flightSchedules) {
 
             Long flightScheduleId = flightScheduleSessionBeanRemote.createNewFlightSchedule(flightScheduleToCreate, flightSchedulePlanId);
@@ -1028,17 +980,17 @@ public class ScheduleManagerModule {
             FlightSchedulePlan flightSchedulePlan = flightSchedulePlanSessionBeanRemote.retrieveFlightSchedulePlanById(flightSchedulePlanId);
             
             System.out.println("Flight Number: " + flightSchedulePlan.getFlight().getFlightNumber());
-            System.out.println("Flight Schedule Plan Type :" + flightSchedulePlan.getFlightSchedulePlanType());
+            System.out.println("Flight Schedule Plan Type: " + flightSchedulePlan.getFlightSchedulePlanType());
             if (flightSchedulePlan.getEndDate() != null) {
                 System.out.println("End Date: " + flightSchedulePlan.getEndDate());
             } else {
-                System.out.println("End date : N/A" );
+                System.out.println("End date: N/A" );
             }
             
             if (flightSchedulePlan.getnDays() != null) {
                 System.out.println("Recurs every n days: " + flightSchedulePlan.getnDays());
             } else {
-                System.out.println("Recurs every n days : N/A" );
+                System.out.println("Recurs every n days: N/A" );
             }
             
             String origin = flightSchedulePlan.getFlight().getFlightRoute().getOriginAirport().getIataCode();

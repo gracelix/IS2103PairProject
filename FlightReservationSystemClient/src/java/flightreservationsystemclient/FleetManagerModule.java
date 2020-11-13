@@ -172,7 +172,12 @@ public class FleetManagerModule {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System Management :: View Aircraft Configuration Details ***\n");
         
-        doViewAllAircraftConfigurations();
+        // display list of aircraft configurations 
+        List<AircraftConfiguration> aircraftConfigurations = aircraftConfigurationSessionBeanRemote.retrieveAllAircraftConfigurations();
+        System.out.printf("%20s%20s%30s%20s\n", "AircraftConfig ID", "Aircraft Type", "Name", "Max Capacity");
+        for (AircraftConfiguration aircraftConfiguration : aircraftConfigurations) {
+            System.out.printf("%20s%20s%30s%20s\n", aircraftConfiguration.getAircraftConfigurationId(),aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getTotalMaximumSeatCapacity());
+        }
         
         System.out.print("Enter Aircraft Configuration ID> ");
         Long aircraftConfigurationId = sc.nextLong();

@@ -50,6 +50,7 @@ import util.exception.AircraftTypeNotFoundException;
 import util.exception.AirportNotFoundException;
 import util.exception.CabinClassConfigurationNotFoundException;
 import util.exception.EmployeeNotFoundException;
+import util.exception.FlightAlreadyExistsException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.FlightSchedulePlanNotFoundException;
@@ -275,7 +276,7 @@ public class TestDataInitSessionBean {
             flightId = flightSessionBean.createNewFlight(new Flight("ML711"), 13l, 4l);
             flightSessionBean.createNewComplementaryReturnFlight(new Flight("ML712"), flightId, 14l, 4l);
                     
-        } catch (AircraftConfigurationNotFoundException | FlightNotFoundException | FlightRouteNotFoundException ex) {
+        } catch (AircraftConfigurationNotFoundException | FlightNotFoundException | FlightRouteNotFoundException | FlightAlreadyExistsException ex) {
             System.out.println(ex.getMessage() + "\n");
         }
     }
