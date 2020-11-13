@@ -7,9 +7,12 @@ package flightreservationsystemreservationclient;
 
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import entity.Customer;
+import entity.FlightSchedule;
+import entity.ItineraryItem;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 import util.exception.InvalidLoginCredentialException;
 
@@ -145,8 +148,12 @@ public class MainApp {
 
             System.out.println("*** Flight Reservation System :: Search For Flights ***\n");
 
-            System.out.print("Enter trip type> ");
-            String tripType = sc.nextLine().trim();
+            System.out.println("Select the trip type");
+            System.out.println("1: Single trip");
+            System.out.println("2: Round trip\n");
+            System.out.print("> ");
+            Integer tripType = sc.nextInt();
+            
             System.out.print("Enter departure airport> ");
             String departureAirport = sc.nextLine().trim();
             System.out.print("Enter destination airport> ");
@@ -158,6 +165,16 @@ public class MainApp {
             System.out.print("Enter number of passengers> ");
             Integer numberOfPassengers = sc.nextInt();
 
+            System.out.println("Select flight type preference");
+            System.out.println("1: Direct flight");
+            System.out.println("2: Connecting flight\n");
+            System.out.print("> ");
+            Integer flightType = sc.nextInt();
+            
+            if (flightType == 1) {
+                
+            }
+            
             System.out.println("searching for flight....");
             System.out.println("flight found!");
 

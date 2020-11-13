@@ -8,7 +8,10 @@ package ejb.session.stateless;
 import entity.Partner;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import util.exception.InvalidLoginCredentialException;
 import util.exception.PartnerNotFoundException;
 
 /**
@@ -39,6 +42,22 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         }
         
         return partner;
-        
+    }
+    
+    @Override
+    public Partner login(String username, String password) throws InvalidLoginCredentialException {
+        try {
+            Query query = em.createQuery("SELECT p FROM Partner p WHERE p.userName = :inUserName");
+            query.setParameter("inUserName", username);
+            Partner partner = (Partner)query.getSingleResult();
+
+            if (partner.getPassword().equals(password)) {
+                return partner;
+            } else {
+                throw new InvalidLoginCredentialException("Entered password is incorrect.");
+            }
+        } catch (NoResultException ex) {
+            throw new InvalidLoginCredentialException("One or more entered credentials are incorrect.");
+        }
     }
 }
