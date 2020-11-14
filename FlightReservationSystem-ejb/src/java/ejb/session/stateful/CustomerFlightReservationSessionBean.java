@@ -7,6 +7,7 @@ package ejb.session.stateful;
 
 import ejb.session.stateless.FlightScheduleSessionBeanLocal;
 import entity.FlightSchedule;
+import entity.ItineraryItem;
 import entity.SeatInventory;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -148,6 +149,8 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         
         return flightSchedules;
     }
+    
+    
     
 //    @Override
 //    public List<ItineraryItem> searchHolidays(Date departureDate, Date returnDate, String departureCity, String destinationCity, Integer numberOfTravellers)

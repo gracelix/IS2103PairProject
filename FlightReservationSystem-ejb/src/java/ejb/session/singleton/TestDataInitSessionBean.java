@@ -56,6 +56,7 @@ import util.exception.FlightRouteNotFoundException;
 import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.InvalidIataCodeException;
 import util.exception.PartnerNotFoundException;
+import util.exception.SeatInventoryNotFoundException;
 
 /**
  *
@@ -286,7 +287,227 @@ public class TestDataInitSessionBean {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             
-            Long flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.MULTIPLE), 9l);
+            // ML711, Recurrent Weekly
+            Long flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.RECURRENT_WEEK, dateFormat.parse("31-12-2020 09:00")), 15l);
+            fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(6500), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(6l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(6000), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(6l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J001", BigDecimal.valueOf(3500), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(7l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J002", BigDecimal.valueOf(3000), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(7l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(1500), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(8l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(1000), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(8l)), flightSchedulePlanId);
+            
+            Long complementaryFlightSchedulePlanId = flightSchedulePlanSessionBean.createNewComplementaryReturnFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.RECURRENT_WEEK, dateFormat.parse("31-12-2020 09:00")), flightSchedulePlanId, 16l);
+            fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(6500), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(6l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(6000), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(6l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J001", BigDecimal.valueOf(3500), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(7l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J002", BigDecimal.valueOf(3000), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(7l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(1500), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(8l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(1000), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(8l)), complementaryFlightSchedulePlanId);
+            
+            // ML711, 7 Dec 20, 9:00 AM, 14 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 09:00"), timeFormat.parse("14:00"), dateFormat.parse("07-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 23:00"), timeFormat.parse("14:00"), dateFormat.parse("08-12-2020 15:00")), complementaryFlightSchedulePlanId);
+            
+            // ML711, 14 Dec 20, 9:00 AM, 14 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("14-12-2020 09:00"), timeFormat.parse("14:00"), dateFormat.parse("14-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("14-12-2020 23:00"), timeFormat.parse("14:00"), dateFormat.parse("15-12-2020 15:00")), complementaryFlightSchedulePlanId);
+            
+            // ML711, 21 Dec 20, 9:00 AM, 14 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("21-12-2020 09:00"), timeFormat.parse("14:00"), dateFormat.parse("21-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("21-12-2020 23:00"), timeFormat.parse("14:00"), dateFormat.parse("22-12-2020 15:00")), complementaryFlightSchedulePlanId);
+            
+            // ML711, 28 Dec 20, 9:00 AM, 14 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("28-12-2020 09:00"), timeFormat.parse("14:00"), dateFormat.parse("28-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("28-12-2020 23:00"), timeFormat.parse("14:00"), dateFormat.parse("29-12-2020 15:00")), complementaryFlightSchedulePlanId);
+            
+            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            
+            // ML611, Recurrent Weekly
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.RECURRENT_WEEK, dateFormat.parse("31-12-2020 12:00")), 11l);
+            fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(3250), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(3000), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J001", BigDecimal.valueOf(1750), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J002", BigDecimal.valueOf(1500), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(750), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(500), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), flightSchedulePlanId);
+            
+            complementaryFlightSchedulePlanId = flightSchedulePlanSessionBean.createNewComplementaryReturnFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.RECURRENT_WEEK, dateFormat.parse("31-12-2020 12:00")), flightSchedulePlanId, 12l);
+            fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(3250), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(3000), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J001", BigDecimal.valueOf(1750), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J002", BigDecimal.valueOf(1500), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(750), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(500), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), complementaryFlightSchedulePlanId);
+            
+            // ML611, 6 Dec 2020, 12:00 PM, 8 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("06-12-2020 12:00"), timeFormat.parse("08:00"), dateFormat.parse("06-12-2020 23:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 01:00"), timeFormat.parse("08:00"), dateFormat.parse("07-12-2020 06:00")), complementaryFlightSchedulePlanId);
+            
+            // ML611, 13 Dec 2020, 12:00 PM, 8 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("13-12-2020 12:00"), timeFormat.parse("08:00"), dateFormat.parse("13-12-2020 23:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("14-12-2020 01:00"), timeFormat.parse("08:00"), dateFormat.parse("14-12-2020 06:00")), complementaryFlightSchedulePlanId);
+            
+            // ML611, 20 Dec 2020, 12:00 PM, 8 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("20-12-2020 12:00"), timeFormat.parse("08:00"), dateFormat.parse("20-12-2020 23:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("21-12-2020 01:00"), timeFormat.parse("08:00"), dateFormat.parse("21-12-2020 06:00")), complementaryFlightSchedulePlanId);
+            
+            // ML611, 27 Dec 2020, 12:00 PM, 8 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("27-12-2020 12:00"), timeFormat.parse("08:00"), dateFormat.parse("27-12-2020 23:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("28-12-2020 01:00"), timeFormat.parse("08:00"), dateFormat.parse("28-12-2020 06:00")), complementaryFlightSchedulePlanId);
+            
+            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            
+            // ML621, Recurrent Weekly
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.RECURRENT_WEEK, dateFormat.parse("31-12-2020 10:00")), 13l);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(700), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(400), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            
+            complementaryFlightSchedulePlanId = flightSchedulePlanSessionBean.createNewComplementaryReturnFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.RECURRENT_WEEK, dateFormat.parse("31-12-2020 10:00")), flightSchedulePlanId,14l);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(700), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(400), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), complementaryFlightSchedulePlanId);
+            
+            // ML621, 1 Dec 20, 10:00 AM, 8 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("01-12-2020 10:00"), timeFormat.parse("08:00"), dateFormat.parse("01-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("01-12-2020 23:00"), timeFormat.parse("08:00"), dateFormat.parse("02-12-2020 04:00")), complementaryFlightSchedulePlanId);
+            
+            // ML621, 8 Dec 20, 10:00 AM, 8 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 10:00"), timeFormat.parse("08:00"), dateFormat.parse("08-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 23:00"), timeFormat.parse("08:00"), dateFormat.parse("09-12-2020 04:00")), complementaryFlightSchedulePlanId);
+            
+            // ML621, 15 Dec 20, 10:00 AM, 8 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("15-12-2020 10:00"), timeFormat.parse("08:00"), dateFormat.parse("15-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("15-12-2020 23:00"), timeFormat.parse("08:00"), dateFormat.parse("16-12-2020 04:00")), complementaryFlightSchedulePlanId);
+            
+            // ML621, 22 Dec 20, 10:00 AM, 8 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("22-12-2020 10:00"), timeFormat.parse("08:00"), dateFormat.parse("22-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("22-12-2020 23:00"), timeFormat.parse("08:00"), dateFormat.parse("23-12-2020 04:00")), complementaryFlightSchedulePlanId);
+            
+            // ML621, 29 Dec 20, 10:00 AM, 8 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("29-12-2020 10:00"), timeFormat.parse("08:00"), dateFormat.parse("29-12-2020 21:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("29-12-2020 23:00"), timeFormat.parse("08:00"), dateFormat.parse("30-12-2020 04:00")), complementaryFlightSchedulePlanId);
+            
+            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            
+            // ML311, Recurrent Weekly
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.RECURRENT_WEEK, dateFormat.parse("31-12-2020 10:00")), 5l);
+            fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(3350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(6l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(3100), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(6l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J001", BigDecimal.valueOf(1850), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(7l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J002", BigDecimal.valueOf(1600), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(7l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(850), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(8l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(600), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(8l)), flightSchedulePlanId);
+            
+            complementaryFlightSchedulePlanId = flightSchedulePlanSessionBean.createNewComplementaryReturnFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.RECURRENT_WEEK, dateFormat.parse("31-12-2020 10:00")), flightSchedulePlanId, 6l);
+            fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(3350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(6l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(3100), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(6l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J001", BigDecimal.valueOf(1850), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(7l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J002", BigDecimal.valueOf(1600), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(7l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(850), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(8l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(600), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(8l)), complementaryFlightSchedulePlanId);
+            
+            // ML311, 7 Dec 20, 10:00 AM, 6 Hours 30 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 10:00"), timeFormat.parse("06:30"), dateFormat.parse("07-12-2020 17:30")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 20:30"), timeFormat.parse("06:30"), dateFormat.parse("08-12-2020 02:00")), complementaryFlightSchedulePlanId);
+            
+            // ML311, 14 Dec 20, 10:00 AM, 6 Hours 30 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("14-12-2020 10:00"), timeFormat.parse("06:30"), dateFormat.parse("14-12-2020 17:30")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("14-12-2020 20:30"), timeFormat.parse("06:30"), dateFormat.parse("15-12-2020 02:00")), complementaryFlightSchedulePlanId);
+            
+            // ML311, 21 Dec 20, 10:00 AM, 6 Hours 30 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("21-12-2020 10:00"), timeFormat.parse("06:30"), dateFormat.parse("21-12-2020 17:30")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("21-12-2020 20:30"), timeFormat.parse("06:30"), dateFormat.parse("22-12-2020 02:00")), complementaryFlightSchedulePlanId);
+            
+            // ML311, 28 Dec 20, 10:00 AM, 6 Hours 30 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("28-12-2020 10:00"), timeFormat.parse("06:30"), dateFormat.parse("28-12-2020 17:30")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("28-12-2020 20:30"), timeFormat.parse("06:30"), dateFormat.parse("29-12-2020 02:00")), complementaryFlightSchedulePlanId);
+            
+            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            
+            // ML411, Recurrent NDay
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.RECURRENT_DAY, dateFormat.parse("31-12-2020 13:00"), 2), 7l);
+            fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(3150), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(2900), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J001", BigDecimal.valueOf(1650), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J002", BigDecimal.valueOf(1400), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(650), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), flightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(400), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), flightSchedulePlanId);
+            
+            complementaryFlightSchedulePlanId = flightSchedulePlanSessionBean.createNewComplementaryReturnFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.RECURRENT_DAY, dateFormat.parse("31-12-2020 13:00"), 2), flightSchedulePlanId, 8l);
+            fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(3150), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(2900), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J001", BigDecimal.valueOf(1650), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("J002", BigDecimal.valueOf(1400), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(3l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(650), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), complementaryFlightSchedulePlanId);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(400), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), complementaryFlightSchedulePlanId);
+            
+            // ML411,  1 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("01-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("01-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("01-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("02-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  3 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("03-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("03-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("03-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("04-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  5 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("05-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("05-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("05-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("06-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  7 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("07-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("08-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  9 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("09-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("09-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("09-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("10-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  11 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("11-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("11-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("11-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("12-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  13 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("13-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("13-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("13-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("14-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  15 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("15-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("15-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("15-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("16-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  17 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("17-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("17-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("17-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("18-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  19 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("19-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("19-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("19-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("20-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  21 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("21-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("21-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("21-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("22-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  23 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("23-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("23-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("23-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("24-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  25 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("25-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("25-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("25-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("26-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  27 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("27-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("27-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("27-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("28-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  29 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("29-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("29-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("29-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("30-12-2020 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ML411,  31 Dec 20, 1:00 PM, 4 Hours 0 Minute
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("31-12-2020 13:00"), timeFormat.parse("04:00"), dateFormat.parse("31-12-2020 18:00")), flightSchedulePlanId);
+            flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("31-12-2020 22:00"), timeFormat.parse("04:00"), dateFormat.parse("01-01-2021 01:00")), complementaryFlightSchedulePlanId);
+            
+            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            
+            // ML511, Manual Multiple
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.MULTIPLE), 9l);
             
             fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(3100), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), flightSchedulePlanId);
             fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(2850), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), flightSchedulePlanId);
@@ -295,7 +516,7 @@ public class TestDataInitSessionBean {
             fareSessionBean.createNewFare(new Fare("Y001", BigDecimal.valueOf(600), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), flightSchedulePlanId);
             fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(4l)), flightSchedulePlanId);
             
-            Long complementaryFlightSchedulePlanId = flightSchedulePlanSessionBean.createNewComplementaryReturnFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.MULTIPLE), flightSchedulePlanId, 10l);
+            complementaryFlightSchedulePlanId = flightSchedulePlanSessionBean.createNewComplementaryReturnFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.MULTIPLE), flightSchedulePlanId, 10l);
             
             fareSessionBean.createNewFare(new Fare("F001", BigDecimal.valueOf(3100), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), complementaryFlightSchedulePlanId);
             fareSessionBean.createNewFare(new Fare("F002", BigDecimal.valueOf(2850), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(2l)), complementaryFlightSchedulePlanId);
@@ -307,38 +528,17 @@ public class TestDataInitSessionBean {
             
             // ML511, 7 Dec 20, 5:00 PM, 3 Hours 0 Minute
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 17:00"), timeFormat.parse("03:00"), dateFormat.parse("07-12-2020 21:00")), flightSchedulePlanId);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 1l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 1l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 1l);
-            
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 23:00"), timeFormat.parse("03:00"), dateFormat.parse("08-12-2020 01:00")), complementaryFlightSchedulePlanId);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 2l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 2l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 2l);
             
             // ML511, 8 Dec 20, 5:00 PM, 3 Hours 0 Minute
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 17:00"), timeFormat.parse("03:00"), dateFormat.parse("08-12-2020 21:00")), flightSchedulePlanId);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 3l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 3l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 3l);
-            
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 23:00"), timeFormat.parse("03:00"), dateFormat.parse("09-12-2020 01:00")), complementaryFlightSchedulePlanId);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 4l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 4l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 4l);
             
             // ML511, 9 Dec 20, 5:00 PM, 3 Hours 0 Minute
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("09-12-2020 17:00"), timeFormat.parse("03:00"), dateFormat.parse("09-12-2020 21:00")), flightSchedulePlanId);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 5l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 5l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 5l);
-            
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("09-12-2020 23:00"), timeFormat.parse("03:00"), dateFormat.parse("10-12-2020 01:00")), complementaryFlightSchedulePlanId);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 6l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 6l);
-            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 6l);
             
-        } catch (FlightNotFoundException | ParseException | FlightSchedulePlanNotFoundException | CabinClassConfigurationNotFoundException ex) {
+        } catch (FlightNotFoundException | ParseException | FlightSchedulePlanNotFoundException | CabinClassConfigurationNotFoundException | SeatInventoryNotFoundException ex) {
             System.out.println(ex.getMessage() + "\n");
         }
     }

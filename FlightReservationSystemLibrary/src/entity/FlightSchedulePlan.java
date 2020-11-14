@@ -73,10 +73,20 @@ public class FlightSchedulePlan implements Serializable {
         this.flightSchedulePlanType = flightSchedulePlanType;
         this.flight = flight;
     }
-    
-    
+
+    public FlightSchedulePlan(FlightSchedulePlanType flightSchedulePlanType, Date endDate) {
+        this.flightSchedulePlanType = flightSchedulePlanType;
+        this.endDate = endDate;
+    }
     
 
+    public FlightSchedulePlan(FlightSchedulePlanType flightSchedulePlanType, Date endDate, Integer nDays) {
+        this.flightSchedulePlanType = flightSchedulePlanType;
+        this.endDate = endDate;
+        this.nDays = nDays;
+    }
+    
+    
     public Long getFlightSchedulePlanId() {
         return flightSchedulePlanId;
     }

@@ -8,8 +8,10 @@ package ejb.session.stateless;
 import entity.FlightSchedule;
 import java.util.Date;
 import javax.ejb.Remote;
+import util.exception.CabinClassConfigurationNotFoundException;
 import util.exception.FlightScheduleOverlapException;
 import util.exception.FlightSchedulePlanNotFoundException;
+import util.exception.SeatInventoryNotFoundException;
 
 /**
  *
@@ -17,7 +19,7 @@ import util.exception.FlightSchedulePlanNotFoundException;
  */
 @Remote
 public interface FlightScheduleSessionBeanRemote {
-    public Long createNewFlightSchedule(FlightSchedule newFlightSchedule, Long flightSchedulePlanId) throws FlightSchedulePlanNotFoundException;
+    public Long createNewFlightSchedule(FlightSchedule newFlightSchedule, Long flightSchedulePlanId) throws FlightSchedulePlanNotFoundException, CabinClassConfigurationNotFoundException, SeatInventoryNotFoundException;
     
     public FlightSchedule retrieveFlightScheduleById(Long flightScheduleId) throws FlightSchedulePlanNotFoundException;
 
