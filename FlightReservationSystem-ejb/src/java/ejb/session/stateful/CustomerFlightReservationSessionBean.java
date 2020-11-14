@@ -6,8 +6,10 @@
 package ejb.session.stateful;
 
 import ejb.session.stateless.FlightScheduleSessionBeanLocal;
+import entity.Fare;
 import entity.FlightSchedule;
 import entity.SeatInventory;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -147,6 +149,22 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         }
         
         return flightSchedules;
+    }
+    
+    @Override
+    public BigDecimal getFarePerPax(FlightSchedule flightSchedule, SeatInventory seatInventory) {
+        List<Fare> fares = flightSchedule.getFlightSchedulePlan().getFares();
+        
+        BigDecimal farePax = BigDecimal.ZERO;
+        for (Fare fare : fares) {
+            if(fare.getCabinClassConfiguration().equals(seatInventory.getCabinClass())) {
+                if (farePax.equals(BigDecimal.ZERO) || farePax.compareTo(fare.getFareAmount()) > 0) {
+                    farePax = fare.getFareAmount();
+                }
+            }
+        }
+        
+        return farePax;
     }
     
 //    @Override

@@ -378,22 +378,23 @@ public class MainApp {
         
         List<SeatInventory> seatInventories = flightSchedule.getSeatInventories();
         
+        String originGMT = "";
+        Double timeZoneOrigin = flightSchedule.getFlightSchedulePlan().getFlight().getFlightRoute().getOriginAirport().getTimeZone();
+        if (timeZoneOrigin >= 0) {
+            originGMT = "+" + timeZoneOrigin;
+        } else {
+            originGMT = "" + timeZoneOrigin;
+        }
+        
         for (SeatInventory seatInventory : seatInventories) {
             if (seatInventory.getAvailableSeats() > 0) {
-                BigDecimal farePax = BigDecimal.ZERO;
-                for (Fare fare : flightSchedule.getFlightSchedulePlan().getFares()) {
-                    if (fare.getCabinClassConfiguration().equals(seatInventory.getCabinClass())) {
-                        if (farePax.equals(BigDecimal.ZERO) || farePax.compareTo(fare.getFareAmount()) > 0) {
-                            farePax = fare.getFareAmount();
-                        }
-                    }
-                }
+                BigDecimal farePax = customerFlightReservationSessionBeanRemote.getFarePerPax(flightSchedule, seatInventory);
                 BigDecimal totalFare = farePax.multiply(new BigDecimal(numberOfPassengers));
-
+                
                 System.out.printf("%20s%20s%20s%25s%25s%20s%20s\n", 
                         flightSchedule.getFlightScheduleId(),
                         flightSchedule.getFlightSchedulePlan().getFlight().getFlightNumber(), 
-                        timeFormat.format(flightSchedule.getDepartureDateTime()),
+                        timeFormat.format(flightSchedule.getDepartureDateTime()) + " (GMT " + originGMT + ")",
                         seatInventory.getAvailableSeats(),
                         seatInventory.getCabinClass().getCabinClassType(), 
                         farePax, 
