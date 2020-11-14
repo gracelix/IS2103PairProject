@@ -19,17 +19,17 @@ import java.util.logging.Logger;
  * @author GraceLi
  */
 public class MainApp {
-    
+
     private Partner currentPartner;
 
     public MainApp() {
     }
-    
+
     public void runApp() {
         Scanner sc = new Scanner(System.in);
         Integer response;
-        
-        while(true) {
+
+        while (true) {
             System.out.println("*** Welcome to Holiday Reservation System ***\n");
             if (currentPartner == null) {
                 System.out.println("1: Partner Login");
@@ -38,58 +38,58 @@ public class MainApp {
             }
             System.out.println("2: Exit\n");
             response = 0;
-            
-            while(response < 1 ||response > 1) {
+
+            while (response < 1 || response > 1) {
                 System.out.print("> ");
                 response = sc.nextInt();
-                
-                if(response == 1) {
+
+                if (response == 1) {
                     try {
                         doLogin();
                         doMainMenu();
                     } catch (InvalidLoginCredentialException_Exception ex) {
                         System.out.println(ex.getFaultInfo());
                     }
-                } else if(response == 2) {
+                } else if (response == 2) {
                     break;
                 } else {
-                     System.out.println("Invalid option, please try again! ");
+                    System.out.println("Invalid option, please try again! ");
                 }
-            }           
-            if(response == 2) {
+            }
+            if (response == 2) {
                 break;
             }
         }
     }
-    
+
     private void doLogin() throws InvalidLoginCredentialException_Exception {
         Scanner sc = new Scanner(System.in);
-        
+
         System.out.println("*** Holiday Reservtation System :: Partner Login ***\n");
         System.out.print("Enter username> ");
         String email = sc.nextLine().trim();
         System.out.print("Enter password> ");
         String password = sc.nextLine().trim();
-        
-        if(email.length() > 0 && password.length() > 0) {
-            currentPartner = login(email,password);
-        }   
+
+        if (email.length() > 0 && password.length() > 0) {
+            currentPartner = login(email, password);
+        }
     }
-    
+
     public void doMainMenu() {
         Scanner sc = new Scanner(System.in);
         Integer response;
-        
+
         while (true) {
             System.out.println("*** Holiday Reservtation System :: Main Menu ***\n");
             System.out.println("1: Search for flights");
             System.out.println("2: View partner flight reservations");
             System.out.println("3: View partner flight reservation details");
             System.out.println("4: Logout\n");
-            
+
             System.out.print("> ");
             response = sc.nextInt();
-            
+
             if (response == 1) {
                 doSearchFlight();
             } else if (response == 2) {
@@ -104,7 +104,7 @@ public class MainApp {
             }
         }
     }
-    
+
     public void doSearchFlight() {
         try {
             Scanner sc = new Scanner(System.in);
@@ -119,7 +119,7 @@ public class MainApp {
             System.out.println("2: Round trip\n");
             System.out.print("> ");
             Integer tripType = sc.nextInt();
-            
+
             System.out.print("Enter departure airport> ");
             String departureAirport = sc.nextLine().trim();
             System.out.print("Enter destination airport> ");
@@ -136,11 +136,11 @@ public class MainApp {
             System.out.println("2: Connecting flight\n");
             System.out.print("> ");
             Integer flightType = sc.nextInt();
-            
+
             if (flightType == 1) {
-                
+
             }
-            
+
             System.out.println("searching for flight....");
             System.out.println("flight found!");
 
@@ -156,19 +156,19 @@ public class MainApp {
             System.out.println("Invalid date input!\n");
         }
     }
-    
+
     public void doReserveFlight() {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System :: Reserve Flight ***\n");
         System.out.println("reserving flight");
     }
-    
+
     public void doViewPartnerFlightReservations() {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System :: View My Flight Reservations ***\n");
         System.out.println("viewing flight reservations");
     }
-    
+
     public void doViewPartnerFlightReservationDetails() {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System :: View My Flight Reservation Details ***\n");
@@ -180,4 +180,20 @@ public class MainApp {
         ejb.session.ws.HolidayReservationSystemWebService port = service.getHolidayReservationSystemWebServicePort();
         return port.login(username, password);
     }
+
+//    public static Partner login2(java.lang.String username, java.lang.String password) {
+//
+//        try {
+//            java.lang.String username1 = "";
+//            java.lang.String password2 = "";
+//            ejb.session.ws.HolidayReservationSystemWebService_Service service1 = new ejb.session.ws.HolidayReservationSystemWebService_Service();
+//            ejb.session.ws.HolidayReservationSystemWebService port1 = service1.getHolidayReservationSystemWebServicePort();
+//            // TODO process result here
+//            ejb.session.ws.Partner result = port1.login(username, password);
+//            System.out.println("Result = " + result);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return null;
+//    }
 }

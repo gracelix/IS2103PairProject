@@ -29,7 +29,7 @@ public class Flight implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightId;
-    @Column(unique = true)
+    //@Column(unique = true)
     private String flightNumber;
     private Boolean enableFlight;
     @ManyToOne(optional = false)
