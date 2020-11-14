@@ -7,6 +7,7 @@ package flightreservationsystemreservationclient;
 
 import ejb.session.stateful.CustomerFlightReservationSessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
+import entity.Airport;
 import entity.Customer;
 import entity.Fare;
 import entity.FlightSchedule;
@@ -16,6 +17,7 @@ import entity.SeatInventory;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -223,14 +225,41 @@ public class MainApp {
                     } catch (NoFlightsAvailableException ex) {
                         System.out.println(ex.getMessage() + "\n");
 
-                        System.out.println("Do you want to look for a connecting flight instead?");
+                        System.out.println("No direct flights available!");
 
                     }
 
                     System.out.print("Press any key to continue...> ");
                     sc.nextLine();
-                } else if (flightType == 2) {
-                    // doConnectingFlight...
+                }
+                if (flightType == 2 || flightType == 3) {
+                    System.out.println("** Available Connecting Flights from " + departureAirport + " to " + destinationAirport + " **\n");
+                    try {
+                        List<FlightSchedule> flightSchedules = customerFlightReservationSessionBeanRemote.searchOneConnectionFlights(departureAirport, destinationAirport, departureDate, numberOfPassengers);
+                        List<String> connectingAirports = new ArrayList<>();
+                        for (FlightSchedule flightSchedule : flightSchedules) {
+                            String iata = flightSchedule.getFlightSchedulePlan().getFlight().getFlightRoute().getDestinationAirport().getIataCode();
+                            
+                            if (!iata.equals(departureAirport) && !iata.equals(destinationAirport) && !connectingAirports.contains(iata)) {
+                                System.out.println(iata);
+                                connectingAirports.add(iata);
+                            }
+                        }
+                        for (String connectingIata : connectingAirports) {
+                            System.out.println("** Connecting Flight : " + departureAirport + "-" + connectingIata + "-" + destinationAirport + " **\n");
+                            System.out.println("** Available Flights from " + departureAirport + " to " + connectingIata + " **\n");
+                            doGetFlightScheduleAvailability(departureAirport, connectingIata, departureDate, numberOfPassengers);
+                            System.out.println("-----------------------------------");
+                            System.out.println("** Available Flights from " + connectingIata + " to " + destinationAirport + " **\n");
+                            doGetFlightScheduleAvailability(connectingIata, destinationAirport, departureDate, numberOfPassengers);
+                            System.out.print("Press any key to continue...> ");
+                            sc.nextLine();
+                        }
+                    } catch (NoFlightsAvailableException ex) {
+                        System.out.println(ex.getMessage() + "\n");
+                        
+                        System.out.println("No Connecting Flights Available!");
+                    }
                 }
             } else if (tripType == 2) {
                 if (flightType == 1 || flightType == 3) {
@@ -251,6 +280,9 @@ public class MainApp {
 
                     System.out.print("Press any key to continue...> ");
                     sc.nextLine();
+                } 
+                if (flightType == 2 || flightType == 3) {
+                    // doConnectingFlight...
                 }
             }
             

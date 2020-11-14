@@ -22,10 +22,12 @@ public interface CustomerFlightReservationSessionBeanRemote {
 
     public void remove();
 
-    public List<FlightSchedule> searchFlights(String departureAirport, String destinationAirport, Date departureDate, Date returnDate, Integer numberOfTravellers);
+    //public List<FlightSchedule> searchFlights(String departureAirport, String destinationAirport, Date departureDate, Date returnDate, Integer numberOfTravellers);
 
     public List<FlightSchedule> searchSingleFlights(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) throws NoFlightsAvailableException;
 
     public BigDecimal getFarePerPax(FlightSchedule flightSchedule, SeatInventory seatInventory);
+
+    public List<FlightSchedule> searchOneConnectionFlights(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) throws NoFlightsAvailableException;
     
 }
