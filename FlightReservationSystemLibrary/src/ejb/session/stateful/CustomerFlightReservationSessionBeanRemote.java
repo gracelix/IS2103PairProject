@@ -9,6 +9,7 @@ import entity.FlightSchedule;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.NoFlightsAvailableException;
 
 /**
  *
@@ -21,6 +22,6 @@ public interface CustomerFlightReservationSessionBeanRemote {
 
     public List<FlightSchedule> searchFlights(String departureAirport, String destinationAirport, Date departureDate, Date returnDate, Integer numberOfTravellers);
 
-    public List<FlightSchedule> searchSingleFlights(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers);
+    public List<FlightSchedule> searchSingleFlights(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) throws NoFlightsAvailableException;
     
 }

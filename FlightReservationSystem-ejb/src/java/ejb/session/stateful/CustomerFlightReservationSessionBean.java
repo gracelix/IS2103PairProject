@@ -19,6 +19,7 @@ import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.NoFlightsAvailableException;
 
 /**
  *
@@ -30,9 +31,6 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
     @EJB(name = "FlightScheduleSessionBeanLocal")
     private FlightScheduleSessionBeanLocal flightScheduleSessionBeanLocal;
 
-    
-    
-    
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
@@ -54,8 +52,6 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         // Do nothing
     }
     
-    
-    
     @PreDestroy
     public void preDestroy()
     {
@@ -65,9 +61,10 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
             flightSchedules = null;
         }
     }
+    
    
     @Override
-    public List<FlightSchedule> searchSingleFlights(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) {
+    public List<FlightSchedule> searchSingleFlights(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) throws NoFlightsAvailableException {
         this.departureAirport = departureAirport;
         this.destinationAirport = destinationAirport;
         this.departureDate = departureDate;
@@ -88,12 +85,17 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         query.setParameter("inOriginAirport", departureAirport);
         query.setParameter("inDestinationAirport", destinationAirport);
         
-        //lazy fetching for whatebe fare?
-        
         List<FlightSchedule> tempList = query.getResultList();
+        
+        if (tempList.size() == 0) {
+            throw new NoFlightsAvailableException("There are no flights available for " + departureAirport + " to " + destinationAirport + " between " + startDate + " and " + endDate + ".");
+        }
         
         flightSchedules = new ArrayList<>();
         for (FlightSchedule flightSchedule : tempList) {
+            flightSchedule.getFlightSchedulePlan();
+            flightSchedule.getFlightSchedulePlan().getFares().size();
+            
             Integer availableSeats = 0;
             for (SeatInventory seatInventory : flightSchedule.getSeatInventories()) {
                 availableSeats += seatInventory.getAvailableSeats();

@@ -20,6 +20,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
+import util.exception.FlightAlreadyExistsException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.UpdateFlightException;
@@ -48,20 +49,30 @@ public class FlightSessionBean implements FlightSessionBeanRemote, FlightSession
     private EntityManager em;
 
     @Override
-    public Long createNewFlight(Flight newFlight, Long flightRouteId, Long aircraftConfigurationId) throws FlightNotFoundException, AircraftConfigurationNotFoundException, FlightRouteNotFoundException {
-        FlightRoute flightRoute = flightRouteSessionBeanLocal.retrieveFlightRouteById(flightRouteId);
-        AircraftConfiguration aircraftConfiguration = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationById(aircraftConfigurationId);
+    public Long createNewFlight(Flight newFlight, Long flightRouteId, Long aircraftConfigurationId) throws FlightNotFoundException, AircraftConfigurationNotFoundException, FlightRouteNotFoundException, FlightAlreadyExistsException {
+        // check if newFlight already exists in database
         
-        newFlight.setAircraftConfiguration(aircraftConfiguration);
-        newFlight.setFlightRoute(flightRoute);
-        newFlight.setEnableFlight(Boolean.TRUE);
-        
-        flightRoute.getFlights().add(newFlight);
-        aircraftConfiguration.getFlights().add(newFlight);
-        
-        em.persist(newFlight);
-        em.flush();
-        
+        try {
+            Flight checkFlight = retrieveFlightByFlightNumber(newFlight.getFlightNumber());
+            
+            if (checkFlight != null) {
+                throw new FlightAlreadyExistsException("Flight " + checkFlight.getFlightNumber() + " already exists!");
+            }
+            
+        } catch (FlightNotFoundException ex) {
+            FlightRoute flightRoute = flightRouteSessionBeanLocal.retrieveFlightRouteById(flightRouteId);
+            AircraftConfiguration aircraftConfiguration = aircraftConfigurationSessionBeanLocal.retrieveAircraftConfigurationById(aircraftConfigurationId);
+
+            newFlight.setAircraftConfiguration(aircraftConfiguration);
+            newFlight.setFlightRoute(flightRoute);
+            newFlight.setEnableFlight(Boolean.TRUE);
+
+            flightRoute.getFlights().add(newFlight);
+            aircraftConfiguration.getFlights().add(newFlight);
+
+            em.persist(newFlight);
+            em.flush();
+        }
         return newFlight.getFlightId();
     }
     

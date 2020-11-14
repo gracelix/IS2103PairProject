@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.Remote;
 import util.exception.AircraftConfigurationNotFoundException;
 import util.exception.DeleteFlightException;
+import util.exception.FlightAlreadyExistsException;
 import util.exception.FlightNotFoundException;
 import util.exception.FlightRouteNotFoundException;
 import util.exception.UpdateFlightException;
@@ -20,7 +21,7 @@ import util.exception.UpdateFlightException;
  */
 @Remote
 public interface FlightSessionBeanRemote {
-    public Long createNewFlight(Flight newFlight, Long flightRouteId, Long aircraftConfigurationId) throws FlightNotFoundException, AircraftConfigurationNotFoundException, FlightRouteNotFoundException;
+    public Long createNewFlight(Flight newFlight, Long flightRouteId, Long aircraftConfigurationId) throws FlightNotFoundException, AircraftConfigurationNotFoundException, FlightRouteNotFoundException, FlightAlreadyExistsException;
     
     public Flight retrieveFlightById(Long flightId) throws FlightNotFoundException;
     

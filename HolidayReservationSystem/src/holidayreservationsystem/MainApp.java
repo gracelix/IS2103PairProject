@@ -119,7 +119,8 @@ public class MainApp {
             System.out.println("2: Round trip\n");
             System.out.print("> ");
             Integer tripType = sc.nextInt();
-
+            sc.nextLine();
+            
             System.out.print("Enter departure airport> ");
             String departureAirport = sc.nextLine().trim();
             System.out.print("Enter destination airport> ");
