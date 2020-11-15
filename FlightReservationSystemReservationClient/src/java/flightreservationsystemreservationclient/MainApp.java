@@ -93,6 +93,11 @@ public class MainApp {
                         
                     } else if (response == 2) {
                         doViewMyFlightReservations();
+                        System.out.println("Do you want to view flight reservation details for a reservation? (Enter Y if yes, N for no)");
+                        String responseString = sc.nextLine().trim();
+                        if (responseString.equals("Y")) {
+                            doViewMyFlightReservationDetails();
+                        }
                     } else if (response == 3) {
                         currentCustomer = null;
                         
@@ -184,7 +189,7 @@ public class MainApp {
         
         if (username.length() > 0 && password.length() > 0) {
             currentCustomer = customerSessionBeanRemote.login(username, password);
-            
+            System.out.println(currentCustomer.getCustomerId());//debug
         } else {
             throw new InvalidLoginCredentialException("One or more login credentials are missing.");
         }
@@ -513,7 +518,6 @@ public class MainApp {
                     CabinClassType cabinClassType = null;
                     System.out.print("Enter Flight Schedule ID to reserve> ");
                     flightScheduleId = sc.nextLong();
-                    flightScheduleIds.add(flightScheduleId);
                     sc.nextLine();
                     System.out.print("Enter Cabin Class Alphabet (F: First Class, J: Business, W: Premium Economy, Y: Economy)> ");
                     cabinClass = sc.nextLine().trim();
@@ -529,7 +533,7 @@ public class MainApp {
                         throw new InputMismatchException("Please only enter F, J, W or Y!");
                     }
                     
-                    cabinClasses.add(cabinClassType);
+                    
                     
                     Boolean flightScheduleExists = customerFlightReservationSessionBeanRemote.checkFlightScheduleExist(flightScheduleId, cabinClassType);
 
@@ -556,6 +560,8 @@ public class MainApp {
 
 
                     Long seatId = customerFlightReservationSessionBeanRemote.reserveSeat(flightSchedule, cabinClassType, row, col);
+                    flightScheduleIds.add(flightScheduleId);
+                    cabinClasses.add(cabinClassType);
                     seatIds.add(seatId);
                     System.out.println("Seat " + col + row + " is reserved!");
 
@@ -569,8 +575,10 @@ public class MainApp {
 
                 } catch (FlightSchedulePlanNotFoundException | InputMismatchException | CabinClassConfigurationNotFoundException | SeatNotFoundException | SeatInventoryNotFoundException | SeatReservedException ex) {
                     System.out.println(ex.getMessage() + "\n");
-                    for (Long seatIdRollBack : seatIds) {
-                        customerFlightReservationSessionBeanRemote.rollBackSeatsToAvailable(seatIdRollBack);
+                    for (List<Long> seatIdsRollBacks : seatIdsOfEachPassenger) {
+                        for (Long seatIdRollBack : seatIdsRollBacks) {
+                            customerFlightReservationSessionBeanRemote.rollBackSeatsToAvailable(seatIdRollBack);
+                        }
                     }
                 }
                 //customerFlightReservationSessionBeanRemote.reserveFlights();
@@ -594,9 +602,11 @@ public class MainApp {
             sc.nextLine();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
             CreditCard currCreditCard = null;
+            
             while (true) {
                 try {
-                    if (currentCustomer.getCreditCards().isEmpty()) {
+                    List<CreditCard> creditCardsCurr = customerFlightReservationSessionBeanRemote.retrieveAllCreditCardCustomer(currentCustomer.getCustomerId());
+                    if (creditCardsCurr.isEmpty()) {
                         System.out.print("Enter Credit Card Number: >");
                         String creditCardNumber = sc.nextLine().trim();
                         System.out.print("Enter Credit Card Name: >");
@@ -656,6 +666,11 @@ public class MainApp {
                     }
                 } catch(ParseException | TransactionException ex) {
                     System.out.println(ex.getMessage() + "\n");
+                    for (List<Long> seatIds : seatIdsOfEachPassenger) {
+                        for (Long seatIdRollBack : seatIds) {
+                            customerFlightReservationSessionBeanRemote.rollBackSeatsToAvailable(seatIdRollBack);
+                        }
+                    }
                 }
             }
             
@@ -669,10 +684,11 @@ public class MainApp {
                 List<Long> transactionFlightScheduleIds = flightScheduleIdsOfEachPassenger.get(i);
                 List<Long> transactionSeatIds = seatIdsOfEachPassenger.get(i);
                 List<CabinClassType> transactionCabinClasses = cabinClassTypeOfEachPassenger.get(i);
+                System.out.println("FS: " + transactionFlightScheduleIds.size() + " S: "+ transactionSeatIds.size() + "CC: " + transactionCabinClasses.size());//debug
                 if (transactionFlightScheduleIds.size() != transactionSeatIds.size() && transactionSeatIds.size() != transactionCabinClasses.size()) {
                     throw new TransactionException("An internal transaction error occured!");
                 }
-                Long transactionId = customerFlightReservationSessionBeanRemote.createNewTransaction(transactionToCreate, this.currentCustomer.getCustomerId());
+                Long transactionId = customerFlightReservationSessionBeanRemote.createNewTransaction(transactionToCreate, this.currentCustomer);
                 for (int j = 0; j < transactionFlightScheduleIds.size(); j++) {
                     Long flightScheduleIdToSet = transactionFlightScheduleIds.get(j);
                     FlightSchedule flightSchedule = customerFlightReservationSessionBeanRemote.retrieveFlightScheduleById(flightScheduleIdToSet);
@@ -714,12 +730,35 @@ public class MainApp {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System :: View My Flight Reservations ***\n");
         System.out.println("viewing flight reservations");
+        
+        List<Transaction> transactions = customerFlightReservationSessionBeanRemote.retrieveAllTransactionByCustomerId(currentCustomer.getCustomerId());
+        System.out.printf("%20s%32s%32s%20s\n", "Transaction Id", "Passenger Name" + "Passport Number" + "Total Price");
+        for (Transaction transaction : transactions) {
+           System.out.printf("%20s%32s%32s%20s\n",transaction.getTransactionId(), transaction.getPassengerFirstName() + "" + transaction.getPassengerLastName(), transaction.getPassportNumber(), transaction.getTotalPrice());
+        }
+        System.out.print("Press any key to continue...> ");
+        sc.nextLine();
+        
+        System.out.println(" ");
     }
     
     public void doViewMyFlightReservationDetails() {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System :: View My Flight Reservation Details ***\n");
         System.out.println("viewing flight reservation details");
+        
+        System.out.print("Enter Transaction Id> ");
+        Long transactionId = sc.nextLong();
+        sc.nextLine();
+        
+        List<ItineraryItem> itineraryItems = customerFlightReservationSessionBeanRemote.retrieveAllItineraryItemByTransactionId(transactionId);
+        
+        System.out.printf("%22s%25s%32s%20s%20s%20s\n", "Itinerary Item Id", "Origin-Destination", "Passenger Name", "Cabin Class", "Seat Number", "Fare Paid");
+        for (ItineraryItem itineraryItem : itineraryItems) {
+            System.out.printf("%22s%25s%32s%20s%20s%20s\n",itineraryItem.getItineraryItemId(), itineraryItem.getOdCode(), itineraryItem.getPassengerName(), itineraryItem.getCabinClass(), itineraryItem.getSeatNumber(), itineraryItem.getFareAmount());
+        }
+        System.out.print("Press any key to continue...> ");
+        sc.nextLine();
     }
     
     public void doGetFlightScheduleAvailability(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfPassengers) throws NoFlightsAvailableException {
@@ -890,18 +929,18 @@ public class MainApp {
                 System.out.println();
             }
             for (int j = 0; j < seatInventoryToPrint.getCabinClass().getNumberOfSeatsAbreast(); j++) {
-                Seat seat = seatInventoryToPrint.getSeats().get((j + (i * j)));
+                Seat seat = seatInventoryToPrint.getSeats().get((i * seatInventoryToPrint.getCabinClass().getNumberOfSeatsAbreast()) + j);
                 if (j == 0) {
                     System.out.print("Row" + (i+1) + ":  ");
-                    if (i >8) {
+                    if (i < 9) {
                         System.out.print(" ");
                     }
                 }
                 if(seat.getSeatStatus().equals(SeatStatus.AVAILABLE)) {
                     //System.out.print(seat.getRowAlphabet() + seat.getSeatNumber() + " ");
-                    System.out.print("O " + (j + (i*j)));//debug
+                    System.out.print("O ");
                 } else {
-                    System.out.print("X " + (j + (i*j)));//debug
+                    System.out.print("X ");
                 }
             }
             System.out.println();

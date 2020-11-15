@@ -57,7 +57,7 @@ public interface CustomerFlightReservationSessionBeanRemote {
 
     public void rollBackSeatsToAvailable(Long seatId) throws SeatNotFoundException;
 
-    public Long createNewTransaction(Transaction transaction, Long CustomerId) throws CustomerNotFoundException;
+    public Long createNewTransaction(Transaction transaction, Customer customer) throws CustomerNotFoundException;
 
     public Seat retrieveSeatById(Long seatId) throws SeatNotFoundException;
 
@@ -72,4 +72,8 @@ public interface CustomerFlightReservationSessionBeanRemote {
     public List<CreditCard> retrieveAllCreditCardCustomer(Long customerId) throws CustomerNotFoundException;
 
     public void makePayment(CreditCard creditCard, BigDecimal totalFare);
+
+    public List<Transaction> retrieveAllTransactionByCustomerId(Long customerId);
+
+    public List<ItineraryItem> retrieveAllItineraryItemByTransactionId(Long transactionId);
 }

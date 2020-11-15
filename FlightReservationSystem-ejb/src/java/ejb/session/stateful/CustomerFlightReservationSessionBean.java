@@ -313,8 +313,10 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
     
     @Override
     public Long createNewCreditCardCustomer(CreditCard creditCard, Customer customer) throws CustomerNotFoundException {
-//        Customer customer = customerSessionBeanLocal.retrieveCustomerById(customerId);
-        customer.getCreditCards().add(creditCard);
+//        Customer customerToSet = customerSessionBeanLocal.retrieveCustomerById(customer.getCustomerId());
+        Customer customerToSet = em.find(Customer.class, customer.getCustomerId());
+        customerToSet.getCreditCards().add(creditCard);
+        customerToSet.getCreditCards().size();
         
         em.persist(creditCard);
         em.flush();
@@ -340,8 +342,29 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         return customer.getCreditCards();
     }
     
-    public void makePayment(CreditCard creditCard) {
+    @Override
+    public List<Transaction> retrieveAllTransactionByCustomerId(Long customerId) {
+        //Customer customer = customerSessionBeanLocal.retrieveCustomerById(customerId);
+        Query query = em.createQuery("SELECT t FROM Transaction t WHERE t.customer.customerId = :inCustomerId");
+        query.setParameter(":inCustomerId", customerId);
         
+        List<Transaction> transactions = query.getResultList();
+        
+        for (Transaction transaction : transactions) {
+            transaction.getItineraryItems().size();
+        }
+        
+        return transactions;
+    }
+    
+    @Override
+    public List<ItineraryItem> retrieveAllItineraryItemByTransactionId(Long transactionId) {
+        Query query = em.createQuery("SELECT t FROM Transaction t WHERE t.transactionId = :inTransactionId");
+        query.setParameter(":inTransactionId", transactionId);
+        Transaction transaction = (Transaction) query.getSingleResult();
+        transaction.getItineraryItems().size();
+        
+        return transaction.getItineraryItems();
     }
     
 //    @Override
@@ -444,11 +467,12 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
     
     
     @Override
-    public Long createNewTransaction(Transaction transaction, Long CustomerId) throws CustomerNotFoundException {
+    public Long createNewTransaction(Transaction transaction, Customer customer) throws CustomerNotFoundException {
         
-        Customer customer = customerSessionBeanLocal.retrieveCustomerById(CustomerId);
-        transaction.setCustomer(customer);
-        customer.getTransactions().add(transaction);
+//        Customer customerToSet = customerSessionBeanLocal.retrieveCustomerById(customer.getCustomerId());
+        Customer customerToSet = em.find(Customer.class, customer.getCustomerId());
+        transaction.setCustomer(customerToSet);
+        customerToSet.getTransactions().add(transaction);
         
         em.persist(transaction);
         em.flush();
