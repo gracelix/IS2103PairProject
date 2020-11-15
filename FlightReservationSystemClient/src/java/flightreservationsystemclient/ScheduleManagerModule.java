@@ -14,7 +14,6 @@ import ejb.session.stateless.FlightScheduleSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
 import ejb.session.stateless.SeatInventorySessionBeanRemote;
 import ejb.session.stateless.SeatSessionBeanRemote;
-import ejb.session.stateless.TimerSessionBeanRemote;
 import entity.CabinClassConfiguration;
 import entity.Employee;
 import entity.Fare;
@@ -880,7 +879,7 @@ public class ScheduleManagerModule {
                 System.out.println("Return Flight Schedule Plan " + returnFlightSchedulePlanId + " created successfully!" + "\n");
                 
                 for (Date date : arrivalDates) {
-                    calendar1.setTime(arrivalDate);
+                    calendar1.setTime(date);
                     calendar1.add(Calendar.HOUR_OF_DAY, layoverHours);
                     calendar1.add(Calendar.MINUTE, layoverMinutes);
                     departureDate = calendar1.getTime();
@@ -955,7 +954,6 @@ public class ScheduleManagerModule {
         
         System.out.print("Enter the day the flight schedule begins on (eg. Monday)> ");
         String day = sc.nextLine().trim();
-        sc.nextLine();
         
         System.out.print("Enter end date of recurrent flight schedule in DD-MM-YYYY HH:MM format (eg. 13-11-2020 17:00)> ");
         try {
@@ -989,18 +987,36 @@ public class ScheduleManagerModule {
         List<Date> arrivalDates = new ArrayList<>();
         Calendar calendar1 = Calendar.getInstance();
         calendar1.setTime(startDate);
-        
-        
+        while (true) {
+            if (day.toLowerCase().equals("monday") && calendar1.get(Calendar.DAY_OF_WEEK) == 2) {
+                break;
+            } else if (day.toLowerCase().equals("tuesday") && calendar1.get(Calendar.DAY_OF_WEEK) == 3) {
+                break;
+            } else if (day.toLowerCase().equals("wednesday") && calendar1.get(Calendar.DAY_OF_WEEK) == 4) {
+                break;
+            } else if (day.toLowerCase().equals("thursday") && calendar1.get(Calendar.DAY_OF_WEEK) == 5) {
+                break;
+            } else if (day.toLowerCase().equals("friday") && calendar1.get(Calendar.DAY_OF_WEEK) == 6) {
+                break;
+            } else if (day.toLowerCase().equals("saturday") && calendar1.get(Calendar.DAY_OF_WEEK) == 7) {
+                break;
+            } else if (day.toLowerCase().equals("sunday") && calendar1.get(Calendar.DAY_OF_WEEK) == 1) {
+                break;
+            } else {
+                calendar1.add(Calendar.DAY_OF_MONTH, 1);
+            }
+        }
         
         departureDate = calendar1.getTime();
         
         while (true) {
+            
+            departureDate = calendar1.getTime();
+            calendar1.add(Calendar.DAY_OF_MONTH, 7);
+            
             if (departureDate.after(endDate)) {
                 break;
             }
-            
-            calendar1.add(Calendar.DAY_OF_MONTH, 7);
-            departureDate = calendar1.getTime();
             
             // CALCULATE ARRIVAL DAY
             double timeZoneDiff = flight.getFlightRoute().getDestinationAirport().getTimeZone() - flight.getFlightRoute().getOriginAirport().getTimeZone();
@@ -1078,7 +1094,7 @@ public class ScheduleManagerModule {
                 System.out.println("Return Flight Schedule Plan " + returnFlightSchedulePlanId + " created successfully!" + "\n");
                 
                 for (Date date : arrivalDates) {
-                    calendar1.setTime(arrivalDate);
+                    calendar1.setTime(date);
                     calendar1.add(Calendar.HOUR_OF_DAY, layoverHours);
                     calendar1.add(Calendar.MINUTE, layoverMinutes);
                     departureDate = calendar1.getTime();
