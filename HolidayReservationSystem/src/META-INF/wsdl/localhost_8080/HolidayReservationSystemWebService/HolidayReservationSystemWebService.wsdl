@@ -4,6 +4,48 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/HolidayReservationSystemWebService/HolidayReservationSystemWebService?xsd=1"/>
 </xsd:schema>
 </types>
+<message name="createNewItinerary">
+<part name="parameters" element="tns:createNewItinerary"/>
+</message>
+<message name="createNewItineraryResponse">
+<part name="parameters" element="tns:createNewItineraryResponse"/>
+</message>
+<message name="TransactionNotFoundException">
+<part name="fault" element="tns:TransactionNotFoundException"/>
+</message>
+<message name="FlightSchedulePlanNotFoundException">
+<part name="fault" element="tns:FlightSchedulePlanNotFoundException"/>
+</message>
+<message name="retrieveAllTransactionByCustomerId">
+<part name="parameters" element="tns:retrieveAllTransactionByCustomerId"/>
+</message>
+<message name="retrieveAllTransactionByCustomerIdResponse">
+<part name="parameters" element="tns:retrieveAllTransactionByCustomerIdResponse"/>
+</message>
+<message name="makePayment">
+<part name="parameters" element="tns:makePayment"/>
+</message>
+<message name="makePaymentResponse">
+<part name="parameters" element="tns:makePaymentResponse"/>
+</message>
+<message name="retrieveAllCreditCardCustomer">
+<part name="parameters" element="tns:retrieveAllCreditCardCustomer"/>
+</message>
+<message name="retrieveAllCreditCardCustomerResponse">
+<part name="parameters" element="tns:retrieveAllCreditCardCustomerResponse"/>
+</message>
+<message name="CustomerNotFoundException">
+<part name="fault" element="tns:CustomerNotFoundException"/>
+</message>
+<message name="retrieveCreditCardById">
+<part name="parameters" element="tns:retrieveCreditCardById"/>
+</message>
+<message name="retrieveCreditCardByIdResponse">
+<part name="parameters" element="tns:retrieveCreditCardByIdResponse"/>
+</message>
+<message name="CreditCardNotFoundException">
+<part name="fault" element="tns:CreditCardNotFoundException"/>
+</message>
 <message name="login">
 <part name="parameters" element="tns:login"/>
 </message>
@@ -31,9 +73,6 @@
 <message name="retrieveFlightScheduleByIdResponse">
 <part name="parameters" element="tns:retrieveFlightScheduleByIdResponse"/>
 </message>
-<message name="FlightSchedulePlanNotFoundException">
-<part name="fault" element="tns:FlightSchedulePlanNotFoundException"/>
-</message>
 <message name="searchTwoConnectionsFlight">
 <part name="parameters" element="tns:searchTwoConnectionsFlight"/>
 </message>
@@ -48,6 +87,18 @@
 </message>
 <message name="CabinClassConfigurationNotFoundException">
 <part name="fault" element="tns:CabinClassConfigurationNotFoundException"/>
+</message>
+<message name="retrieveAllItineraryItemByTransactionId">
+<part name="parameters" element="tns:retrieveAllItineraryItemByTransactionId"/>
+</message>
+<message name="retrieveAllItineraryItemByTransactionIdResponse">
+<part name="parameters" element="tns:retrieveAllItineraryItemByTransactionIdResponse"/>
+</message>
+<message name="createNewTransaction">
+<part name="parameters" element="tns:createNewTransaction"/>
+</message>
+<message name="createNewTransactionResponse">
+<part name="parameters" element="tns:createNewTransactionResponse"/>
 </message>
 <message name="searchOneConnectionFlights">
 <part name="parameters" element="tns:searchOneConnectionFlights"/>
@@ -82,7 +133,49 @@
 <message name="SeatReservedException">
 <part name="fault" element="tns:SeatReservedException"/>
 </message>
+<message name="retrieveTransactionById">
+<part name="parameters" element="tns:retrieveTransactionById"/>
+</message>
+<message name="retrieveTransactionByIdResponse">
+<part name="parameters" element="tns:retrieveTransactionByIdResponse"/>
+</message>
+<message name="createNewCreditCardCustomer">
+<part name="parameters" element="tns:createNewCreditCardCustomer"/>
+</message>
+<message name="createNewCreditCardCustomerResponse">
+<part name="parameters" element="tns:createNewCreditCardCustomerResponse"/>
+</message>
+<message name="retrieveSeatById">
+<part name="parameters" element="tns:retrieveSeatById"/>
+</message>
+<message name="retrieveSeatByIdResponse">
+<part name="parameters" element="tns:retrieveSeatByIdResponse"/>
+</message>
 <portType name="HolidayReservationSystemWebService">
+<operation name="createNewItinerary">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/createNewItineraryRequest" message="tns:createNewItinerary"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/createNewItineraryResponse" message="tns:createNewItineraryResponse"/>
+<fault message="tns:TransactionNotFoundException" name="TransactionNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/createNewItinerary/Fault/TransactionNotFoundException"/>
+<fault message="tns:FlightSchedulePlanNotFoundException" name="FlightSchedulePlanNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/createNewItinerary/Fault/FlightSchedulePlanNotFoundException"/>
+</operation>
+<operation name="retrieveAllTransactionByCustomerId">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveAllTransactionByCustomerIdRequest" message="tns:retrieveAllTransactionByCustomerId"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveAllTransactionByCustomerIdResponse" message="tns:retrieveAllTransactionByCustomerIdResponse"/>
+</operation>
+<operation name="makePayment">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/makePaymentRequest" message="tns:makePayment"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/makePaymentResponse" message="tns:makePaymentResponse"/>
+</operation>
+<operation name="retrieveAllCreditCardCustomer">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveAllCreditCardCustomerRequest" message="tns:retrieveAllCreditCardCustomer"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveAllCreditCardCustomerResponse" message="tns:retrieveAllCreditCardCustomerResponse"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveAllCreditCardCustomer/Fault/CustomerNotFoundException"/>
+</operation>
+<operation name="retrieveCreditCardById">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveCreditCardByIdRequest" message="tns:retrieveCreditCardById"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveCreditCardByIdResponse" message="tns:retrieveCreditCardByIdResponse"/>
+<fault message="tns:CreditCardNotFoundException" name="CreditCardNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveCreditCardById/Fault/CreditCardNotFoundException"/>
+</operation>
 <operation name="login">
 <input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/loginRequest" message="tns:login"/>
 <output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/loginResponse" message="tns:loginResponse"/>
@@ -111,6 +204,15 @@
 <fault message="tns:FlightSchedulePlanNotFoundException" name="FlightSchedulePlanNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/checkFlightScheduleExist/Fault/FlightSchedulePlanNotFoundException"/>
 <fault message="tns:CabinClassConfigurationNotFoundException" name="CabinClassConfigurationNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/checkFlightScheduleExist/Fault/CabinClassConfigurationNotFoundException"/>
 </operation>
+<operation name="retrieveAllItineraryItemByTransactionId">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveAllItineraryItemByTransactionIdRequest" message="tns:retrieveAllItineraryItemByTransactionId"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveAllItineraryItemByTransactionIdResponse" message="tns:retrieveAllItineraryItemByTransactionIdResponse"/>
+</operation>
+<operation name="createNewTransaction">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/createNewTransactionRequest" message="tns:createNewTransaction"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/createNewTransactionResponse" message="tns:createNewTransactionResponse"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/createNewTransaction/Fault/CustomerNotFoundException"/>
+</operation>
 <operation name="searchOneConnectionFlights">
 <input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/searchOneConnectionFlightsRequest" message="tns:searchOneConnectionFlights"/>
 <output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/searchOneConnectionFlightsResponse" message="tns:searchOneConnectionFlightsResponse"/>
@@ -133,9 +235,81 @@
 <fault message="tns:SeatNotFoundException" name="SeatNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/reserveSeat/Fault/SeatNotFoundException"/>
 <fault message="tns:SeatReservedException" name="SeatReservedException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/reserveSeat/Fault/SeatReservedException"/>
 </operation>
+<operation name="retrieveTransactionById">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveTransactionByIdRequest" message="tns:retrieveTransactionById"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveTransactionByIdResponse" message="tns:retrieveTransactionByIdResponse"/>
+<fault message="tns:TransactionNotFoundException" name="TransactionNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveTransactionById/Fault/TransactionNotFoundException"/>
+</operation>
+<operation name="createNewCreditCardCustomer">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/createNewCreditCardCustomerRequest" message="tns:createNewCreditCardCustomer"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/createNewCreditCardCustomerResponse" message="tns:createNewCreditCardCustomerResponse"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/createNewCreditCardCustomer/Fault/CustomerNotFoundException"/>
+</operation>
+<operation name="retrieveSeatById">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveSeatByIdRequest" message="tns:retrieveSeatById"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveSeatByIdResponse" message="tns:retrieveSeatByIdResponse"/>
+<fault message="tns:SeatNotFoundException" name="SeatNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationSystemWebService/retrieveSeatById/Fault/SeatNotFoundException"/>
+</operation>
 </portType>
 <binding name="HolidayReservationSystemWebServicePortBinding" type="tns:HolidayReservationSystemWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<operation name="createNewItinerary">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="TransactionNotFoundException">
+<soap:fault name="TransactionNotFoundException" use="literal"/>
+</fault>
+<fault name="FlightSchedulePlanNotFoundException">
+<soap:fault name="FlightSchedulePlanNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveAllTransactionByCustomerId">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="makePayment">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="retrieveAllCreditCardCustomer">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveCreditCardById">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="CreditCardNotFoundException">
+<soap:fault name="CreditCardNotFoundException" use="literal"/>
+</fault>
+</operation>
 <operation name="login">
 <soap:operation soapAction=""/>
 <input>
@@ -205,6 +379,27 @@
 <soap:fault name="CabinClassConfigurationNotFoundException" use="literal"/>
 </fault>
 </operation>
+<operation name="retrieveAllItineraryItemByTransactionId">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="createNewTransaction">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+</operation>
 <operation name="searchOneConnectionFlights">
 <soap:operation soapAction=""/>
 <input>
@@ -257,6 +452,42 @@
 </fault>
 <fault name="SeatReservedException">
 <soap:fault name="SeatReservedException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveTransactionById">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="TransactionNotFoundException">
+<soap:fault name="TransactionNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="createNewCreditCardCustomer">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveSeatById">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="SeatNotFoundException">
+<soap:fault name="SeatNotFoundException" use="literal"/>
 </fault>
 </operation>
 </binding>

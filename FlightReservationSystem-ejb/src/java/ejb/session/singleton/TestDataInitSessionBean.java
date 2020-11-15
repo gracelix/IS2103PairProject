@@ -550,64 +550,68 @@ public class TestDataInitSessionBean {
             flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("09-12-2020 23:00"), timeFormat.parse("03:00"), dateFormat.parse("10-12-2020 01:00")), complementaryFlightSchedulePlanId);
             
             
-//            
-//            //For own testing purposes
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 17l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            Long flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 08:00"), timeFormat.parse("01:00"), dateFormat.parse("07-12-2020 10:00")), flightSchedulePlanId);
-//            //seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-//            
-//            
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 18l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 15:00"), timeFormat.parse("01:00"), dateFormat.parse("07-12-2020 15:00")), flightSchedulePlanId);
-////            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-//            
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 19l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 23:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 00:00")), flightSchedulePlanId);
-////            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-//            
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 20l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 08:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 9:00")), flightSchedulePlanId);
-////            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-//            
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 21l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 15:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 17:00")), flightSchedulePlanId);
-////            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-//            
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 22l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 23:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 23:00")), flightSchedulePlanId);
-////            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-//            
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 23l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 08:00"), timeFormat.parse("01:00"), dateFormat.parse("10-12-2020 09:00")), flightSchedulePlanId);
-////            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-//            
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 24l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 15:00"), timeFormat.parse("01:00"), dateFormat.parse("10-12-2020 16:00")), flightSchedulePlanId);
-////            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-//           
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 25l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 232:00"), timeFormat.parse("01:00"), dateFormat.parse("11-12-2020 00:00")), flightSchedulePlanId);
-////            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-//            
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 26l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 10:00"), timeFormat.parse("01:00"), dateFormat.parse("10-12-2020 11:00")), flightSchedulePlanId);
-////            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-//            
-//            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 27l);
-//            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
-//            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 23:00"), timeFormat.parse("01:00"), dateFormat.parse("11-12-2020 00:00")), flightSchedulePlanId);
-////            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
-
+            
+            //For own testing purposes
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 17l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            Long flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 08:00"), timeFormat.parse("01:00"), dateFormat.parse("07-12-2020 10:00")), flightSchedulePlanId);
+            //seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 18l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 15:00"), timeFormat.parse("01:00"), dateFormat.parse("07-12-2020 15:00")), flightSchedulePlanId);
+//            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 19l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 23:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 00:00")), flightSchedulePlanId);
+//            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 20l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 08:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 9:00")), flightSchedulePlanId);
+//            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 21l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 15:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 17:00")), flightSchedulePlanId);
+//            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 22l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 23:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 23:00")), flightSchedulePlanId);
+//            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 23l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 08:00"), timeFormat.parse("01:00"), dateFormat.parse("10-12-2020 09:00")), flightSchedulePlanId);
+//            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 24l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 15:00"), timeFormat.parse("01:00"), dateFormat.parse("10-12-2020 16:00")), flightSchedulePlanId);
+//            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+           
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 25l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 232:00"), timeFormat.parse("01:00"), dateFormat.parse("11-12-2020 00:00")), flightSchedulePlanId);
+//            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 26l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 10:00"), timeFormat.parse("01:00"), dateFormat.parse("10-12-2020 11:00")), flightSchedulePlanId);
+//            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 27l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 23:00"), timeFormat.parse("01:00"), dateFormat.parse("11-12-2020 00:00")), flightSchedulePlanId);
+//            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            
+            
+            //
+            
         } catch (FlightNotFoundException | ParseException | FlightSchedulePlanNotFoundException | CabinClassConfigurationNotFoundException | SeatInventoryNotFoundException ex) {
             System.out.println(ex.getMessage() + "\n");
         }

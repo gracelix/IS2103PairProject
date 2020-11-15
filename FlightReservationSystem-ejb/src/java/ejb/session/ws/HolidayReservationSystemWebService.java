@@ -6,12 +6,18 @@
 package ejb.session.ws;
 
 import ejb.session.stateful.CustomerFlightReservationSessionBeanRemote;
+import ejb.session.stateless.CreditCardProcessinngSessionBeanLocal;
 import ejb.session.stateless.PartnerSessionBeanLocal;
 import ejb.session.stateless.SeatSessionBeanLocal;
+import entity.CreditCard;
+import entity.Customer;
+import entity.Fare;
 import entity.FlightSchedule;
+import entity.ItineraryItem;
 import entity.Partner;
 import entity.Seat;
 import entity.SeatInventory;
+import entity.Transaction;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,12 +31,15 @@ import javax.ejb.Stateless;
 import util.enumeration.CabinClassType;
 import util.enumeration.SeatStatus;
 import util.exception.CabinClassConfigurationNotFoundException;
+import util.exception.CreditCardNotFoundException;
+import util.exception.CustomerNotFoundException;
 import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.NoFlightsAvailableException;
 import util.exception.SeatInventoryNotFoundException;
 import util.exception.SeatNotFoundException;
 import util.exception.SeatReservedException;
+import util.exception.TransactionNotFoundException;
 
 /**
  *
@@ -39,6 +48,9 @@ import util.exception.SeatReservedException;
 @WebService(serviceName = "HolidayReservationSystemWebService")
 @Stateless()
 public class HolidayReservationSystemWebService {
+
+    @EJB
+    private CreditCardProcessinngSessionBeanLocal creditCardProcessinngSessionBean;
 
     @EJB
     private SeatSessionBeanLocal seatSessionBean;
@@ -97,6 +109,11 @@ public class HolidayReservationSystemWebService {
         return customerFlightReservationSessionBean.searchTwoConnectionsFlight(departureAirport, destinationAirport, departureDate, numberOfTravellers); 
     }
     
+    @WebMethod(operationName = "retrieveSeatById")
+    public Seat retrieveSeatById(@WebParam(name = "seatId") Long seatId) throws SeatNotFoundException {
+        return customerFlightReservationSessionBean.retrieveSeatById(seatId);
+    }
+    
     @WebMethod(operationName = "retrieveFlightScheduleById")
     public FlightSchedule retrieveFlightScheduleById(@WebParam(name = "flightScheduleId") Long flightScheduleId) throws FlightSchedulePlanNotFoundException {
         return customerFlightReservationSessionBean.retrieveFlightScheduleById(flightScheduleId);
@@ -110,11 +127,36 @@ public class HolidayReservationSystemWebService {
         return customerFlightReservationSessionBean.reserveSeat(flightSchedule, cabinClassType, seatRow, seatCol);
     }
     
+    @WebMethod(operationName = "createNewCreditCardCustomer")
+    public Long createNewCreditCardCustomer(@WebParam(name = "creditCard") CreditCard creditCard, @WebParam(name = "customer") Customer customer) throws CustomerNotFoundException {
+        return customerFlightReservationSessionBean.createNewCreditCardCustomer(creditCard, customer);
+    }
+    
+    @WebMethod(operationName = "retrieveCreditCardById")
+    public CreditCard retrieveCreditCardById(@WebParam(name = "creditCardId") Long creditCardId) throws CreditCardNotFoundException {
+        return customerFlightReservationSessionBean.retrieveCreditCardById(creditCardId);
+    }
+            
+    @WebMethod(operationName = "retrieveAllCreditCardCustomer")
+    public List<CreditCard> retrieveAllCreditCardCustomer(@WebParam(name = "customerId") Long customerId) throws CustomerNotFoundException {
+        return customerFlightReservationSessionBean.retrieveAllCreditCardCustomer(customerId);
+    }
+    
+    @WebMethod(operationName = "retrieveAllTransactionByCustomerId")
+    public List<Transaction> retrieveAllTransactionByCustomerId(@WebParam(name = "customerId") Long customerId) {
+        return customerFlightReservationSessionBean.retrieveAllTransactionByCustomerId(customerId);
+    }
+            
+    @WebMethod(operationName = "retrieveAllItineraryItemByTransactionId")
+    public List<ItineraryItem> retrieveAllItineraryItemByTransactionId(@WebParam(name = "customerId") Long transactionId) {
+        return customerFlightReservationSessionBean.retrieveAllItineraryItemByTransactionId(transactionId);
+    }
+                    
     
     @WebMethod(operationName = "getFarePerPax")
-    public BigDecimal getFarePerPax(@WebParam(name = "flightSchedule") FlightSchedule flightSchedule, 
-                                @WebParam(name = "seatInventory") SeatInventory seatInventory, 
-                                @WebParam(name = "object") Object object) {
+    public Fare getFarePerPax(@WebParam(name = "flightSchedule") FlightSchedule flightSchedule, 
+                            @WebParam(name = "seatInventory") SeatInventory seatInventory, 
+                            @WebParam(name = "object") Object object) {
         return customerFlightReservationSessionBean.getFarePerPax(flightSchedule, seatInventory, object);
     }
     
@@ -128,6 +170,29 @@ public class HolidayReservationSystemWebService {
     public void rollBackSeatsToAvailable(@WebParam(name = "seatId") Long seatId) throws SeatNotFoundException {
         Seat seat = seatSessionBean.retrieveSeatById(seatId);
         seat.setSeatStatus(SeatStatus.AVAILABLE);
+    }
+    
+    @WebMethod(operationName = "createNewTransaction")
+    public Long createNewTransaction(@WebParam(name = "transaction") Transaction transaction, 
+                                @WebParam(name = "customer") Customer customer) throws CustomerNotFoundException {
+        return customerFlightReservationSessionBean.createNewTransaction(transaction, customer);
+    }
+    
+    @WebMethod(operationName = "retrieveTransactionById")
+    public Transaction retrieveTransactionById(@WebParam(name = "transactionId") Long transactionId) throws TransactionNotFoundException {
+        return retrieveTransactionById(transactionId);
+    }
+    
+    @WebMethod(operationName = "createNewItinerary")
+    public Long createNewItinerary(@WebParam(name = "itineraryItem") ItineraryItem itineraryItem, 
+            @WebParam(name = "transactionId") Long transactionId, 
+            @WebParam(name = "flightScheduleId") Long flightScheduleId) throws TransactionNotFoundException, FlightSchedulePlanNotFoundException {
+        return customerFlightReservationSessionBean.createNewItinerary(itineraryItem, transactionId, flightScheduleId);
+    }
+    
+    @WebMethod(operationName = "makePayment")
+    public void makePayment(@WebParam(name = "creditCard") CreditCard creditCard, @WebParam(name = "totalFare") BigDecimal totalFare) {
+        creditCardProcessinngSessionBean.chargeCreditCard(creditCard.getCreditCardNumber(), totalFare);
     }
     
 }

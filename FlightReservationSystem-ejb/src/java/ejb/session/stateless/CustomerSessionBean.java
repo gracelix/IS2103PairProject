@@ -29,6 +29,9 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
     
     @Override
     public Long createNewCustomer(Customer newCustomer) {
+        
+        newCustomer.getCreditCards().size();
+        
         em.persist(newCustomer);
         em.flush();
         return newCustomer.getCustomerId();
