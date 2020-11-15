@@ -18,6 +18,7 @@ import ejb.session.stateless.FlightScheduleSessionBeanRemote;
 import ejb.session.stateless.FlightSessionBeanRemote;
 import ejb.session.stateless.SeatInventorySessionBeanRemote;
 import ejb.session.stateless.SeatSessionBeanRemote;
+import ejb.session.stateless.TimerSessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
 import util.enumeration.EmployeeAccessRights;
@@ -81,7 +82,7 @@ public class MainApp {
         this.seatSessionBeanRemote = seatSessionBeanRemote;
         this.fareSessionBeanRemote = fareSessionBeanRemote;
         this.flightReservationSessionBeanRemote = flightReservationSessionBeanRemote;
-    
+        
     }
     
     public void runApp() {

@@ -8,8 +8,10 @@ package ejb.session.stateless;
 import entity.FlightSchedule;
 import java.util.Date;
 import javax.ejb.Local;
+import util.exception.CabinClassConfigurationNotFoundException;
 import util.exception.FlightScheduleOverlapException;
 import util.exception.FlightSchedulePlanNotFoundException;
+import util.exception.SeatInventoryNotFoundException;
 
 /**
  *
@@ -18,12 +20,12 @@ import util.exception.FlightSchedulePlanNotFoundException;
 @Local
 public interface FlightScheduleSessionBeanLocal {
 
-    public Long createNewFlightSchedule(FlightSchedule newFlightSchedule, Long flightSchedulePlanId) throws FlightSchedulePlanNotFoundException;
+    public Long createNewFlightSchedule(FlightSchedule newFlightSchedule, Long flightSchedulePlanId) throws FlightSchedulePlanNotFoundException, CabinClassConfigurationNotFoundException, SeatInventoryNotFoundException;
 
     public FlightSchedule retrieveFlightScheduleById(Long flightScheduleId) throws FlightSchedulePlanNotFoundException;
 
     public void checkForScheduleOverlap(Long flightId, Date departureDate, Date arrivalDate) throws FlightScheduleOverlapException;
 
-    public void deleteFlightSchedule(Long flightScheduleId) throws FlightSchedulePlanNotFoundException;
+    public Long deleteFlightSchedule(Long flightScheduleId) throws FlightSchedulePlanNotFoundException;
     
 }

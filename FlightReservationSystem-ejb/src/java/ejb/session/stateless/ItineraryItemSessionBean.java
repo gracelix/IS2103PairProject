@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.FlightSchedule;
 import entity.ItineraryItem;
+import java.text.SimpleDateFormat;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -33,7 +34,13 @@ public class ItineraryItemSessionBean implements ItineraryItemSessionBeanRemote,
     
     @Override
     public Long createItineraryItem(ItineraryItem itineraryItem, Long flightScheduleId) throws FlightSchedulePlanNotFoundException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        
         FlightSchedule flightSchedule = flightScheduleSessionBeanLocal.retrieveFlightScheduleById(flightScheduleId);
+        
+        itineraryItem.setOdDateTime(dateFormat.format(flightSchedule.getDepartureDateTime()));
+        itineraryItem.setOdCode(flightSchedule.getFlightSchedulePlan().getFlight().getFlightRoute().getOriginAirport().getIataCode());
+        
         itineraryItem.setFlightSchedule(flightSchedule);
         flightSchedule.getItineraryItems().add(itineraryItem);
 

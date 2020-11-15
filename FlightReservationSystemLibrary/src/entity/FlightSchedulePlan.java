@@ -9,9 +9,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -73,10 +75,20 @@ public class FlightSchedulePlan implements Serializable {
         this.flightSchedulePlanType = flightSchedulePlanType;
         this.flight = flight;
     }
-    
-    
+
+    public FlightSchedulePlan(FlightSchedulePlanType flightSchedulePlanType, Date endDate) {
+        this.flightSchedulePlanType = flightSchedulePlanType;
+        this.endDate = endDate;
+    }
     
 
+    public FlightSchedulePlan(FlightSchedulePlanType flightSchedulePlanType, Date endDate, Integer nDays) {
+        this.flightSchedulePlanType = flightSchedulePlanType;
+        this.endDate = endDate;
+        this.nDays = nDays;
+    }
+    
+    
     public Long getFlightSchedulePlanId() {
         return flightSchedulePlanId;
     }

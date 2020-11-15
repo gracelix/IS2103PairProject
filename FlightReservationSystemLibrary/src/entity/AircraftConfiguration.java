@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,8 +28,11 @@ public class AircraftConfiguration implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long aircraftConfigurationId;
+    @Column(nullable = false, length = 128)
     private String aircraftConfigurationName;
+    @Column(nullable = false)
     private Integer numberOfCabinClasses;
+    @Column(nullable = false)
     private Integer totalMaximumSeatCapacity;
     @OneToMany(mappedBy = "aircraftConfiguration")
     private List<Flight> flights;

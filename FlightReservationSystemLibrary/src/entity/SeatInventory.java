@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,8 +28,11 @@ public class SeatInventory implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seatInventoryId;
+    @Column(nullable = false)
     private Integer availableSeats;
+    @Column(nullable = false)
     private Integer reservedSeats;
+    @Column(nullable = false)
     private Integer balanceSeats;
     
     @OneToMany

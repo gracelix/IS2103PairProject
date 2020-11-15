@@ -6,7 +6,10 @@
 package entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,8 +26,11 @@ public class Seat implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seatId;
+    @Column(nullable = false)
     private Integer seatNumber;
+    @Column(nullable = false)
     private String rowAlphabet;
+    @Enumerated(EnumType.STRING)
     private SeatStatus seatStatus;
 
     public Seat() {

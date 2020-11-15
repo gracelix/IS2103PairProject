@@ -184,8 +184,8 @@ public class FleetManagerModule {
         
         AircraftConfiguration aircraftConfiguration = aircraftConfigurationSessionBeanRemote.retrieveAircraftConfigurationById(aircraftConfigurationId);
         
-        System.out.printf("%10s%20s%20s%20s\n", "Aircraft Type", "Name", "No. of Cabin Class", "Max Capacity");
-        System.out.printf("%10s%20s%20s%20s\n", aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getNumberOfCabinClasses(), aircraftConfiguration.getTotalMaximumSeatCapacity());
+        System.out.printf("%20s%20s%20s%20s\n", "Aircraft Type", "Name", "No. of Cabin Class", "Max Capacity");
+        System.out.printf("%20s%20s%20s%20s\n", aircraftConfiguration.getAircraftType().getAircraftTypeName(), aircraftConfiguration.getAircraftConfigurationName(), aircraftConfiguration.getNumberOfCabinClasses(), aircraftConfiguration.getTotalMaximumSeatCapacity());
     }
     
 }

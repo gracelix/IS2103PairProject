@@ -85,6 +85,16 @@ public class Transaction implements Serializable {
         this.partner = null;
         this.customer = null;
     }
+
+    public Transaction(String passengerFirstName, String passengerLastName, Long passportNumber) {
+        this();
+        
+        this.passengerFirstName = passengerFirstName;
+        this.passengerLastName = passengerLastName;
+        this.passportNumber = passportNumber;
+    }
+    
+    
     
 
     public Long getTransactionId() {
@@ -166,6 +176,14 @@ public class Transaction implements Serializable {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public List<ItineraryItem> getItineraryItems() {
+        return itineraryItems;
+    }
+
+    public void setItineraryItems(List<ItineraryItem> itineraryItems) {
+        this.itineraryItems = itineraryItems;
     }
     
 }

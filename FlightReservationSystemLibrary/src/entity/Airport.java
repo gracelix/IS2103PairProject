@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,11 +25,17 @@ public class Airport implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long airportId;
+    @Column(nullable = false, length = 128)
     private String airportName;
+    @Column(nullable = false, unique = true, length = 4)
     private String iataCode;
+    @Column(nullable = false, length = 64)
     private String city;
+    @Column(nullable = false, length = 64)
     private String countryState;
+    @Column(nullable = false, length = 64)
     private String country;
+    @Column(nullable = false)
     private Double timeZone;
     
     @OneToMany(mappedBy = "originAirport")
