@@ -115,10 +115,12 @@ public class FlightScheduleSessionBean implements FlightScheduleSessionBeanRemot
     }
     
     @Override
-    public void deleteFlightSchedule(Long flightScheduleId) throws FlightSchedulePlanNotFoundException {
+    public Long deleteFlightSchedule(Long flightScheduleId) throws FlightSchedulePlanNotFoundException {
         FlightSchedule flightScheduleToRemove = retrieveFlightScheduleById(flightScheduleId);
-        flightScheduleToRemove.getFlightSchedulePlan().getFlightSchedules().remove(flightScheduleToRemove);
+        FlightSchedulePlan flightSchedulePlan = flightSchedulePlanSessionBeanLocal.retrieveFlightSchedulePlanById(flightScheduleToRemove.getFlightSchedulePlan().getFlightSchedulePlanId());
+        flightSchedulePlan.getFlightSchedules().remove(flightScheduleToRemove);
         em.remove(flightScheduleToRemove);
+        return flightSchedulePlan.getFlightSchedulePlanId();
     }
     
    

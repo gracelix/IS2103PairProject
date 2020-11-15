@@ -1340,10 +1340,10 @@ public class ScheduleManagerModule {
             integerInput = sc.nextInt();
             sc.nextLine();
             Calendar calendar = Calendar.getInstance();
-            Date today = dateFormat.parse("13-12-2020");
+            Date today = calendar.getTime();
             if(integerInput > 0) {
-                List<FlightSchedule> flightSchedules = flightSchedulePlanToUpdate.getFlightSchedules();
-                for (FlightSchedule flightSchedule : flightSchedules) {
+                
+                for (FlightSchedule flightSchedule : flightSchedulePlanToUpdate.getFlightSchedules()) {
                     FlightSchedule tempFlightSchedule = flightScheduleSessionBeanRemote.retrieveFlightScheduleById(flightSchedule.getFlightScheduleId());
                     
                     if (tempFlightSchedule.getDepartureDateTime().getTime() > today.getTime()) {
@@ -1352,8 +1352,9 @@ public class ScheduleManagerModule {
                                  System.out.println("Cannot be updated, flight tickets have been sold for this schedule!");
                                  return;
                              }
-                         }
-                         flightScheduleSessionBeanRemote.deleteFlightSchedule(tempFlightSchedule.getFlightScheduleId());
+                        }
+                        flightScheduleSessionBeanRemote.deleteFlightSchedule(tempFlightSchedule.getFlightScheduleId());
+                        flightSchedulePlanToUpdate = flightSchedulePlanSessionBeanRemote.retrieveFlightSchedulePlanById(flightSchedulePlan.getFlightSchedulePlanId());
                     }
                 }
                 
@@ -1374,8 +1375,8 @@ public class ScheduleManagerModule {
                             break;
                         }
 
-                        departureDate = calendar1.getTime();
                         calendar1.add(Calendar.DAY_OF_MONTH, integerInput);
+                        departureDate = calendar1.getTime();
 
                         // CALCULATE ARRIVAL DAY
                         double timeZoneDiff = flightSchedulePlanToUpdate.getFlight().getFlightRoute().getDestinationAirport().getTimeZone() - flightSchedulePlanToUpdate.getFlight().getFlightRoute().getOriginAirport().getTimeZone();
@@ -1401,7 +1402,7 @@ public class ScheduleManagerModule {
 
                         FlightSchedule flightSchedule = new FlightSchedule(departureDate, prevFlightSchedule.getEstimatedFlightDuration(), arrivalDate);
                         Long flightScheduleId = flightScheduleSessionBeanRemote.createNewFlightSchedule(flightSchedule, flightSchedulePlanToUpdate.getFlightSchedulePlanId());
-                        flightSchedulePlanToUpdate.getFlightSchedules().add(flightSchedule);
+//                        flightSchedulePlanToUpdate.getFlightSchedules().add(flightSchedule);
                         System.out.println("Flight Schedule " + flightScheduleId + " created under flight schedule plan " + flightSchedulePlanToUpdate.getFlightSchedulePlanId());
 
                         for (SeatInventory seatInventory : flightScheduleSessionBeanRemote.retrieveFlightScheduleById(flightScheduleId).getSeatInventories()) {
@@ -1413,6 +1414,11 @@ public class ScheduleManagerModule {
                 }
            }
         }
+        
+        
+        
+        flightSchedulePlanToUpdate = flightSchedulePlanSessionBeanRemote.retrieveFlightSchedulePlanById(flightSchedulePlan.getFlightSchedulePlanId());
+        
         if (flightSchedulePlanToUpdate.getEndDate() != null) {   
             System.out.print("Edit recurrence end date? (Press Y to create, N otherwise)> ");
             String responseString = sc.nextLine().trim();
@@ -1422,23 +1428,31 @@ public class ScheduleManagerModule {
                 
                 try {
                     Date date = dateFormat.parse(dateInput);
-                    flightSchedulePlanToUpdate.setEndDate(date);
+                    
                     for (FlightSchedule flightSchedule : flightSchedulePlanToUpdate.getFlightSchedules()) {
-                        if (flightSchedule.getDepartureDateTime().getTime() > date.getTime()) {
-                            for (SeatInventory seatInventory : flightSchedule.getSeatInventories()) {
+                        FlightSchedule tempFlightSchedule = flightScheduleSessionBeanRemote.retrieveFlightScheduleById(flightSchedule.getFlightScheduleId());
+                        if (tempFlightSchedule.getDepartureDateTime().getTime() > date.getTime()) {
+                            tempFlightSchedule.getSeatInventories().size();
+                            for (SeatInventory seatInventory : tempFlightSchedule.getSeatInventories()) {
                                 if (seatInventory.getReservedSeats() > 0) {
                                     System.out.println("Cannot be updated, flight tickets have been sold for this schedule!");
                                     return;
                                 }
                             }
-                            flightScheduleSessionBeanRemote.deleteFlightSchedule(flightSchedule.getFlightScheduleId());
+                            flightScheduleSessionBeanRemote.deleteFlightSchedule(tempFlightSchedule.getFlightScheduleId());
+                            
+                            flightSchedulePlanToUpdate = flightSchedulePlanSessionBeanRemote.retrieveFlightSchedulePlanById(flightSchedulePlan.getFlightSchedulePlanId());
+        
                         }
                     }
+                    
+                    flightSchedulePlanToUpdate.setEndDate(date);
+                    
+                    
                 } catch (ParseException ex) {
                     throw new InvalidDateFormatException("Invalid date/time format!");
                 }
             }
-            
         }
         
         while(true) {

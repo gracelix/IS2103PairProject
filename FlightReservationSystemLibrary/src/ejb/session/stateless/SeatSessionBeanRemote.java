@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Seat;
 import javax.ejb.Remote;
 import util.exception.SeatInventoryNotFoundException;
+import util.exception.SeatNotFoundException;
 
 /**
  *
@@ -15,6 +16,7 @@ import util.exception.SeatInventoryNotFoundException;
  */
 @Remote
 public interface SeatSessionBeanRemote {
-        public Long createNewSeat(Seat newSeat, Long seatInventoryId) throws SeatInventoryNotFoundException;
-
+    public Long createNewSeat(Seat newSeat, Long seatInventoryId) throws SeatInventoryNotFoundException;
+    public Seat retrieveSeatByRowCol(Long seatInventoryId, Integer seatRow, String seatColumn) throws SeatInventoryNotFoundException, SeatNotFoundException;
+    public Seat retrieveSeatById(Long seatId) throws SeatNotFoundException;
 }

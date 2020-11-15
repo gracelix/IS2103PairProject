@@ -25,6 +25,6 @@ public interface FlightScheduleSessionBeanRemote {
 
     public void checkForScheduleOverlap(Long flightId, Date departureDate, Date arrivalDate) throws FlightScheduleOverlapException;
 
-    public void deleteFlightSchedule(Long flightScheduleId) throws FlightSchedulePlanNotFoundException;
+    public Long deleteFlightSchedule(Long flightScheduleId) throws FlightSchedulePlanNotFoundException;
 
 }
