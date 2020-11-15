@@ -42,12 +42,16 @@ public class Customer implements Serializable {
     @Column(length = 32, nullable = false)
     private String password;
     
+    @OneToMany
+    private List<CreditCard> creditCards;
+    
     @OneToMany(mappedBy = "customer")
     @JoinColumn(nullable = false)
     private List<Transaction> transactions;
 
     public Customer() {
         transactions = new ArrayList<>();
+        creditCards = new ArrayList<>();
     }
 
     public Customer(String firstName, String lastName, String email, String mobilePhoneNumber, String address, String userName, String password) {
@@ -151,6 +155,22 @@ public class Customer implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public List<CreditCard> getCreditCards() {
+        return creditCards;
+    }
+
+    public void setCreditCards(List<CreditCard> creditCards) {
+        this.creditCards = creditCards;
     }
     
 }

@@ -51,7 +51,7 @@ public class SeatSessionBean implements SeatSessionBeanRemote, SeatSessionBeanLo
         SeatInventory seatInventory = seatInventorySessionBeanLocal.retrieveSeatInventoryById(seatInventoryId);
         List<Seat> seats = seatInventory.getSeats();
         for (Seat seat : seats) {
-            if (seat.getRowAlphabet().equals(seatColumn) && seat.getSeatNumber() == seatRow) {
+            if (seat.getRowAlphabet().equals(seatColumn) && seat.getSeatNumber().equals(seatRow)) {
                 return seat;
             }
         }

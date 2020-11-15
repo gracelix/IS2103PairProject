@@ -41,12 +41,16 @@ public class Partner implements Serializable {
     @Enumerated(EnumType.STRING)
     private PartnerAccessRights partnerAccessRights;
     
+    @OneToMany
+    private List<CreditCard> creditCards;
+    
     @JoinColumn(nullable = false)
     @OneToMany(mappedBy = "partner", fetch = FetchType.LAZY)
     private List<Transaction> partnerTransactions;
 
     public Partner() {
         partnerTransactions = new ArrayList<>();
+        creditCards = new ArrayList<>();
     }
 
     public Partner(String name, String userName, String password, PartnerAccessRights partnerAccessRight) {
@@ -131,6 +135,14 @@ public class Partner implements Serializable {
 
     public void setPartnerTransactions(List<Transaction> partnerTransactions) {
         this.partnerTransactions = partnerTransactions;
+    }
+
+    public List<CreditCard> getCreditCards() {
+        return creditCards;
+    }
+
+    public void setCreditCards(List<CreditCard> creditCards) {
+        this.creditCards = creditCards;
     }
     
 }

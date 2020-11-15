@@ -5,10 +5,13 @@
  */
 package ejb.session.stateful;
 
+import ejb.session.stateless.CreditCardProcessinngSessionBeanLocal;
+import ejb.session.stateless.CustomerSessionBeanLocal;
 import ejb.session.stateless.FlightScheduleSessionBeanLocal;
 import ejb.session.stateless.SeatSessionBeanLocal;
 import entity.AircraftConfiguration;
 import entity.CabinClassConfiguration;
+import entity.CreditCard;
 import entity.Customer;
 import entity.Fare;
 import entity.FlightSchedule;
@@ -16,6 +19,7 @@ import entity.ItineraryItem;
 import entity.Partner;
 import entity.Seat;
 import entity.SeatInventory;
+import entity.Transaction;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,11 +35,14 @@ import javax.persistence.Query;
 import util.enumeration.CabinClassType;
 import util.enumeration.SeatStatus;
 import util.exception.CabinClassConfigurationNotFoundException;
+import util.exception.CreditCardNotFoundException;
+import util.exception.CustomerNotFoundException;
 import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.NoFlightsAvailableException;
 import util.exception.SeatInventoryNotFoundException;
 import util.exception.SeatNotFoundException;
 import util.exception.SeatReservedException;
+import util.exception.TransactionNotFoundException;
 
 /**
  *
@@ -43,6 +50,12 @@ import util.exception.SeatReservedException;
  */
 @Stateful
 public class CustomerFlightReservationSessionBean implements CustomerFlightReservationSessionBeanRemote {
+
+    @EJB(name = "CreditCardProcessinngSessionBeanLocal")
+    private CreditCardProcessinngSessionBeanLocal creditCardProcessinngSessionBeanLocal;
+
+    @EJB(name = "CustomerSessionBeanLocal")
+    private CustomerSessionBeanLocal customerSessionBeanLocal;
 
     @EJB(name = "SeatSessionBeanLocal")
     private SeatSessionBeanLocal seatSessionBeanLocal;
@@ -247,22 +260,36 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         return flightSchedules;     
     }
     
+    @Override
     public FlightSchedule retrieveFlightScheduleById(Long flightScheduleId) throws FlightSchedulePlanNotFoundException {
         FlightSchedule flightSchedule = null;
         
         try {
             flightSchedule = flightScheduleSessionBeanLocal.retrieveFlightScheduleById(flightScheduleId);    
         } catch (FlightSchedulePlanNotFoundException ex) {
-            throw new FlightSchedulePlanNotFoundException();
+            throw new FlightSchedulePlanNotFoundException("Flight Schedule Not Found");
         }
         return flightSchedule;
+    }
+    
+    @Override
+    public Seat retrieveSeatById(Long seatId) throws SeatNotFoundException {
+        Seat seat = null;
+        
+        try {
+            seat = seatSessionBeanLocal.retrieveSeatById(seatId);
+        } catch (SeatNotFoundException ex) {
+            throw new SeatNotFoundException("Seat Not Found");
+        } 
+        
+        return seat;
     }
     
     @Override
     public Long reserveSeat(FlightSchedule flightSchedule, CabinClassType cabinClassType, Integer seatRow, String seatCol) throws SeatInventoryNotFoundException, SeatNotFoundException, SeatReservedException {
         SeatInventory seatInventory = null;
         for (SeatInventory seatInventoryTemp : flightSchedule.getSeatInventories()) {
-            if (seatInventory.getCabinClass().getCabinClassType().equals(seatInventoryTemp.getCabinClass().getCabinClassType())) {
+            if (seatInventoryTemp.getCabinClass().getCabinClassType().equals(cabinClassType)) {
                 seatInventory = seatInventoryTemp;
                 break;
             }
@@ -282,6 +309,39 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         seat.setSeatStatus(SeatStatus.RESERVED);      
         
         return seat.getSeatId();
+    }
+    
+    @Override
+    public Long createNewCreditCardCustomer(CreditCard creditCard, Customer customer) throws CustomerNotFoundException {
+//        Customer customer = customerSessionBeanLocal.retrieveCustomerById(customerId);
+        customer.getCreditCards().add(creditCard);
+        
+        em.persist(creditCard);
+        em.flush();
+        
+        return creditCard.getCreditCardId();
+    }
+    
+    @Override
+    public CreditCard retrieveCreditCardById(Long creditCardId) throws CreditCardNotFoundException {
+        CreditCard creditCard = em.find(CreditCard.class, creditCardId);
+        if (creditCard == null) {
+            throw new CreditCardNotFoundException("Credit Card " + creditCardId + " does not exist!");
+        }
+        
+        return creditCard;
+    }
+    
+    @Override
+    public List<CreditCard> retrieveAllCreditCardCustomer(Long customerId) throws CustomerNotFoundException {
+        Customer customer = customerSessionBeanLocal.retrieveCustomerById(customerId);
+        customer.getCreditCards().size();
+        
+        return customer.getCreditCards();
+    }
+    
+    public void makePayment(CreditCard creditCard) {
+        
     }
     
 //    @Override
@@ -325,8 +385,10 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
 //    }
     
     @Override
-    public BigDecimal getFarePerPax(FlightSchedule flightSchedule, SeatInventory seatInventory, Object object) {
+    public Fare getFarePerPax(FlightSchedule flightSchedule, SeatInventory seatInventory, Object object) {
         List<Fare> fares = flightSchedule.getFlightSchedulePlan().getFares();
+        
+        Fare fareToReturn = null;
         
         BigDecimal farePax = BigDecimal.ZERO;
         if (object instanceof Customer) {
@@ -334,6 +396,7 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
                 if(fare.getCabinClassConfiguration().equals(seatInventory.getCabinClass())) {
                     if (farePax.equals(BigDecimal.ZERO) || farePax.compareTo(fare.getFareAmount()) > 0) {
                         farePax = fare.getFareAmount();
+                        fareToReturn = fare;
                     }
                 }
             }
@@ -342,6 +405,7 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
                 if(fare.getCabinClassConfiguration().equals(seatInventory.getCabinClass())) {
                     if (farePax.equals(BigDecimal.ZERO) || farePax.compareTo(fare.getFareAmount()) < 0) {
                         farePax = fare.getFareAmount();
+                        fareToReturn = fare;
                     }
                 }
             }
@@ -349,9 +413,10 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
             throw new NullPointerException("Unable to retrieve Fare as entity neither a customer or partner!");
         }
         
-        return farePax;
+        return fareToReturn;
     }
     
+    @Override
     public Boolean checkFlightScheduleExist(Long flightScheduleId, CabinClassType cabinClassType) throws FlightSchedulePlanNotFoundException, CabinClassConfigurationNotFoundException {
         try {
             FlightSchedule flightSchedule = flightScheduleSessionBeanLocal.retrieveFlightScheduleById(flightScheduleId);
@@ -371,12 +436,58 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         return true;
     }
     
+    @Override
     public void rollBackSeatsToAvailable(Long seatId) throws SeatNotFoundException {
         Seat seat = seatSessionBeanLocal.retrieveSeatById(seatId);
         seat.setSeatStatus(SeatStatus.AVAILABLE);
     }
     
     
+    @Override
+    public Long createNewTransaction(Transaction transaction, Long CustomerId) throws CustomerNotFoundException {
+        
+        Customer customer = customerSessionBeanLocal.retrieveCustomerById(CustomerId);
+        transaction.setCustomer(customer);
+        customer.getTransactions().add(transaction);
+        
+        em.persist(transaction);
+        em.flush();
+        
+        return transaction.getTransactionId();
+    }
+    
+    @Override
+    public Transaction retrieveTransactionById(Long transactionId) throws TransactionNotFoundException {
+    
+        Transaction transaction = em.find(Transaction.class, transactionId);
+        if (transaction == null) {
+            throw new TransactionNotFoundException("Transaction Doesnt Exist!");
+        }
+        
+        return transaction;
+    
+    }
+    
+    @Override
+    public Long createNewItinerary(ItineraryItem itineraryItem, Long transactionId, Long flightScheduleId) throws TransactionNotFoundException, FlightSchedulePlanNotFoundException {
+        Transaction transaction = retrieveTransactionById(transactionId);
+        FlightSchedule flightSchedule = retrieveFlightScheduleById(flightScheduleId);
+        
+        itineraryItem.setFlightSchedule(flightSchedule);
+        flightSchedule.getItineraryItems().add(itineraryItem);
+        transaction.getItineraryItems().add(itineraryItem);
+        
+        em.persist(itineraryItem);
+        em.flush();
+        
+        return itineraryItem.getItineraryItemId();
+        
+    }
+    
+    @Override
+    public void makePayment(CreditCard creditCard, BigDecimal totalFare) {
+        creditCardProcessinngSessionBeanLocal.chargeCreditCard(creditCard.getCreditCardNumber(), totalFare);
+    }
     
 //    @Override
 //    public List<ItineraryItem> searchHolidays(Date departureDate, Date returnDate, String departureCity, String destinationCity, Integer numberOfTravellers)
