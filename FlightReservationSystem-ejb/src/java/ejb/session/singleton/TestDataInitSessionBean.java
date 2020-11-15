@@ -17,7 +17,6 @@ import ejb.session.stateless.FlightScheduleSessionBeanLocal;
 import ejb.session.stateless.FlightSessionBeanLocal;
 import ejb.session.stateless.ItineraryItemSessionBeanLocal;
 import ejb.session.stateless.PartnerSessionBeanLocal;
-import ejb.session.stateless.SeatInventorySessionBean;
 import ejb.session.stateless.SeatInventorySessionBeanLocal;
 import entity.AircraftConfiguration;
 import entity.AircraftType;
@@ -31,11 +30,9 @@ import entity.FlightSchedule;
 import entity.FlightSchedulePlan;
 import entity.ItineraryItem;
 import entity.Partner;
-import entity.SeatInventory;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -69,9 +66,6 @@ public class TestDataInitSessionBean {
 
     @EJB
     private ItineraryItemSessionBeanLocal itineraryItemSessionBeanLocal;
-
-    @EJB
-    private SeatInventorySessionBeanLocal seatInventorySessionBeanLocal;
 
     @EJB
     private FareSessionBeanLocal fareSessionBean;

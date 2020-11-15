@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -32,10 +33,15 @@ public class CabinClassConfiguration implements Serializable {
     private Long cabinClassConfigurationId;
     @Enumerated(EnumType.STRING)
     private CabinClassType cabinClassType;
+    @Column(nullable = false)
     private Integer numberOfAisles;
+    @Column(nullable = false)
     private Integer numberOfRows;
+    @Column(nullable = false)
     private Integer numberOfSeatsAbreast;
+    @Column(nullable = false)
     private String seatingConfiguration;
+    @Column(nullable = false)
     private Integer cabinMaximumSeatCapacity;
     
     @ManyToOne(optional = false)
