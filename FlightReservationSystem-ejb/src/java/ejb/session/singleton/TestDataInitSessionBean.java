@@ -226,25 +226,34 @@ public class TestDataInitSessionBean {
         try {
             Long flightRouteId = flightRouteSessionBean.createNewFlightRoute(new FlightRoute(), "SIN", "HKG");
             flightRouteSessionBean.createNewComplementaryFlightRoute(new FlightRoute(), flightRouteId, "HKG", "SIN");
-            
+            //1,2
             flightRouteId = flightRouteSessionBean.createNewFlightRoute(new FlightRoute(), "SIN", "TPE");
             flightRouteSessionBean.createNewComplementaryFlightRoute(new FlightRoute(), flightRouteId, "TPE", "SIN");
-            
+            //3,4
             flightRouteId = flightRouteSessionBean.createNewFlightRoute(new FlightRoute(), "SIN", "NRT");
             flightRouteSessionBean.createNewComplementaryFlightRoute(new FlightRoute(), flightRouteId, "NRT", "SIN");
-            
+            //5,6
             flightRouteId = flightRouteSessionBean.createNewFlightRoute(new FlightRoute(), "HKG", "NRT");
             flightRouteSessionBean.createNewComplementaryFlightRoute(new FlightRoute(), flightRouteId, "NRT", "HKG");
-            
+            //7,8
             flightRouteId = flightRouteSessionBean.createNewFlightRoute(new FlightRoute(), "TPE", "NRT");
             flightRouteSessionBean.createNewComplementaryFlightRoute(new FlightRoute(), flightRouteId, "NRT", "TPE");
-            
+            //9,10
             flightRouteId = flightRouteSessionBean.createNewFlightRoute(new FlightRoute(), "SIN", "SYD");
             flightRouteSessionBean.createNewComplementaryFlightRoute(new FlightRoute(), flightRouteId, "SYD", "SIN");
-            
+            //11,12
             flightRouteId = flightRouteSessionBean.createNewFlightRoute(new FlightRoute(), "SYD", "NRT");
             flightRouteSessionBean.createNewComplementaryFlightRoute(new FlightRoute(), flightRouteId, "NRT", "SYD");
+            //13,14
+            //For own testing purpose
             
+            flightRouteId = flightRouteSessionBean.createNewFlightRoute(new FlightRoute(), "TPE", "SYD");
+            flightRouteSessionBean.createNewComplementaryFlightRoute(new FlightRoute(), flightRouteId, "SYD", "TPE");
+            //15,16
+            flightRouteId = flightRouteSessionBean.createNewFlightRoute(new FlightRoute(), "TPE", "HKG");
+            flightRouteSessionBean.createNewComplementaryFlightRoute(new FlightRoute(), flightRouteId, "HKG", "TPE");  
+            //17,18
+            //
         } catch (InvalidIataCodeException | FlightRouteNotFoundException ex) {
             System.out.println(ex.getMessage() + "\n");
         }
@@ -276,6 +285,21 @@ public class TestDataInitSessionBean {
             flightId = flightSessionBean.createNewFlight(new Flight("ML711"), 13l, 4l);
             flightSessionBean.createNewComplementaryReturnFlight(new Flight("ML712"), flightId, 14l, 4l);
                     
+            //for own testing purposes
+            flightId = flightSessionBean.createNewFlight(new Flight("ML1"), 5l, 1l);
+            flightId = flightSessionBean.createNewFlight(new Flight("ML2"), 10l, 1l);
+            flightId = flightSessionBean.createNewFlight(new Flight("ML3"), 15l,1l);
+            flightId = flightSessionBean.createNewFlight(new Flight("ML4"), 3l, 1l);
+            flightId = flightSessionBean.createNewFlight(new Flight("ML5"), 9l, 1l);
+            flightId = flightSessionBean.createNewFlight(new Flight("ML6"), 14l, 1l);
+            flightId = flightSessionBean.createNewFlight(new Flight("ML7"), 16l, 1l);
+            flightId = flightSessionBean.createNewFlight(new Flight("ML8"), 17l, 1l);
+            flightId = flightSessionBean.createNewFlight(new Flight("ML9"), 2l, 1l);
+            flightId = flightSessionBean.createNewFlight(new Flight("ML10"), 15l, 1l);
+            flightId = flightSessionBean.createNewFlight(new Flight("ML11"), 12l, 1l);
+            //
+            
+            
         } catch (AircraftConfigurationNotFoundException | FlightNotFoundException | FlightRouteNotFoundException | FlightAlreadyExistsException ex) {
             System.out.println(ex.getMessage() + "\n");
         }
@@ -337,6 +361,69 @@ public class TestDataInitSessionBean {
             seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(10), 2l, 6l);
             seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(20), 3l, 6l);
             seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(150), 4l, 6l);
+            
+            
+            
+            //For own testing purposes
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 17l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            Long flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 08:00"), timeFormat.parse("01:00"), dateFormat.parse("07-12-2020 10:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 18l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 15:00"), timeFormat.parse("01:00"), dateFormat.parse("07-12-2020 15:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 19l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("07-12-2020 23:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 00:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 20l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 08:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 9:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 21l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 15:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 17:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 22l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("08-12-2020 23:00"), timeFormat.parse("01:00"), dateFormat.parse("08-12-2020 23:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 23l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 08:00"), timeFormat.parse("01:00"), dateFormat.parse("10-12-2020 09:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 24l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 15:00"), timeFormat.parse("01:00"), dateFormat.parse("10-12-2020 16:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 25l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 232:00"), timeFormat.parse("01:00"), dateFormat.parse("11-12-2020 00:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 26l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 10:00"), timeFormat.parse("01:00"), dateFormat.parse("10-12-2020 11:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            flightSchedulePlanId = flightSchedulePlanSessionBean.createNewFlightSchedulePlan(new FlightSchedulePlan(FlightSchedulePlanType.SINGLE), 27l);
+            fareSessionBean.createNewFare(new Fare("Y002", BigDecimal.valueOf(350), cabinClassConfigurationSessionBean.retrieveCabinClassConfigurationById(1l)), flightSchedulePlanId);
+            flightScheduleId = flightScheduleSessionBean.createNewFlightSchedule(new FlightSchedule(dateFormat.parse("10-12-2020 23:00"), timeFormat.parse("01:00"), dateFormat.parse("11-12-2020 00:00")), flightSchedulePlanId);
+            seatInventorySessionBeanLocal.createNewSeatInventory(new SeatInventory(180), 1l, flightScheduleId);
+            
+            
+            
+            //
             
         } catch (FlightNotFoundException | ParseException | FlightSchedulePlanNotFoundException | CabinClassConfigurationNotFoundException ex) {
             System.out.println(ex.getMessage() + "\n");

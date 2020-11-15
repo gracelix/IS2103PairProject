@@ -26,8 +26,12 @@ public interface CustomerFlightReservationSessionBeanRemote {
 
     public List<FlightSchedule> searchSingleFlights(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) throws NoFlightsAvailableException;
 
-    public BigDecimal getFarePerPax(FlightSchedule flightSchedule, SeatInventory seatInventory);
+    public BigDecimal getFarePerPax(FlightSchedule flightSchedule, SeatInventory seatInventory, Object object);
 
     public List<FlightSchedule> searchOneConnectionFlights(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) throws NoFlightsAvailableException;
+
+//    public List<List<FlightSchedule>> searchTwoConnectionsFlight(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) throws NoFlightsAvailableException;
+    
+    public List<FlightSchedule> searchTwoConnectionsFlight(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) throws NoFlightsAvailableException;
     
 }
