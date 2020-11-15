@@ -133,7 +133,7 @@ public class MainApp {
             } else if (response == 3) {
                 doViewPartnerFlightReservationDetails();
             } else if (response == 4) {
-                currentPartner = null;
+                currentPartner = null; 
                 break;
             } else {
                 System.out.println("Invalid option, try again!\n");

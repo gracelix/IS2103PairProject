@@ -189,7 +189,6 @@ public class MainApp {
         
         if (username.length() > 0 && password.length() > 0) {
             currentCustomer = customerSessionBeanRemote.login(username, password);
-            System.out.println(currentCustomer.getCustomerId());//debug
         } else {
             throw new InvalidLoginCredentialException("One or more login credentials are missing.");
         }
@@ -258,25 +257,6 @@ public class MainApp {
                     System.out.println("** Available Connecting Flights from " + departureAirport + " to " + destinationAirport + " **\n");
                     try {
                         List<FlightSchedule> flightSchedules = customerFlightReservationSessionBeanRemote.searchOneConnectionFlights(departureAirport, destinationAirport, departureDate, numberOfPassengers);
-//                        List<String> connectingAirports = new ArrayList<>();
-//                        for (FlightSchedule flightSchedule : flightSchedules) {
-//                            String iata = flightSchedule.getFlightSchedulePlan().getFlight().getFlightRoute().getDestinationAirport().getIataCode();
-//                            
-//                            if (!iata.equals(departureAirport) && !iata.equals(destinationAirport) && !connectingAirports.contains(iata)) {
-//                                System.out.println(iata);
-//                                connectingAirports.add(iata);
-//                            }
-//                        }
-//                        for (String connectingIata : connectingAirports) {
-//                            System.out.println("** Connecting Flight : " + departureAirport + "-" + connectingIata + "-" + destinationAirport + " **\n");
-//                            System.out.println("** Available Flights from " + departureAirport + " to " + connectingIata + " **\n");
-//                            doGetFlightScheduleAvailability(departureAirport, connectingIata, departureDate, numberOfPassengers);
-//                            System.out.println("-----------------------------------");
-//                            System.out.println("** Available Flights from " + connectingIata + " to " + destinationAirport + " **\n");
-//                            doGetFlightScheduleAvailability(connectingIata, destinationAirport, departureDate, numberOfPassengers);
-//                            System.out.print("Press any key to continue...> ");
-//                            sc.nextLine();
-//                        }
                         doGetSingleConnectionFlights(flightSchedules, departureAirport, destinationAirport, departureDate, numberOfPassengers);
                     } catch (NoFlightsAvailableException ex) {
                         System.out.println(ex.getMessage() + "\n");
@@ -487,15 +467,8 @@ public class MainApp {
     
     public void doReserveFlight() throws SeatNotFoundException { //take in choices whether single return
         
-        //reserve flight is like 
-        //add to itinerary, 
-        //create a new transaction to contain list of itinerary, 
-        //link itinerary to flightschedule then 
-        //simulate a fake transaction right
-        
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System :: Reserve Flight ***\n");
-        //another while here?
         Long flightScheduleId = -1l;
         String cabinClass = "";
         
@@ -581,7 +554,6 @@ public class MainApp {
                         }
                     }
                 }
-                //customerFlightReservationSessionBeanRemote.reserveFlights();
             }
             
             seatIdsOfEachPassenger.add(seatIds);
@@ -871,7 +843,6 @@ public class MainApp {
                 connectingAirports1.add(iata2);
             }
         }
-
         
         for (String connectingIata1 : connectingAirports1) {
             for (String connectingIata2 : connectingAirports2) {
@@ -909,8 +880,7 @@ public class MainApp {
                 seatInventoryToPrint = seatInventory;
             }
         }
-//        System.out.printf("%20s%20s%20s%25s%25s%20s%20s\n", );
-        //for (Seat seat : seatInventoryToPrint.getSeats()) {
+        
         System.out.println("Seats Available(O : Available, X: Reserved): ");
         System.out.println("-----------------------------------");
         for (int i = 0; i < seatInventoryToPrint.getCabinClass().getNumberOfRows(); i++) {
@@ -939,73 +909,5 @@ public class MainApp {
             System.out.println();
         }
         
-        //}
     }
 }
-
-// this is the code part for first version of search single flight
-//                Date currentDate;
-    //                Date nextDate;
-    //                
-    //                Date dateWithoutTime = dateFormat.parse(dateFormat.format(departureDate));
-    //                Integer counter = -3;
-    //                
-    //                Calendar calendar = Calendar.getInstance();
-    //                calendar.setTime(dateWithoutTime);
-    //                calendar.add(Calendar.DAY_OF_MONTH, -3);
-    //                currentDate = calendar.getTime();
-    //                calendar.add(Calendar.DAY_OF_MONTH, 1);
-    //                nextDate = calendar.getTime();
-    //                
-    //                for (int i = 0; i < 6; i++) {
-    //                    currentDate = nextDate;
-    //                    calendar.add(Calendar.DAY_OF_MONTH, 1);
-    //                    nextDate = calendar.getTime();
-    //                    System.out.println("Flights for Date: " + currentDate);
-    //                    System.out.printf("%20s%25s%20s%25s%15s%20s\n", "Flight Number", "Departure Time", "Seats Available", "Cabin Classes Available", "Fare/pax", "Total Fare Amount"); 
-    //
-    //                    for (FlightSchedule flightSchedule : flightSchedules) {
-    //                        if (flightSchedule.getDepartureDateTime().after(currentDate) && flightSchedule.getDepartureDateTime().before(nextDate)) {
-    //                            Date dateTime = timeFormat.parse(timeFormat.format(flightSchedule.getDepartureDateTime()));
-    //        //                        Integer seats = 0;
-    //        //                        String cabinClass = "";
-    //                            for (SeatInventory seatInventory : flightSchedule.getSeatInventories()) {
-    //        //                            seats += seatInventory.getAvailableSeats();
-    //        //                            if (seatInventory.getAvailableSeats() > 0) {
-    //        //                                if (seatInventory.getCabinClass().getCabinClassType().equals(CabinClassType.FIRST_CLASS)) {
-    //        //                                    cabinClass += "F";
-    //        //                                } else if (seatInventory.getCabinClass().getCabinClassType().equals(CabinClassType.BUSINESS_CLASS)) {
-    //        //                                    cabinClass += "J";
-    //        //                                } else if (seatInventory.getCabinClass().getCabinClassType().equals(CabinClassType.PREMIUM_ECONOMY)) {
-    //        //                                    cabinClass += "W";
-    //        //                                } else if (seatInventory.getCabinClass().getCabinClassType().equals(CabinClassType.ECONOMY)) {
-    //        //                                    cabinClass += "Y";
-    //        //                                }
-    //        //                            }
-    //                                if (seatInventory.getAvailableSeats() > 0) {
-    //                                    BigDecimal farePax = BigDecimal.ZERO;
-    //                                    //lazy fetching
-    //                                    flightSchedule.getFlightSchedulePlan().getFares().size();
-    //                                    
-    //                                    for (Fare fare : flightSchedule.getFlightSchedulePlan().getFares()) {
-    //                                        if (fare.getCabinClassConfiguration().equals(seatInventory.getCabinClass())) {
-    //                                            if (farePax.equals(BigDecimal.ZERO) || farePax.compareTo(fare.getFareAmount()) > 0) {
-    //                                                farePax = fare.getFareAmount();
-    //                                            }
-    //                                        }
-    //                                    }
-    //                                    BigDecimal totalFare = farePax.multiply(new BigDecimal(numberOfPassengers));
-    //
-    //                                    System.out.printf("%20s%25s%20s%25s%15s%20s\n",
-    //                                    flightSchedule.getFlightSchedulePlan().getFlight().getFlightNumber(), 
-    //                                    dateTime,
-    //                                    seatInventory.getAvailableSeats(),
-    //                                    seatInventory.getCabinClass().getCabinClassType(), 
-    //                                    farePax, totalFare);                            
-    //                                }
-    //                            }
-    //
-    //
-    //                        }
-    //                    }
-    //                }
