@@ -9,6 +9,7 @@ import ejb.session.stateless.FlightScheduleSessionBeanLocal;
 import entity.Customer;
 import entity.Fare;
 import entity.FlightSchedule;
+import entity.ItineraryItem;
 import entity.Partner;
 import entity.SeatInventory;
 import java.math.BigDecimal;
@@ -297,6 +298,8 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         
         return farePax;
     }
+    
+    
     
 //    @Override
 //    public List<ItineraryItem> searchHolidays(Date departureDate, Date returnDate, String departureCity, String destinationCity, Integer numberOfTravellers)

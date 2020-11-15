@@ -91,6 +91,7 @@ public class FlightRouteSessionBean implements FlightRouteSessionBeanRemote, Fli
         FlightRoute complementaryFlightRoute = null;
         List<FlightRoute> finalFlightRouteList = new ArrayList<>();
         
+        // LAZY 
         for (FlightRoute flightRoute : flightRoutes) {
             flightRoute.getFlights().size();
         }

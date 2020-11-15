@@ -60,4 +60,6 @@ public class SeatInventorySessionBean implements SeatInventorySessionBeanRemote,
     
         return seatInventory;
     }
+    
+    
 }

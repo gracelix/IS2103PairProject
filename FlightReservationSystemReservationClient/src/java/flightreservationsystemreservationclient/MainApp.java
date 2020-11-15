@@ -465,7 +465,9 @@ public class MainApp {
             System.out.print("Enter Flight Schedule ID to reserve> ");
             Long flightScheduleId = sc.nextLong();
             
-            List<ItineraryItem> itineraryItems;
+            //customerFlightReservationSessionBeanRemote.reserveFlights();
+            
+            
             
             
             System.out.print("Reserve another flight? (Enter Y to create, N otherwise)>");
