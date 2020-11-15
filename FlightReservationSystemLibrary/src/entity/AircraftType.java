@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,7 +23,9 @@ public class AircraftType implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long aircraftTypeId;
+    @Column(nullable = false, length = 128)
     private String aircraftTypeName;
+    @Column(nullable = false)
     private Integer maximumSeatingCapacity;
 
     public AircraftType() {

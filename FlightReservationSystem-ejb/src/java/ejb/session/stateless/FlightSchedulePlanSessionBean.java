@@ -57,8 +57,12 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
             throw new FlightSchedulePlanNotFoundException("Flight schedule plan " + flightSchedulePlanId + " does not exist!");
         }
         
-        flightSchedulePlan.getFares().size();
+        // LAZY
+        flightSchedulePlan.getFlight().getFlightNumber();
+        flightSchedulePlan.getComplementaryReturnFlightSchedulePlan();
         flightSchedulePlan.getFlightSchedules().size();
+        flightSchedulePlan.getFares().size();
+        
         
         return flightSchedulePlan;
     }
@@ -134,12 +138,18 @@ public class FlightSchedulePlanSessionBean implements FlightSchedulePlanSessionB
     
     @Override
     public void updateFlightSchedulePlan(FlightSchedulePlan updatedFlightSchedulePlan) throws FlightSchedulePlanNotFoundException, UpdateFlightSchedulePlanException {
+        
         if (updatedFlightSchedulePlan != null && updatedFlightSchedulePlan.getFlightSchedulePlanId() != null) {
             FlightSchedulePlan flightSchedulePlanToUpdate = retrieveFlightSchedulePlanById(updatedFlightSchedulePlan.getFlightSchedulePlanId());
+            
             if (flightSchedulePlanToUpdate.getFlightSchedulePlanId().equals(updatedFlightSchedulePlan.getFlightSchedulePlanId())) {
+                
                 flightSchedulePlanToUpdate.setEndDate(updatedFlightSchedulePlan.getEndDate());
                 flightSchedulePlanToUpdate.setnDays(updatedFlightSchedulePlan.getnDays());
                 flightSchedulePlanToUpdate.setFares(updatedFlightSchedulePlan.getFares());
+                flightSchedulePlanToUpdate.setFlightSchedules(updatedFlightSchedulePlan.getFlightSchedules());
+                em.persist(flightSchedulePlanToUpdate);
+                
             } else {
                 throw new UpdateFlightSchedulePlanException("Flight schedule plan of ID " + updatedFlightSchedulePlan.getFlightSchedulePlanId() + " does not match with existing record.");
             }

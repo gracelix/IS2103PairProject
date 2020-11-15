@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +26,9 @@ public class Fare implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fareId;
+    @Column(nullable = false, length = 5)
     private String fareBasisCode;
+    @Column(nullable = false)
     private BigDecimal fareAmount;
     
     @ManyToOne(optional = false)
