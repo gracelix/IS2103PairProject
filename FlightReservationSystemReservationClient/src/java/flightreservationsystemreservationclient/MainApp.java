@@ -10,21 +10,31 @@ import ejb.session.stateless.CustomerSessionBeanRemote;
 import entity.Airport;
 import entity.Customer;
 import entity.Fare;
+import entity.Flight;
 import entity.FlightSchedule;
 import entity.FlightSchedulePlan;
 import entity.ItineraryItem;
+import entity.Seat;
 import entity.SeatInventory;
+import entity.Transaction;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import util.enumeration.CabinClassType;
+import util.enumeration.SeatStatus;
+import util.exception.CabinClassConfigurationNotFoundException;
+import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.NoFlightsAvailableException;
+import util.exception.SeatInventoryNotFoundException;
+import util.exception.SeatNotFoundException;
+import util.exception.SeatReservedException;
 
 /**
  *
@@ -443,11 +453,17 @@ public class MainApp {
                             System.out.println("You must login before reserving a flight!\n");
                         }
                     }
-
-                    doReserveFlight();
-
+                    try {
+                        doReserveFlight();
+                    } catch (SeatNotFoundException ex) {
+                        System.out.println(ex.getMessage() + "\n");
+                    }
                 } else {
-                    doReserveFlight();
+                    try {
+                        doReserveFlight();
+                    } catch (SeatNotFoundException ex) {
+                        System.out.println(ex.getMessage() + "\n");
+                    }
                 }
             } else {
                 System.out.println("Returning to main menu...\n");
@@ -458,12 +474,75 @@ public class MainApp {
         }
     }
     
-    public void doReserveFlight() {
+    public void doReserveFlight() throws SeatNotFoundException { //take in choices whether single return
+        
+        //reserve flight is like 
+        //add to itinerary, 
+        //create a new transaction to contain list of itinerary, 
+        //link itinerary to flightschedule then 
+        //simulate a fake transaction right
+        
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Flight Reservation System :: Reserve Flight ***\n");
+        Long flightScheduleId = -1l;
+        String cabinClass = "";
+        CabinClassType cabinClassType = null;
+        List<Long> seatIds = new ArrayList<>();
+        List<Long> flightScheduleIds = new ArrayList<>();
+        Transaction transaction = new Transaction();
+        String passengerFirstName = "";
+        String passengerLastName = "";
+        String passportNumber = "";
         while (true) {
-            System.out.print("Enter Flight Schedule ID to reserve> ");
-            Long flightScheduleId = sc.nextLong();
+            try { //single direct
+                System.out.print("Enter Flight Schedule ID to reserve> ");
+                flightScheduleId = sc.nextLong();
+                flightScheduleIds.add(flightScheduleId);
+                sc.nextLine();
+                System.out.print("Enter Cabin Class Alphabet (F: First Class, J: Business, W: Premium Economy, Y: Economy)> ");
+                cabinClass = sc.nextLine().trim();
+                if (cabinClass.equals("F")) {
+                    cabinClassType = CabinClassType.FIRST_CLASS;
+                } else if (cabinClass.equals("J")) {
+                    cabinClassType = CabinClassType.BUSINESS_CLASS;
+                } else if (cabinClass.equals("W")) {
+                    cabinClassType = CabinClassType.PREMIUM_ECONOMY;
+                } else if (cabinClass.equals("Y")) {
+                    cabinClassType = CabinClassType.ECONOMY;
+                } else {
+                    throw new InputMismatchException("Please only enter F, J, W or Y!");
+                }
+                Boolean flightScheduleExists = customerFlightReservationSessionBeanRemote.checkFlightScheduleExist(flightScheduleId, cabinClassType);
+                
+                FlightSchedule flightSchedule = customerFlightReservationSessionBeanRemote.retrieveFlightScheduleById(flightScheduleId);
+                doPrintAvailableSeats(flightSchedule, cabinClassType);
+                System.out.println("-----------------------------------");
+                System.out.print("Enter Seat Column To Reserve(eg. A)> ");
+                String col = sc.nextLine().trim();
+                System.out.print("Enter Seat Row to Reserve(eg. 1)> ");        
+                Integer row = sc.nextInt();
+                sc.nextLine();
+                
+                System.out.print("Enter Passenger First Name (eg. Samuel)> ");
+                passengerFirstName = sc.nextLine().trim();
+                System.out.print("Enter Passenger Last Name (eg. Wang)> ");
+                passengerLastName = sc.nextLine().trim();
+                System.out.print("Enter " + passengerFirstName + " " + passengerLastName  + "'s Passport Number (E12345678)> ");
+                passportNumber = sc.nextLine().trim();
+                
+                Long seatId = customerFlightReservationSessionBeanRemote.reserveSeat(flightSchedule, cabinClassType, row, col);
+                seatIds.add(seatId);
+                System.out.println("Seat " + col + row + " is reserved!");
+                
+                
+            } catch (FlightSchedulePlanNotFoundException | InputMismatchException | CabinClassConfigurationNotFoundException | SeatNotFoundException | SeatInventoryNotFoundException | SeatReservedException ex) {
+                System.out.println(ex.getMessage() + "\n");
+                for (Long seatIdRollBack : seatIds) {
+                    customerFlightReservationSessionBeanRemote.rollBackSeatsToAvailable(seatIdRollBack);
+                }
+            }
+            
+            
             
             //customerFlightReservationSessionBeanRemote.reserveFlights();
             
@@ -629,6 +708,50 @@ public class MainApp {
                 sc.nextLine();
             }
         }
+    }
+    
+    public void doPrintAvailableSeats(FlightSchedule flightSchedule, CabinClassType cabinClassType) throws FlightSchedulePlanNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        Flight flight = flightSchedule.getFlightSchedulePlan().getFlight();
+        System.out.println("Flight Number: " + flight.getFlightNumber());
+        System.out.println("Flight Route: " + flight.getFlightRoute().getOriginAirport().getIataCode() + "-" + flight.getFlightRoute().getDestinationAirport().getIataCode());
+        System.out.println("Cabin Class: " + cabinClassType);
+        System.out.println("Departure Date: " + flightSchedule.getDepartureDateTime());
+        System.out.println("Arrival Date: " + flightSchedule.getArrivalDateTime());
+        System.out.println();
+        SeatInventory seatInventoryToPrint = null;
+        for (SeatInventory seatInventory : flightSchedule.getSeatInventories()) {
+            if (seatInventory.getCabinClass().getCabinClassType().equals(cabinClassType)) {
+                seatInventoryToPrint = seatInventory;
+            }
+        }
+//        System.out.printf("%20s%20s%20s%25s%25s%20s%20s\n", );
+        //for (Seat seat : seatInventoryToPrint.getSeats()) {
+        System.out.println("Seats Available(O : Available, X: Reserved): ");
+        System.out.println("-----------------------------------");
+        for (int i = 0; i < seatInventoryToPrint.getCabinClass().getNumberOfRows(); i++) {
+            if (i == 0) {
+                System.out.print("Column: ");
+                for (int k = 0; k < seatInventoryToPrint.getCabinClass().getNumberOfRows(); k++) {
+                    System.out.print(seatInventoryToPrint.getSeats().get(k * seatInventoryToPrint.getCabinClass().getNumberOfSeatsAbreast()).getRowAlphabet() + " ");
+                }
+            }
+            for (int j = 0; j < seatInventoryToPrint.getCabinClass().getNumberOfSeatsAbreast(); j++) {
+                Seat seat = seatInventoryToPrint.getSeats().get((j + (i * j)) - 1);
+                if (j == 0) {
+                    System.out.print("Row 1:  ");
+                }
+                if(seat.getSeatStatus().equals(SeatStatus.AVAILABLE)) {
+                    //System.out.print(seat.getRowAlphabet() + seat.getSeatNumber() + " ");
+                    System.out.print("O ");
+                } else {
+                    System.out.print("X ");
+                }
+            }
+            System.out.println();
+        }
+        
+        //}
     }
 }
 

@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Seat;
 import javax.ejb.Local;
 import util.exception.SeatInventoryNotFoundException;
+import util.exception.SeatNotFoundException;
 
 /**
  *
@@ -17,5 +18,9 @@ import util.exception.SeatInventoryNotFoundException;
 public interface SeatSessionBeanLocal {
 
     public Long createNewSeat(Seat newSeat, Long seatInventoryId) throws SeatInventoryNotFoundException;
+
+    public Seat retrieveSeatByRowCol(Long seatInventoryId, Integer seatRow, String seatColumn) throws SeatInventoryNotFoundException, SeatNotFoundException;
+
+    public Seat retrieveSeatById(Long seatId) throws SeatNotFoundException;
     
 }

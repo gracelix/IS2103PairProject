@@ -6,11 +6,15 @@
 package ejb.session.stateful;
 
 import ejb.session.stateless.FlightScheduleSessionBeanLocal;
+import ejb.session.stateless.SeatSessionBeanLocal;
+import entity.AircraftConfiguration;
+import entity.CabinClassConfiguration;
 import entity.Customer;
 import entity.Fare;
 import entity.FlightSchedule;
 import entity.ItineraryItem;
 import entity.Partner;
+import entity.Seat;
 import entity.SeatInventory;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,7 +28,14 @@ import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.enumeration.CabinClassType;
+import util.enumeration.SeatStatus;
+import util.exception.CabinClassConfigurationNotFoundException;
+import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.NoFlightsAvailableException;
+import util.exception.SeatInventoryNotFoundException;
+import util.exception.SeatNotFoundException;
+import util.exception.SeatReservedException;
 
 /**
  *
@@ -33,9 +44,14 @@ import util.exception.NoFlightsAvailableException;
 @Stateful
 public class CustomerFlightReservationSessionBean implements CustomerFlightReservationSessionBeanRemote {
 
+    @EJB(name = "SeatSessionBeanLocal")
+    private SeatSessionBeanLocal seatSessionBeanLocal;
+
     @EJB(name = "FlightScheduleSessionBeanLocal")
     private FlightScheduleSessionBeanLocal flightScheduleSessionBeanLocal;
 
+    
+    
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
@@ -231,6 +247,43 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         return flightSchedules;     
     }
     
+    public FlightSchedule retrieveFlightScheduleById(Long flightScheduleId) throws FlightSchedulePlanNotFoundException {
+        FlightSchedule flightSchedule = null;
+        
+        try {
+            flightSchedule = flightScheduleSessionBeanLocal.retrieveFlightScheduleById(flightScheduleId);    
+        } catch (FlightSchedulePlanNotFoundException ex) {
+            throw new FlightSchedulePlanNotFoundException();
+        }
+        return flightSchedule;
+    }
+    
+    @Override
+    public Long reserveSeat(FlightSchedule flightSchedule, CabinClassType cabinClassType, Integer seatRow, String seatCol) throws SeatInventoryNotFoundException, SeatNotFoundException, SeatReservedException {
+        SeatInventory seatInventory = null;
+        for (SeatInventory seatInventoryTemp : flightSchedule.getSeatInventories()) {
+            if (seatInventory.getCabinClass().getCabinClassType().equals(seatInventoryTemp.getCabinClass().getCabinClassType())) {
+                seatInventory = seatInventoryTemp;
+                break;
+            }
+        }
+        
+        if (seatInventory == null) {
+            throw new SeatInventoryNotFoundException("Seat Inventory not found?");
+        }
+        
+        
+        Seat seat = seatSessionBeanLocal.retrieveSeatByRowCol(seatInventory.getSeatInventoryId(), seatRow, seatCol);
+        
+        if (!seat.getSeatStatus().equals(SeatStatus.AVAILABLE)) {
+            throw new SeatReservedException("Oops! Seat is reserved");
+        }
+        
+        seat.setSeatStatus(SeatStatus.RESERVED);      
+        
+        return seat.getSeatId();
+    }
+    
 //    @Override
 //    public List<FlightSchedule> searchFlights(String departureAirport, String destinationAirport, Date departureDate, Date returnDate, Integer numberOfTravellers) {
 //        this.departureAirport = departureAirport;
@@ -297,6 +350,30 @@ public class CustomerFlightReservationSessionBean implements CustomerFlightReser
         }
         
         return farePax;
+    }
+    
+    public Boolean checkFlightScheduleExist(Long flightScheduleId, CabinClassType cabinClassType) throws FlightSchedulePlanNotFoundException, CabinClassConfigurationNotFoundException {
+        try {
+            FlightSchedule flightSchedule = flightScheduleSessionBeanLocal.retrieveFlightScheduleById(flightScheduleId);
+            Boolean cabinClass = false;
+            for (CabinClassConfiguration cabinClassConfiguration : flightSchedule.getFlightSchedulePlan().getFlight().getAircraftConfiguration().getCabinClassConfigurations()) {
+                if(cabinClassConfiguration.getCabinClassType().equals(cabinClassType)) {
+                    cabinClass = true;
+                }
+            }
+            if (cabinClass == false) {
+                throw new CabinClassConfigurationNotFoundException("Cabin class entered does not exist!");
+            }
+        } catch (FlightSchedulePlanNotFoundException ex) {
+            throw new FlightSchedulePlanNotFoundException("Invalid Flight Schedule Id entered!");
+        }
+        
+        return true;
+    }
+    
+    public void rollBackSeatsToAvailable(Long seatId) throws SeatNotFoundException {
+        Seat seat = seatSessionBeanLocal.retrieveSeatById(seatId);
+        seat.setSeatStatus(SeatStatus.AVAILABLE);
     }
     
     

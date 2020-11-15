@@ -6,12 +6,19 @@
 package ejb.session.stateful;
 
 import entity.FlightSchedule;
+import entity.Seat;
 import entity.SeatInventory;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
+import util.enumeration.CabinClassType;
+import util.exception.CabinClassConfigurationNotFoundException;
+import util.exception.FlightSchedulePlanNotFoundException;
 import util.exception.NoFlightsAvailableException;
+import util.exception.SeatInventoryNotFoundException;
+import util.exception.SeatNotFoundException;
+import util.exception.SeatReservedException;
 
 /**
  *
@@ -33,5 +40,12 @@ public interface CustomerFlightReservationSessionBeanRemote {
 //    public List<List<FlightSchedule>> searchTwoConnectionsFlight(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) throws NoFlightsAvailableException;
     
     public List<FlightSchedule> searchTwoConnectionsFlight(String departureAirport, String destinationAirport, Date departureDate, Integer numberOfTravellers) throws NoFlightsAvailableException;
-    
+
+    public Boolean checkFlightScheduleExist(Long flightScheduleId, CabinClassType cabinClassType) throws FlightSchedulePlanNotFoundException, CabinClassConfigurationNotFoundException;
+
+    public FlightSchedule retrieveFlightScheduleById(Long flightScheduleId) throws FlightSchedulePlanNotFoundException;
+
+    public Long reserveSeat(FlightSchedule flightSchedule, CabinClassType cabinClassType, Integer seatRow, String seatCol) throws SeatInventoryNotFoundException, SeatNotFoundException, SeatReservedException;
+
+    public void rollBackSeatsToAvailable(Long seatId) throws SeatNotFoundException;
 }
